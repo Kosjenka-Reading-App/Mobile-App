@@ -1,3 +1,25 @@
 <resources>
     <string name="app_name">Kosjenka</string>
+    <string name="short_app_description">Welcome to Kosjenka, the best reading app for children.</string>
+    <string name="register">Register</string>
+    <string name="login">Login</string>
+    <string name="email">E-mail</string>
+    <string name="your_email">Your e-mail address</string>
+    <string name="password">Password</string>
+    <string name="your_password">Your password</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="continue_btn">Continue</string>
+    <string name="register_here_txt">Don’t have an account? </string>
+    <string name="register_here">Register here</string>
+    <string name="repeat_password">Repeat password</string>
+    <string name="password_required">Password is required.</string>
+    <string name="password_short">Password must have at least 8 characters</string>
+    <string name="email_required">Email is required.</string>
+    <string name="email_invalid">Email is invalid.</string>
+    <string name="repeat_password_required">You must repeat your password</string>
+    <string name="passwords_dont_match">Passwords do not match</string>
+    <string name="network_error">No internet connection. Connect and try again.</string>
+    <string name="email_unavailable">This e-mail already exists in the database</string>
+    <string name="default_error">Something went wrong. Try again later.</string>
+    <string name="password_reseted">If your e-mail address exists in our system, we will send you a link to change your password.</string>
 </resources>
