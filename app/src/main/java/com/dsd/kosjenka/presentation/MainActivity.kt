@@ -19,9 +19,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.navHostFragment) as NavHostFragment
-        navController = navHostFragment.navController
+        /*val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.navigation) as NavHostFragment
+        navController = navHostFragment.navController*/
     }
 
     override fun onSupportNavigateUp(): Boolean = navController.navigateUp()

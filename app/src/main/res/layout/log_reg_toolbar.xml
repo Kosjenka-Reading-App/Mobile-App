@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.Toolbar
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/mytoolbar"
+    android:background="#F3EFEF">
+
+    <ImageView
+        android:id="@+id/back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/baseline_arrow_back_ios_24"
+        android:contentDescription="Back Arrow" />
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Register"
+        android:textSize="18sp"
+        android:textColor="#000" />
+
+    <com.google.android.material.tabs.TabItem
+        android:id="@+id/action_example"
+        android:title="Example"
+        app:actionViewClass="android.widget.ImageButton"
+        app:showAsAction="always"
+        android:layout_height="50dp"
+        android:layout_width="match_parent"/>
+
+</androidx.appcompat.widget.Toolbar>
