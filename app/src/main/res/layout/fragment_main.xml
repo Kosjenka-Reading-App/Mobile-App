@@ -39,37 +39,36 @@
             android:layout_height="225dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.54"
+            app:layout_constraintHorizontal_bias="0.496"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.381"
+            app:layout_constraintVertical_bias="0.377"
             app:srcCompat="@drawable/start_image" />
-
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="181dp"
-            android:layout_height="73dp"
-            android:text="Kosjenka"
-            android:textSize="45dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.063" />
 
         <TextView
             android:id="@+id/textView3"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="316dp"
+            android:layout_marginBottom="244dp"
             android:gravity="center"
             android:text="Welcome to Kosjenka, a reading app for children"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toBottomOf="@+id/imageView2"
+            app:layout_constraintVertical_bias="0.94" />
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.095"
+            app:srcCompat="@drawable/main_logo" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
