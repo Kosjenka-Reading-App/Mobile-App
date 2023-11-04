@@ -12,4 +12,6 @@
 
     <color name="text_25">#40000000</color>
 
+    <color name="wrong_password">#40DD5353</color>
+    <color name="wrong_password_border">#E30303</color>
 </resources>
