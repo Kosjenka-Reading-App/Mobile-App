@@ -18,6 +18,16 @@ class LoginFragment : Fragment() {
     ): View? {
         val view=inflater.inflate(R.layout.fragment_login, container, false)
 
+
+
+        return view
+
+    }
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         val back=view.findViewById<ImageView>(R.id.back)
 
         val text2=view.findViewById<TextView>(R.id.title)
@@ -26,14 +36,6 @@ class LoginFragment : Fragment() {
         back.setOnClickListener{
             Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_mainFragment)
         }
-
-
-        return view
-
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
 
     }
 }
