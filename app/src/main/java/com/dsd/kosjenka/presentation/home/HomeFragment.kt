@@ -36,6 +36,9 @@ class HomeFragment : Fragment() {
         data.add(exercise(1,56,"Horor","Hard","Sleeping Beauty","Lorem Ipsum"))
         data.add(exercise(2,70,"Bajka","Medium","The Frog Prince","Lorem Ipsum"))
         data.add(exercise(3,0,"Uspavanka","Easy","Aesops Fables","Lorem ipsum"))
+        data.add(exercise(4,56,"Horor","Hard","Sleeping Beauty","Lorem Ipsum"))
+        data.add(exercise(5,70,"Bajka","Medium","The Frog Prince","Lorem Ipsum"))
+        data.add(exercise(6,0,"Uspavanka","Easy","Aesops Fables","Lorem ipsum"))
 
 
         val adapter = RecyclerAdapter(data)
