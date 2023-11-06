@@ -29,25 +29,6 @@ class RegisterFragment : Fragment() {
         return view
     }
 
-    private fun validation(password: String, confirmed_password: String): String {
-        val check_nums = Regex("\\d").containsMatchIn(password)
-        val passwordLength = password.length
-
-        if (passwordLength < 5) {
-            return "Password must have more than 5 characters"
-        } else if (!check_nums) {
-            return "Password must contain at least one number"
-        } else if (!password.equals(confirmed_password)) {
-            return "The confirmation password does not match the original password $check_nums"
-        }
-
-        return "Signed In"
-    }
-
-    fun email_validation(email: String): Boolean {
-        val emailRegex = Regex("[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}")
-        return emailRegex.matches(email)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -118,4 +99,32 @@ class RegisterFragment : Fragment() {
         }
     }
 
+
+
+
+
+
+    //Aux functions
+    private fun validation(password: String, confirmed_password: String): String {
+        val check_nums = Regex("\\d").containsMatchIn(password)
+        val passwordLength = password.length
+
+        if (passwordLength < 5) {
+            return "Password must have more than 5 characters"
+        } else if (!check_nums) {
+            return "Password must contain at least one number"
+        } else if (!password.equals(confirmed_password)) {
+            return "The confirmation password does not match the original password $check_nums"
+        }
+
+        return "Signed In"
+    }
+
+    fun email_validation(email: String): Boolean {
+        val emailRegex = Regex("[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}")
+        return emailRegex.matches(email)
+    }
+
+
 }
+

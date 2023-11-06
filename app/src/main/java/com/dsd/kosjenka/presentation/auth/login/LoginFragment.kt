@@ -29,6 +29,12 @@ class LoginFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val back=view.findViewById<ImageView>(R.id.back)
+        val register=view.findViewById<TextView>(R.id.textView2)
+
+        register.setOnClickListener{
+            Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_registerFragment)
+        }
+
 
         val text2=view.findViewById<TextView>(R.id.title)
         text2.text="Login"
