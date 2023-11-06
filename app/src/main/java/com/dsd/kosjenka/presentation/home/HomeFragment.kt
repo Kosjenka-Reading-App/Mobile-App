@@ -2,6 +2,7 @@ package com.dsd.kosjenka.presentation.home
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -27,6 +28,10 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        var completion_btn=view.findViewById<Button>(R.id.btn_completion)
+        var complexity_btn=view.findViewById<Button>(R.id.btn_complexity)
+
+
         val recyclerview = view.findViewById<RecyclerView>(R.id.recyclerview)
 
         val context=requireContext()
@@ -45,5 +50,41 @@ class HomeFragment : Fragment() {
 
         // Setting the Adapter with the recyclerview
         recyclerview.adapter = adapter
+
+        ////On click
+        completion_btn.setOnClickListener{
+            val data=sortByCompletion(data)
+            val adapter = RecyclerAdapter(data)
+
+            // Setting the Adapter with the recyclerview
+            recyclerview.adapter = adapter
+        }
+
+        complexity_btn.setOnClickListener{
+            val data=sortByComplexity(data)
+            val adapter = RecyclerAdapter(data)
+
+            recyclerview.adapter = adapter
+        }
+    }
+
+    fun sortByComplexity(arr: ArrayList<exercise>): ArrayList<exercise> {
+        val complexityOrder = mapOf("Easy" to 1, "Medium" to 2, "Hard" to 3)
+
+        arr.sortWith(compareBy { complexityOrder[it.complexity] })
+
+        return arr
+    }
+    fun sortByCompletion(arr:ArrayList<exercise>):ArrayList<exercise> {
+        for (i in 0 until arr.size-1) {
+            for (j in i+1 until arr.size) {
+                if (arr[i].completion<arr[j].completion) {
+                    val temp=arr[i]
+                    arr[i]=arr[j]
+                    arr[j]=temp
+                }
+            }
+        }
+        return arr
     }
 }

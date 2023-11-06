@@ -78,19 +78,19 @@
         app:layout_constraintTop_toBottomOf="@+id/search" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/btn_completion"
         android:layout_width="134dp"
         android:layout_height="50dp"
         android:layout_marginTop="36dp"
         android:layout_marginEnd="8dp"
         android:text="Completion"
-        app:layout_constraintEnd_toStartOf="@+id/button3"
+        app:layout_constraintEnd_toStartOf="@+id/btn_complexity"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/search" />
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/btn_complexity"
         android:layout_width="138dp"
         android:layout_height="50dp"
         android:layout_marginStart="164dp"
