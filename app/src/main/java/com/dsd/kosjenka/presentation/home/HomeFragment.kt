@@ -43,5 +43,4 @@ class HomeFragment : Fragment() {
         // Setting the Adapter with the recyclerview
         recyclerview.adapter = adapter
     }
-
 }
