@@ -33,9 +33,9 @@ class HomeFragment : Fragment() {
         recyclerview.layoutManager = LinearLayoutManager(context)
 
         val data = ArrayList<exercise>()
-        data.add(exercise(1,56,"Horor","Hard","Alibaba i 40 hajduka","Lorem Ipsum"))
-        data.add(exercise(2,70,"Bajka","Hard","Mumijevi","Lorem Ipsum"))
-        data.add(exercise(3,0,"Uspavanka","Hard","Hajdi","Lorem ipsum"))
+        data.add(exercise(1,56,"Horor","Hard","Sleeping Beauty","Lorem Ipsum"))
+        data.add(exercise(2,70,"Bajka","Medium","The Frog Prince","Lorem Ipsum"))
+        data.add(exercise(3,0,"Uspavanka","Easy","Aesops Fables","Lorem ipsum"))
 
 
         val adapter = RecyclerAdapter(data)
