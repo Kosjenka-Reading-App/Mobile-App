@@ -30,6 +30,6 @@ class RecyclerAdapter(private val mList: List<exercise>) : RecyclerView.Adapter<
     }
 
     class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) {
-        val textView: TextView = itemView.findViewById(R.id.textView)
+        val textView: TextView = itemView.findViewById(R.id.title)
     }
 }
