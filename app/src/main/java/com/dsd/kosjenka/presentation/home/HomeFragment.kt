@@ -8,7 +8,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.navigation.Navigation
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.dsd.kosjenka.R
+import com.dsd.kosjenka.data.exercise
+import com.dsd.kosjenka.di.RecyclerAdapter
 
 class HomeFragment : Fragment() {
 
@@ -23,15 +27,21 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val register=view.findViewById<Button>(R.id.register)
-        val login=view.findViewById<Button>(R.id.login)
-        register.setOnClickListener{
-            Navigation.findNavController(view).navigate(R.id.action_mainFragment_to_registerFragment)
-        }
+        val recyclerview = view.findViewById<RecyclerView>(R.id.recyclerview)
 
-        login.setOnClickListener{
-            Navigation.findNavController(view).navigate(R.id.action_mainFragment_to_loginFragment)
-        }
+        val context=requireContext()
+        recyclerview.layoutManager = LinearLayoutManager(context)
+
+        val data = ArrayList<exercise>()
+        data.add(exercise(1,56,"Horor","Hard","Alibaba i 40 hajduka","Lorem Ipsum"))
+        data.add(exercise(2,70,"Bajka","Hard","Mumijevi","Lorem Ipsum"))
+        data.add(exercise(3,0,"Uspavanka","Hard","Hajdi","Lorem ipsum"))
+
+
+        val adapter = RecyclerAdapter(data)
+
+        // Setting the Adapter with the recyclerview
+        recyclerview.adapter = adapter
     }
 
 }
