@@ -32,7 +32,7 @@ class HomeFragment : Fragment() {
         val context=requireContext()
         recyclerview.layoutManager = LinearLayoutManager(context)
 
-        val data = ArrayList<exercise>()
+        val data = ArrayList<exercise>()//This is imtation of the database
         data.add(exercise(1,56,"Horor","Hard","Sleeping Beauty","Lorem Ipsum"))
         data.add(exercise(2,70,"Bajka","Medium","The Frog Prince","Lorem Ipsum"))
         data.add(exercise(3,0,"Uspavanka","Easy","Aesops Fables","Lorem ipsum"))

@@ -22,7 +22,7 @@ class RecyclerAdapter(private val mList: List<exercise>) : RecyclerView.Adapter<
 
         // sets the text to the textview from our itemHolder class
         holder.title.text = ItemsViewModel.title
-        holder.completion.text=ItemsViewModel.completion.toString()
+        holder.completion.text=ItemsViewModel.completion.toString()+"%"
         holder.complexity.text=ItemsViewModel.complexity
     }
 
