@@ -14,4 +14,8 @@
 
     <color name="wrong_password">#40DD5353</color>
     <color name="wrong_password_border">#E30303</color>
+
+    <color name="easy">#84F304</color>
+    <color name="normal">#FBBD03</color>
+    <color name="hard">#E30303</color>
 </resources>

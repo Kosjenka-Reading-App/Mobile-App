@@ -22,11 +22,20 @@ class RecyclerAdapter(private val mList: List<exercise>) : RecyclerView.Adapter<
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         val ItemsViewModel = mList[position]
+        val complexity=ItemsViewModel.complexity
+        if(complexity.equals("Easy")){
+            holder.complexity.setTextColor((ContextCompat.getColor(holder.itemView.context, R.color.easy)))
+        }else if(complexity.equals("Medium")){
+            holder.complexity.setTextColor((ContextCompat.getColor(holder.itemView.context, R.color.normal)))
+        }else{
+            holder.complexity.setTextColor((ContextCompat.getColor(holder.itemView.context, R.color.hard)))
+        }
 
         // sets the text to the textview from our itemHolder class
         holder.title.text = ItemsViewModel.title
         holder.completion.text=ItemsViewModel.completion.toString()+"%"
-        holder.complexity.text=ItemsViewModel.complexity
+        holder.complexity.text=complexity
+
     }
 
     override fun getItemCount(): Int {
