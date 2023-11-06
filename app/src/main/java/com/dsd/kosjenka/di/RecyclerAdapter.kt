@@ -21,8 +21,9 @@ class RecyclerAdapter(private val mList: List<exercise>) : RecyclerView.Adapter<
         val ItemsViewModel = mList[position]
 
         // sets the text to the textview from our itemHolder class
-        holder.textView.text = ItemsViewModel.text
-
+        holder.title.text = ItemsViewModel.title
+        holder.completion.text=ItemsViewModel.completion.toString()
+        holder.complexity.text=ItemsViewModel.complexity
     }
 
     override fun getItemCount(): Int {
@@ -30,6 +31,9 @@ class RecyclerAdapter(private val mList: List<exercise>) : RecyclerView.Adapter<
     }
 
     class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) {
-        val textView: TextView = itemView.findViewById(R.id.title)
+        val title: TextView = itemView.findViewById(R.id.title)
+        val complexity: TextView = itemView.findViewById(R.id.complexity)
+        val completion:TextView = itemView.findViewById(R.id.completion)
+        //val title: TextView = itemView.findViewById(R.id.title)
     }
 }
