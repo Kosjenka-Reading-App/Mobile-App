@@ -5,7 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.RecyclerView
 import com.dsd.kosjenka.R
+import com.dsd.kosjenka.di.AdapterModule
+import com.dsd.kosjenka.model.UserProfile
 
 class UserProfilesFragment : Fragment() {
 
@@ -18,6 +21,14 @@ class UserProfilesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val profilesList = listOf<UserProfile>(
+            UserProfile("user1", 5.0),
+            UserProfile("user1", 5.0),
+            UserProfile("user1", 5.0))
+
+        val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view_user_profiles)
+        recyclerView.adapter = AdapterModule.UserProfilesAdapter(profilesList)
+        recyclerView.setHasFixedSize(true)
     }
 
 }
