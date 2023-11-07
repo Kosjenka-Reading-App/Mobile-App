@@ -11,9 +11,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <include
-            android:id="@+id/include"
-            layout="@layout/log_reg_toolbar"></include>
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/mytoolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#F3EFEF"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:navigationIcon="@drawable/baseline_arrow_back_ios_24"></androidx.appcompat.widget.Toolbar>
 
         <EditText
             android:id="@+id/editTextTextEmailAddress"

@@ -11,9 +11,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <include
-            android:id="@+id/include"
-            layout="@layout/log_reg_toolbar"></include>
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/mytoolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#F3EFEF"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:navigationIcon="@drawable/baseline_arrow_back_ios_24"></androidx.appcompat.widget.Toolbar>
+
 
         <EditText
             android:id="@+id/editTextTextEmailAddress"
@@ -25,10 +32,10 @@
             android:inputType="textEmailAddress"
             app:layout_constraintBottom_toTopOf="@+id/button"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.496"
+            app:layout_constraintHorizontal_bias="0.446"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/include"
-            app:layout_constraintVertical_bias="0.335" />
+            app:layout_constraintTop_toBottomOf="@+id/mytoolbar"
+            app:layout_constraintVertical_bias="0.179" />
 
         <EditText
             android:id="@+id/editTextTextPassword2"
@@ -65,14 +72,14 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginTop="84dp"
 
             android:background="@android:color/black"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/button"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toBottomOf="@+id/mytoolbar"
+            app:layout_constraintVertical_bias="0.894" />
 
         <TextView
             android:id="@+id/textView"

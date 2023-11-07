@@ -8,16 +8,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
-import android.widget.ImageView
 import android.widget.TextView
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.Stroke
+import android.widget.Toolbar
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.navigation.Navigation
 import com.dsd.kosjenka.R
+import com.dsd.kosjenka.databinding.FragmentRegisterBinding
 
 class RegisterFragment : Fragment() {
+    private lateinit var bind:FragmentRegisterBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,8 +32,8 @@ class RegisterFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val back=view.findViewById<ImageView>(R.id.back)
+        bind = FragmentRegisterBinding.bind(view)
+        //val back=view.findViewById<ImageView>(R.id.back)
 
         val submit=view.findViewById<Button>(R.id.button)
 
@@ -94,10 +94,15 @@ class RegisterFragment : Fragment() {
             }
         }
 
-        back.setOnClickListener{
-            Navigation.findNavController(view).navigate(R.id.action_registerFragment_to_mainFragment)
+        //Go Back
+        var toolbar: androidx.appcompat.widget.Toolbar =bind.mytoolbar
+        toolbar.setNavigationOnClickListener { view ->
+            requireActivity().onBackPressed()
         }
+        // showing the back button in action bar
+
     }
+
 
 
 

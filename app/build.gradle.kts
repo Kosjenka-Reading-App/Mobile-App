@@ -13,7 +13,12 @@ android {
     buildFeatures {
         dataBinding = true
         buildConfig = true
+        viewBinding = true
     }
+
+
+
+
 
     defaultConfig {
         applicationId = "com.dsd.kosjenka"
