@@ -27,16 +27,20 @@ class LoginFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val register=view.findViewById<TextView>(R.id.textView2)
-
+        bind = FragmentLoginBinding.bind(view)
         register.setOnClickListener{
             Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_registerFragment)
         }
-
+        val cont_btn=bind.button
         bind=FragmentLoginBinding.bind(view)
 
         var toolbar: androidx.appcompat.widget.Toolbar =bind.mytoolbar
         toolbar.setNavigationOnClickListener { view ->
             requireActivity().onBackPressed()
+        }
+
+        cont_btn.setOnClickListener{
+            Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_homeFragment)
         }
 
     }
