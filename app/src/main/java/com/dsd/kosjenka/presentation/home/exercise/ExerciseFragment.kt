@@ -8,6 +8,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.dsd.kosjenka.R
 import com.dsd.kosjenka.databinding.FragmentExerciseBinding
+import com.dsd.kosjenka.presentation.MainActivity
 
 class ExerciseFragment : Fragment() {
 
@@ -24,6 +25,14 @@ class ExerciseFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val activity = requireActivity() as MainActivity
+        activity.setSupportActionBar(binding.exerciseToolbar)
+        activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        val args = ExerciseFragmentArgs.fromBundle(requireArguments())
+
+        binding.exerciseToolbar.title = args.exerciseTitle
     }
 
 }
