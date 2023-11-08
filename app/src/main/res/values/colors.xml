@@ -12,4 +12,8 @@
 
     <color name="text_25">#40000000</color>
 
+    <color name="easy">#10CA00</color>
+    <color name="medium">#EFD54B</color>
+    <color name="hard">#FF0000</color>
+
 </resources>
