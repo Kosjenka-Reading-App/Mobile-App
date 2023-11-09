@@ -12,19 +12,25 @@ import com.dsd.kosjenka.model.UserProfile
 
 object AdapterModule {
     class UserProfilesAdapter(
-        private val userProfiles: List<UserProfile>
+        private val userProfiles: List<UserProfile>,
+        private val profileClickListener: OnProfileClickListener
     ) : RecyclerView.Adapter<UserProfilesAdapter.UserProfileViewHolder>() {
 
-        class UserProfileViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
+        class UserProfileViewHolder(private val view: View, private val profileClickListener: OnProfileClickListener) : RecyclerView.ViewHolder(view), View.OnClickListener {
             val textView : TextView = view.findViewById(R.id.profile_list_name)
             val imageView : ImageView = view.findViewById(R.id.profile_image_view)
+            val abd = view.setOnClickListener(this)
+
+            override fun onClick(v: View?) {
+                profileClickListener.onProfileClick(bindingAdapterPosition)
+            }
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserProfileViewHolder {
             val adapterLayout =  LayoutInflater.from(parent.context).inflate(
                 R.layout.user_profile_list_item, parent, false)
 
-            return UserProfileViewHolder(adapterLayout)
+            return UserProfileViewHolder(adapterLayout, profileClickListener)
         }
 
         override fun getItemCount(): Int {
@@ -37,6 +43,8 @@ object AdapterModule {
             //holder.imageView.setImageResource(R.drawable.main_logo)
         }
 
-
+        interface OnProfileClickListener{
+            fun onProfileClick(position: Int)
+        }
     }
 }
