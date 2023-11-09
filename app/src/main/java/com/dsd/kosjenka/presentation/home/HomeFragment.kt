@@ -23,6 +23,14 @@ class HomeFragment : Fragment() {
 
     private var scrollToTop = false
 
+    // Define a custom order for sorting by complexity
+    private val complexityAsc = mapOf("Easy" to 0, "Medium" to 1, "Hard" to 2)
+    private val complexityDsc = mapOf("Easy" to 2, "Medium" to 1, "Hard" to 0)
+
+    //Complexity starts with TRUE, because it is the default setting
+    private var isComplexityAsc = true
+    private var isCompletionAsc = false
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
@@ -35,8 +43,36 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupRecycler()
-        addData()
+        createData()
         setupSearch()
+        setupSort()
+        addData()
+    }
+
+    private fun addData() {
+        // Sort the list by complexity using the custom order
+        exercisesList = exercisesList.sortedBy { complexityAsc[it.complexity] }.toMutableList()
+        exerciseAdapter.differ.submitList(exercisesList)
+    }
+
+    private fun setupSort() {
+        binding.homeComplexityBtn.setOnClickListener {
+            isComplexityAsc = !isComplexityAsc
+            exercisesList = if (isComplexityAsc)
+                exercisesList.sortedBy { complexityAsc[it.complexity] }.toMutableList()
+            else
+                exercisesList.sortedBy { complexityDsc[it.complexity] }.toMutableList()
+            exerciseAdapter.differ.submitList(exercisesList.toList())
+        }
+        //Remove comments once completion is added
+//        binding.homeCompletionBtn.setOnClickListener {
+//            isCompletionAsc = !isCompletionAsc
+//            exercisesList = if (isCompletionAsc)
+//                exercisesList.sortedBy { it.completion }.toMutableList()
+//            else
+//                exercisesList.sortedByDescending { it.completion }.toMutableList()
+//            exerciseAdapter.differ.submitList(exercisesList)
+//        }
     }
 
     private fun setupSearch() {
@@ -57,11 +93,6 @@ class HomeFragment : Fragment() {
 //                query = binding.search.text?.trim().toString()
 //            )
         }
-    }
-
-    private fun addData() {
-        createData()
-        exerciseAdapter.differ.submitList(exercisesList)
     }
 
     private fun createData() {
@@ -97,13 +128,6 @@ class HomeFragment : Fragment() {
                 title = "Introduction to Watercolors"
             )
         )
-
-        // Define a custom order for sorting by complexity
-        val customOrder = mapOf("Easy" to 0, "Medium" to 1, "Hard" to 2)
-
-        // Sort the list by complexity using the custom order
-        exercisesList = exercisesList.sortedBy { customOrder[it.complexity] }.toMutableList()
-
     }
 
     private fun setupRecycler() {
