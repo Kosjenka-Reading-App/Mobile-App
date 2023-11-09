@@ -9,7 +9,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.dsd.kosjenka.R
 import com.dsd.kosjenka.di.AdapterModule
-import com.dsd.kosjenka.model.UserProfile
+import com.dsd.kosjenka.domain.models.UserProfile
 
 class UserProfilesFragment : Fragment(), AdapterModule.UserProfilesAdapter.OnProfileClickListener {
 
@@ -27,6 +27,14 @@ class UserProfilesFragment : Fragment(), AdapterModule.UserProfilesAdapter.OnPro
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+<<<<<<< HEAD
+=======
+        val profilesList = listOf<UserProfile>(
+            UserProfile("user1", 5.0),
+            UserProfile("user1", 5.0),
+            UserProfile("user1", 5.0)
+        )
+>>>>>>> 6aaff30560c360f17bdad804642be1c9f62d93a5
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view_user_profiles)
         recyclerView.adapter = AdapterModule.UserProfilesAdapter(profilesList, this)

@@ -1,4 +1,4 @@
-package com.dsd.kosjenka.model
+package com.dsd.kosjenka.domain.models
 
 import androidx.annotation.StringRes
 import androidx.annotation.DrawableRes
