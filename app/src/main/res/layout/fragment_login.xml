@@ -12,6 +12,7 @@
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/mytoolbar"
+            android:layout_marginLeft="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#F3EFEF"
@@ -28,6 +29,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="28dp"
             android:hint="Email"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
             app:endIconMode="clear_text"
             app:helperTextTextColor="#FF0000"
             app:layout_constraintEnd_toEndOf="parent"
@@ -39,8 +42,6 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="40px"
-                android:layout_marginRight="40px"
                 android:inputType="textEmailAddress"
                 app:errorEnabled="true" />
 
@@ -52,6 +53,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
             android:hint="Enter password"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
             app:endIconMode="password_toggle"
             app:helperTextTextColor="#FF0000"
             app:layout_constraintEnd_toEndOf="parent"
@@ -62,8 +65,6 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="40px"
-                android:layout_marginRight="40px"
                 android:inputType="textPassword"
                 app:errorEnabled="true" />
 

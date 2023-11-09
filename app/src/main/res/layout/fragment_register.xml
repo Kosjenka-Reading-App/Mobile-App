@@ -13,6 +13,7 @@
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/mytoolbar"
+            android:layout_marginLeft="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#F3EFEF"
@@ -25,6 +26,8 @@
         <com.google.android.material.textfield.TextInputLayout
 
             android:id="@+id/email"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="28dp"
@@ -50,6 +53,8 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/password1"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Enter password"
@@ -75,6 +80,8 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/confirm_pwd"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="180dp"
