@@ -33,7 +33,7 @@
             app:startIconDrawable="@drawable/ic_search">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/jobs_search"
+                android:id="@+id/search"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:background="@drawable/round_secondary_8"

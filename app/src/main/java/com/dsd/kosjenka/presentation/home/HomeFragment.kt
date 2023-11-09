@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -12,12 +13,15 @@ import com.dsd.kosjenka.R
 import com.dsd.kosjenka.databinding.FragmentHomeBinding
 import com.dsd.kosjenka.domain.models.Category
 import com.dsd.kosjenka.domain.models.Exercise
+import com.dsd.kosjenka.utils.Common
 
 class HomeFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding
     private lateinit var exerciseAdapter: ExerciseAdapter
     private lateinit var exercisesList: MutableList<Exercise>
+
+    private var scrollToTop = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,6 +36,27 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupRecycler()
         addData()
+        setupSearch()
+    }
+
+    private fun setupSearch() {
+        binding.search.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                scrollToTop = true
+//                viewModel.searchJobs(
+//                    query = binding.search.text?.trim().toString()
+//                )
+                Common.hideSoftKeyboard(requireActivity())
+                true
+            } else false
+        }
+        binding.searchLayout.setEndIconOnClickListener {
+            scrollToTop = true
+            binding.search.text?.clear()
+//            viewModel.searchJobs(
+//                query = binding.search.text?.trim().toString()
+//            )
+        }
     }
 
     private fun addData() {
