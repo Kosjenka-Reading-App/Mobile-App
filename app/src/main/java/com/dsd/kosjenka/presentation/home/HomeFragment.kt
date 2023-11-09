@@ -136,7 +136,7 @@ class HomeFragment : Fragment() {
         exerciseAdapter.setOnExerciseClickListener {
             findNavController().navigate(
                 HomeFragmentDirections.actionHomeFragmentToExerciseFragment(
-                    it.title
+                    it
                 )
             )
         }
