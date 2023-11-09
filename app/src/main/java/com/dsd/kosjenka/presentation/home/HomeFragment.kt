@@ -5,8 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dsd.kosjenka.R
@@ -14,12 +19,17 @@ import com.dsd.kosjenka.databinding.FragmentHomeBinding
 import com.dsd.kosjenka.domain.models.Category
 import com.dsd.kosjenka.domain.models.Exercise
 import com.dsd.kosjenka.utils.Common
+import com.dsd.kosjenka.utils.UiStates
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding
     private lateinit var exerciseAdapter: ExerciseAdapter
     private lateinit var exercisesList: MutableList<Exercise>
+
+    private val viewModel by viewModels<HomeViewModel>()
 
     private var scrollToTop = false
 
@@ -47,6 +57,58 @@ class HomeFragment : Fragment() {
         setupSearch()
         setupSort()
         addData()
+//        observeViewModel()
+//        viewModel.getExercises()
+    }
+
+    private fun observeViewModel() {
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    viewModel.eventFlow.collectLatest {
+                        when (it) {
+                            UiStates.LOADING -> toggleProgressBar(true)
+                            UiStates.SUCCESS -> toggleProgressBar(false)
+                            UiStates.NO_INTERNET_CONNECTION -> {
+                                binding.homeContainer.isRefreshing = false
+                                binding.homeLoading.visibility = View.GONE
+                                Toast.makeText(
+                                    binding.root.context,
+                                    getString(R.string.network_error),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+
+                            else -> {
+                                binding.homeContainer.isRefreshing = false
+                                binding.homeLoading.visibility = View.GONE
+                                Toast.makeText(
+                                    binding.root.context,
+                                    getString(R.string.default_error),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+                    }
+                }
+
+                launch {
+                    viewModel.mainDataFlow.collectLatest {
+                        exerciseAdapter.differ.submitList(it)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun toggleProgressBar(isLoading: Boolean) {
+        if (isLoading) {
+            binding.homeLoading.visibility = View.VISIBLE
+            binding.homeContainer.visibility = View.GONE
+        } else {
+            binding.homeLoading.visibility = View.GONE
+            binding.homeContainer.visibility = View.VISIBLE
+        }
     }
 
     private fun addData() {
@@ -141,7 +203,7 @@ class HomeFragment : Fragment() {
             )
         }
         //Init recyclerView
-        binding.jobsRecycler.apply {
+        binding.homeRecycler.apply {
             itemAnimator = null
             setHasFixedSize(true)
             layoutManager =
