@@ -30,6 +30,11 @@ class LoginFragment : Fragment() {
         /*register.setOnClickListener{
             Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_registerFragment)
         }*/
+
+        bind.textView2.setOnClickListener{
+            Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_registerFragment)
+        }
+
         val cont_btn=bind.button
         bind=FragmentLoginBinding.bind(view)
 
