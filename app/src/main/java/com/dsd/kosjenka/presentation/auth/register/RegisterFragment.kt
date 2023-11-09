@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.dsd.kosjenka.R
 import com.dsd.kosjenka.databinding.FragmentRegisterBinding
+import com.google.android.material.textfield.TextInputLayout
 
 class RegisterFragment : Fragment() {
     private lateinit var bind:FragmentRegisterBinding
@@ -34,63 +35,31 @@ class RegisterFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         bind = FragmentRegisterBinding.bind(view)
         //val back=view.findViewById<ImageView>(R.id.back)
+        val email:TextInputLayout=bind.email
+        val pwd=bind.password1
+        val conf_pwd=bind.confirmPwd
 
         val submit=view.findViewById<Button>(R.id.button)
 
-        val email=view.findViewById<EditText>(R.id.editTextTextEmailAddress)
-        val password=view.findViewById<EditText>(R.id.editTextTextPassword2)
-        val confirmed_pwd=view.findViewById<EditText>(R.id.editTextTextPassword3)
-        val error_message=view.findViewById<TextView>(R.id.error_message)
-
-        val edit_text_border = ContextCompat.getDrawable(requireContext(), R.drawable.edit_text_border)
-
-        val border=GradientDrawable()
-
-
-
-        val context=requireContext()
         submit.setOnClickListener{
-
-            val email_val=email_validation(email.text.toString())
-            //If Email is not in correct shape
-            if(email_val){
-
-                email.setBackgroundColor(ContextCompat.getColor(context, R.color.colorOnPrimary))
-                email.background=edit_text_border
-                error_message.visibility=View.GONE
-
+            Log.d("SS", email.editText?.text.toString())
+            if(!email_validation(email.editText?.text.toString())){
+                email.error="Email is not correct"
             }else{
-                border.setColor(ContextCompat.getColor(requireContext(), R.color.wrong_password)) // Postavljamo boju pozadine
-                border.setStroke(5, ContextCompat.getColor(requireContext(), R.color.wrong_password_border)) // Postavljamo nove ivice (5dp širine, nova boja)
-
-                email.background=border
-
-                error_message.visibility=View.VISIBLE
-                error_message.text="Email is not in correct shape"
+                email.error=null
             }
-
-            val ver=validation(password.text.toString(),confirmed_pwd.text.toString())
-
-            if(email_val && !ver.equals("Signed In")){
-                Log.d("MMS","SSSSSSSSSSSSSSSSSSSSSSS")
-                error_message.visibility=View.VISIBLE
-                error_message.text=ver
-
-
-                border.setColor(ContextCompat.getColor(requireContext(), R.color.wrong_password)) // Postavljamo boju pozadine
-                border.setStroke(5, ContextCompat.getColor(requireContext(), R.color.wrong_password_border)) // Postavljamo nove ivice (5dp širine, nova boja)
-
-
-                password.background=border
-                confirmed_pwd.background=border
-
-            }else if(ver.equals("Signed In")){
-                password.setBackgroundColor(ContextCompat.getColor(context, R.color.colorOnPrimary))
-                confirmed_pwd.setBackgroundColor(ContextCompat.getColor(context, R.color.colorOnPrimary))
-                password.background=edit_text_border
-                confirmed_pwd.background=edit_text_border
-
-                error_message.visibility=View.GONE
+            val err_msg=pwd_validation(pwd.editText?.text.toString(), conf_pwd.editText?.text.toString())
+            if(!err_msg.equals("Signed In")) {
+                if (err_msg.equals("The confirmation password does not match the original password")) {
+                    conf_pwd.error = err_msg
+                    pwd.error=null
+                } else {
+                    pwd.error = err_msg
+                    conf_pwd.error=null
+                }
+            }else{
+                pwd.error=null
+                conf_pwd.error=null
             }
         }
 
@@ -99,7 +68,6 @@ class RegisterFragment : Fragment() {
         toolbar.setNavigationOnClickListener { view ->
             requireActivity().onBackPressed()
         }
-        // showing the back button in action bar
 
     }
 
@@ -110,7 +78,7 @@ class RegisterFragment : Fragment() {
 
 
     //Aux functions
-    private fun validation(password: String, confirmed_password: String): String {
+    private fun pwd_validation(password: String, confirmed_password: String): String {
         val check_nums = Regex("\\d").containsMatchIn(password)
         val passwordLength = password.length
 
@@ -119,15 +87,18 @@ class RegisterFragment : Fragment() {
         } else if (!check_nums) {
             return "Password must contain at least one number"
         } else if (!password.equals(confirmed_password)) {
-            return "The confirmation password does not match the original password $check_nums"
+            return "The confirmation password does not match the original password"
         }
 
         return "Signed In"
     }
 
     fun email_validation(email: String): Boolean {
-        val emailRegex = Regex("[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}")
-        return emailRegex.matches(email)
+        if (email == null) {
+            return false;
+        } else {
+            return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+        }
     }
 
 
