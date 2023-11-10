@@ -26,15 +26,16 @@ class UserProfilesFragment : Fragment(){
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View? {
+    ): View {
         binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_user_profiles, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupRecycler()
+        //First get the list, then you add it to the adapter
         getProfiles()
+        setupRecycler()
     }
 
     private fun setupRecycler(){
