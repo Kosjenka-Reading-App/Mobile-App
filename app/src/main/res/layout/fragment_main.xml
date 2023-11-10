@@ -34,7 +34,7 @@
             android:id="@+id/img2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
+            android:layout_marginTop="20dp"
             app:layout_constraintBottom_toTopOf="@id/register"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.496"
@@ -42,6 +42,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.377"
             >
+
             <ImageView
                 android:id="@+id/imageView"
                 android:layout_width="252dp"
@@ -52,23 +53,29 @@
         </LinearLayout>
 
 
-        <Button
+        <com.google.android.material.button.MaterialButton
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
             android:id="@+id/register"
             android:layout_width="239dp"
             android:layout_height="58dp"
             android:layout_marginTop="92dp"
             android:text="Register"
+            android:textColor="@color/background"
+            app:backgroundTint="@color/colorPrimaryVariant"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/img2"
             app:layout_constraintVertical_bias="0.036" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
             android:id="@+id/login"
             android:layout_width="239dp"
             android:layout_height="58dp"
             android:text="Login"
+            android:textColor="@color/background"
+            app:backgroundTint="@color/colorPrimaryVariant"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -86,7 +93,7 @@
             app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/img2"
-            app:layout_constraintVertical_bias="0.194" />
+            app:layout_constraintVertical_bias="0.468" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

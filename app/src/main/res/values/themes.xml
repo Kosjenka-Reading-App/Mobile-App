@@ -11,4 +11,8 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="MyButtonStyle" parent="Widget.AppCompat.Button">
+        <item name="android:background">@color/colorPrimaryVariant</item>
+        <item name="android:textColor">@color/background</item>
+    </style>
 </resources>

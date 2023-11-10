@@ -19,6 +19,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:title="Registration"
             app:navigationIcon="@drawable/baseline_arrow_back_ios_24"></androidx.appcompat.widget.Toolbar>
 
 
@@ -80,11 +81,15 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
-            <Button
+            <com.google.android.material.button.MaterialButton
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
                 android:id="@+id/button"
                 android:layout_width="288dp"
                 android:layout_height="71dp"
-                android:text="Continue" />
+                android:text="Continue"
+                android:textColor="@color/background"
+                app:backgroundTint="@color/colorPrimaryVariant"
+                />
 
         </LinearLayout>
 

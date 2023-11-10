@@ -20,7 +20,9 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:navigationIcon="@drawable/baseline_arrow_back_ios_24"></androidx.appcompat.widget.Toolbar>
+            app:navigationIcon="@drawable/baseline_arrow_back_ios_24"
+            app:title="Registration"
+            ></androidx.appcompat.widget.Toolbar>
 
 
         <com.google.android.material.textfield.TextInputLayout
@@ -117,11 +119,14 @@
             app:layout_constraintTop_toBottomOf="@+id/mytoolbar"
             app:layout_constraintVertical_bias="1.0"
             >
-        <Button
+        <com.google.android.material.button.MaterialButton
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
             android:id="@+id/button"
             android:layout_width="288dp"
             android:layout_height="71dp"
             android:text="Continue"
+            android:textColor="@color/background"
+            app:backgroundTint="@color/colorPrimaryVariant"
              />
 
         </LinearLayout>
