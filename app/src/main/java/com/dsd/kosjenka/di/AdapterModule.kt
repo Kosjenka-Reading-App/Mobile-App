@@ -45,7 +45,7 @@ object AdapterModule {
         }
 
         override fun getItemCount(): Int {
-            return userProfiles.size + 1
+            return userProfiles.size
         }
 
         override fun onBindViewHolder(holder: UserProfileViewHolder, position: Int) {
