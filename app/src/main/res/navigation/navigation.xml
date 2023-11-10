@@ -33,7 +33,11 @@
         android:id="@+id/exerciseFragment"
         android:name="com.dsd.kosjenka.presentation.home.exercise.ExerciseFragment"
         android:label="fragment_exercise"
-        tools:layout="@layout/fragment_exercise" />
+        tools:layout="@layout/fragment_exercise" >
+        <argument
+            android:name="exerciseTitle"
+            app:argType="string" />
+    </fragment>
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.dsd.kosjenka.presentation.home.HomeFragment"
