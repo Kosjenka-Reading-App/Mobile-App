@@ -29,7 +29,6 @@
             android:layout_marginTop="28dp"
             android:hint="Email"
             app:endIconMode="clear_text"
-            app:helperText="Required*"
             app:helperTextTextColor="#FF0000"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -38,6 +37,7 @@
             app:layout_constraintTop_toBottomOf="@+id/mytoolbar">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/email_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
@@ -53,7 +53,6 @@
             android:layout_height="wrap_content"
             android:hint="Enter password"
             app:endIconMode="password_toggle"
-            app:helperText="Required*"
             app:helperTextTextColor="#FF0000"
             app:layout_constraintBottom_toTopOf="@+id/confirm_pwd"
             app:layout_constraintEnd_toEndOf="parent"
@@ -63,6 +62,7 @@
             app:layout_constraintVertical_bias="0.500">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/password_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
@@ -80,7 +80,6 @@
             android:layout_marginBottom="180dp"
             android:hint="Confirm password"
             app:endIconMode="password_toggle"
-            app:helperText="Required*"
             app:helperTextTextColor="#FF0000"
             app:layout_constraintBottom_toTopOf="@+id/button_layout"
             app:layout_constraintEnd_toEndOf="parent"
@@ -88,6 +87,7 @@
             app:layout_constraintStart_toStartOf="parent">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/password_conf_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 

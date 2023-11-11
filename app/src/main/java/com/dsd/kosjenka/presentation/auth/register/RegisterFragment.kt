@@ -2,6 +2,8 @@ package com.dsd.kosjenka.presentation.auth.register
 
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -39,6 +41,9 @@ class RegisterFragment : Fragment() {
         val activity = requireActivity() as MainActivity
         activity.setSupportActionBar(bind.mytoolbar)
         activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+
+
 
 
         val submit=view.findViewById<Button>(R.id.button)
