@@ -32,7 +32,8 @@ class ExerciseFragment : Fragment() {
 
         val args = ExerciseFragmentArgs.fromBundle(requireArguments())
 
-        binding.exerciseToolbar.title = args.exerciseTitle
+        binding.exerciseToolbar.title = args.exercise.title
+        binding.exerciseText.text = args.exercise.text
     }
 
 }

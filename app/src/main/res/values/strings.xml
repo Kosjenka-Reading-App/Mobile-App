@@ -26,4 +26,6 @@
     <string name="sort_by">Sort by:</string>
     <string name="completion">Completion</string>
     <string name="complexity">Complexity</string>
+    <string name="results_cannot_load">Unable to load results</string>
+    <string name="try_again">Try again</string>
 </resources>

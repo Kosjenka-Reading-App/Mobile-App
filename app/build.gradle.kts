@@ -28,10 +28,10 @@ android {
 
     buildTypes {
         debug {
-            buildConfigField("String", "BASE_URL", "\"https://test.com/\"")
+            buildConfigField("String", "BASE_URL", "\"https://dev-kosj-api.fly.dev/\"")
         }
         release {
-            buildConfigField("String", "BASE_URL", "\"https://test.com/\"")
+            buildConfigField("String", "BASE_URL", "\"https://dev-kosj-api.fly.dev/\"")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -74,6 +74,9 @@ dependencies {
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
     kapt("com.google.dagger:hilt-android-compiler:2.48.1")
 
+    //Paging 3
+    implementation("androidx.paging:paging-runtime-ktx:3.2.1")
+
     // ViewModel
     implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
@@ -91,8 +94,8 @@ dependencies {
     implementation("com.github.bumptech.glide:glide:4.14.2")
 
     //Navigation
-    implementation("androidx.navigation:navigation-fragment-ktx:2.7.4")
-    implementation("androidx.navigation:navigation-ui-ktx:2.7.4")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.7.5")
+    implementation("androidx.navigation:navigation-ui-ktx:2.7.5")
 
     //Splash Screen API
     implementation("androidx.core:core-splashscreen:1.0.1")

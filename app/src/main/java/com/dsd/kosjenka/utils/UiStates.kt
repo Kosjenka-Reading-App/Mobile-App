@@ -1,0 +1,16 @@
+package com.dsd.kosjenka.utils
+
+enum class UiStates {
+    SUCCESS,
+    LOADING,
+    REGISTER,
+    UPDATE,
+    RESET_PASSWORD,
+    CONNECT_USER,
+    LOGIN,
+    PASSWORD_NOT_VALID,
+    EMAIL_UNAVAILABLE,
+    USER_NOT_FOUND,
+    NO_INTERNET_CONNECTION,
+    UNKNOWN_ERROR
+}
