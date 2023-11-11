@@ -1,21 +1,15 @@
 package com.dsd.kosjenka.presentation.home
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.dsd.kosjenka.domain.models.Exercise
 import com.dsd.kosjenka.domain.repository.ExerciseRepository
-import com.dsd.kosjenka.utils.UiStates
-import com.dsd.kosjenka.utils.UiStates.EMAIL_UNAVAILABLE
-import com.dsd.kosjenka.utils.UiStates.NO_INTERNET_CONNECTION
-import com.dsd.kosjenka.utils.UiStates.UNKNOWN_ERROR
-import com.vosaa.kosjenka.utils.error.EmailUnavailableException
-import com.vosaa.kosjenka.utils.error.NoInternetException
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -23,35 +17,46 @@ class HomeViewModel @Inject constructor(
     private val repository: ExerciseRepository,
 ) : ViewModel() {
 
-    private val _mainDataFlow = MutableSharedFlow<ArrayList<Exercise>>()
-    val mainDataFlow = _mainDataFlow.asSharedFlow()
+    private val currentQuery = MutableLiveData<String?>(null)
+    private val currentCategory = MutableLiveData<String?>(null)
 
-    private val _eventFlow = MutableSharedFlow<UiStates>()
-    val eventFlow = _eventFlow.asSharedFlow()
+    private var currentOrderBy = "Completion"
+    private var currentOrder = "asc"
 
-    private val handler = CoroutineExceptionHandler { _, exception ->
-        viewModelScope.launch {
-            _eventFlow.emit(
-                when (exception) {
-                    is EmailUnavailableException -> EMAIL_UNAVAILABLE
-                    is NoInternetException -> NO_INTERNET_CONNECTION
-                    else -> {
-                        Timber.e("Exception: ${exception.localizedMessage}")
-                        UNKNOWN_ERROR
-                    }
-                }
-            )
+    fun getExercises(orderBy: String, order: String): LiveData<PagingData<Exercise>> =
+        currentQuery.switchMap { queryString ->
+            currentOrderBy = orderBy
+            currentOrder = order
+            repository.getExercises(
+                orderBy = currentOrderBy,
+                order = currentOrder,
+                category = currentCategory.value,
+                query = queryString,
+            ).cachedIn(viewModelScope)
         }
+
+    fun refresh() {
+        currentQuery.value = currentQuery.value
     }
 
-    fun getExercises() {
-        viewModelScope.launch(handler) {
-            _eventFlow.emit(UiStates.LOADING)
-            repository.getExercises().collect {
-                if (it != null) _mainDataFlow.emit(it)
-                _eventFlow.emit(UiStates.SUCCESS)
-            }
-        }
+    fun searchExercises(query: String?) {
+        if (query == "") currentQuery.value = null
+        else currentQuery.value = query
     }
 
+    fun changeOrder(order: String) {
+        currentOrder = order
+        refresh()
+    }
+
+    fun changeOrderBy(orderBy: String) {
+        currentOrderBy = orderBy
+        refresh()
+    }
+
+//    fun filterByCategory(category: String?) {
+//        currentCategory.value = category
+//        // Trigger the search by updating the currentQuery value
+//        currentQuery.value = currentQuery.value
+//    }
 }

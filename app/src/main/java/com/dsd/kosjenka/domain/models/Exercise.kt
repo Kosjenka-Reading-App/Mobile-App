@@ -5,9 +5,10 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Exercise(
-    val category: List<Category>,
-    val complexity: String,
     val id: Int,
     val title: String,
-    val text: String
+    val complexity: String,
+    val category: List<Category>,
+    val date: String?,
+    val text: String?
 ) : Parcelable

@@ -10,13 +10,12 @@ import javax.inject.Singleton
 @Singleton
 class ExerciseRepository @Inject constructor(
     private val remote: ExerciseRemote,
-    private val netManager: NetManager,
 ) : BaseRepository() {
-
-    fun getExercises() = retrieveResourceAsFlow {
-        if (netManager.isConnectedToInternet()) {
-            remote.getExercises()
-        } else throw NoInternetException()
-    }
-
+    fun getExercises(orderBy: String, order: String, category: String?, query: String?) =
+        remote.getExercises(
+            orderBy = orderBy,
+            order = order,
+            category = category,
+            query = query,
+        )
 }
