@@ -18,8 +18,7 @@ class MainFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        binding =
-            DataBindingUtil.inflate(layoutInflater, R.layout.fragment_main, container, false)
+        binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_main, container, false)
 
         return binding.root
     }
