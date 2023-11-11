@@ -55,6 +55,7 @@
             android:textColor="@color/colorPrimary"
             android:textSize="16sp"
             android:textStyle="bold"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/home_completion_btn"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/home_completion_btn" />
@@ -67,11 +68,11 @@
             android:layout_marginTop="8dp"
             android:backgroundTint="@color/secondary_background"
             android:text="@string/completion"
-            android:textColor="@color/colorPrimaryVariant"
+            android:textColor="@color/colorPrimary"
+            android:visibility="gone"
             app:layout_constraintEnd_toStartOf="@id/home_complexity_btn"
             app:layout_constraintStart_toEndOf="@id/sort_tv"
-            app:layout_constraintTop_toBottomOf="@id/search_layout"
-            app:strokeColor="@color/colorPrimaryVariant" />
+            app:layout_constraintTop_toBottomOf="@id/search_layout" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/home_complexity_btn"
@@ -82,6 +83,7 @@
             android:backgroundTint="@color/secondary_background"
             android:text="@string/complexity"
             android:textColor="@color/colorPrimary"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/home_completion_btn"
             app:layout_constraintTop_toBottomOf="@id/search_layout"

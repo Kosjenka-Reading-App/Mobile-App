@@ -28,11 +28,7 @@ class HomeFragment : Fragment() {
 
     private var scrollToTop = false
     private var showProgressBar = true
-
-    private var order = "asc"
-    private var orderBy = "complexity"
-    private var category = "category"
-    private var query = ""
+//    private var category = "category"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,7 +42,7 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupRecycler()
         setupSearch()
-        setupSort()
+//        setupSort()
         setupRefresh()
         observeViewModel()
     }
@@ -61,23 +57,20 @@ class HomeFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        viewModel.getExercises(
-            orderBy = orderBy,
-            order = order,
-        ).observe(viewLifecycleOwner) { pagingData ->
+        viewModel.getExercises().observe(viewLifecycleOwner) { pagingData ->
             pagingAdapter.submitData(viewLifecycleOwner.lifecycle, pagingData)
         }
     }
 
-    private fun setupSort() {
-        binding.homeComplexityBtn.setOnClickListener {
-
-        }
-        //Remove comments once completion is added
-        binding.homeCompletionBtn.setOnClickListener {
-
-        }
-    }
+//    private fun setupSort() {
+//        binding.homeComplexityBtn.setOnClickListener {
+//            viewModel.sortByComplexity()
+//        }
+//        //Remove comments once completion is added
+//        binding.homeCompletionBtn.setOnClickListener {
+//            viewModel.sortByCompletion()
+//        }
+//    }
 
     private fun setupSearch() {
         binding.search.setOnEditorActionListener { _, actionId, _ ->
