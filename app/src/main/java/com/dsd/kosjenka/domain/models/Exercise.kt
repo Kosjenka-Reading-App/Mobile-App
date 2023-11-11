@@ -9,4 +9,5 @@ data class Exercise(
     val complexity: String,
     val id: Int,
     val title: String,
+    val text: String
 ) : Parcelable
