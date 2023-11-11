@@ -33,8 +33,8 @@
 
         <LinearLayout
             android:id="@+id/img2"
-            android:layout_width="251dp"
-            android:layout_height="223dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="212dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.478"
@@ -43,8 +43,8 @@
 
             <ImageView
                 android:id="@+id/imageView"
-                android:layout_width="272dp"
-                android:layout_height="245dp"
+                android:layout_width="@dimen/_200sdp"
+                android:layout_height="@dimen/_200sdp"
 
                 app:srcCompat="@drawable/start_image" />
 
@@ -63,7 +63,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/img2"
-            app:layout_constraintVertical_bias="0.315" />
+            app:layout_constraintVertical_bias="0.238" />
 
         <com.google.android.material.button.MaterialButton
             style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
