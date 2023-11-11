@@ -12,9 +12,11 @@ import android.widget.TextView
 import android.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.dsd.kosjenka.R
 import com.dsd.kosjenka.databinding.FragmentRegisterBinding
+import com.dsd.kosjenka.presentation.MainActivity
 import com.google.android.material.textfield.TextInputLayout
 
 class RegisterFragment : Fragment() {
@@ -24,42 +26,41 @@ class RegisterFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_register, container, false)
-
-
-        return view
+        bind =
+            DataBindingUtil.inflate(layoutInflater, R.layout.fragment_register, container, false)
+        return bind.root
     }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bind = FragmentRegisterBinding.bind(view)
-        //val back=view.findViewById<ImageView>(R.id.back)
-        val email:TextInputLayout=bind.email
-        val pwd=bind.password1
-        val conf_pwd=bind.confirmPwd
+
+        //Setup fragment toolbar and display UP button
+        val activity = requireActivity() as MainActivity
+        activity.setSupportActionBar(bind.mytoolbar)
+        activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
 
         val submit=view.findViewById<Button>(R.id.button)
 
         submit.setOnClickListener{
-            Log.d("SS", email.editText?.text.toString())
-            if(!email_validation(email.editText?.text.toString())){
-                email.error="Email is not correct"
+            if(!email_validation(bind.email.editText?.text.toString())){
+                bind.email.error="Email is not correct"
             }else{
-                email.error=null
+                bind.email.error=null
             }
-            val err_msg=pwd_validation(pwd.editText?.text.toString(), conf_pwd.editText?.text.toString())
+            val err_msg=pwd_validation(bind.password1.editText?.text.toString(), bind.confirmPwd.editText?.text.toString())
             if(!err_msg.equals("Signed In")) {
                 if (err_msg.equals("The confirmation password does not match the original password")) {
-                    conf_pwd.error = err_msg
-                    pwd.error=null
+                    bind.confirmPwd.error = err_msg
+                    bind.password1.error=null
                 } else {
-                    pwd.error = err_msg
-                    conf_pwd.error=null
+                    bind.password1.error = err_msg
+                    bind.confirmPwd.error=null
                 }
             }else{
-                pwd.error=null
-                conf_pwd.error=null
+                bind.password1.error=null
+                bind.confirmPwd.error=null
             }
         }
 
