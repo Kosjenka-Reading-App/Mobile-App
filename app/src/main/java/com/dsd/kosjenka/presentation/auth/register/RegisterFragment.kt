@@ -56,7 +56,7 @@ class RegisterFragment : Fragment() {
         activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         binding.register.setOnClickListener {
-//            submitAction()
+            submitAction()
         }
 
         initOnTextChange()

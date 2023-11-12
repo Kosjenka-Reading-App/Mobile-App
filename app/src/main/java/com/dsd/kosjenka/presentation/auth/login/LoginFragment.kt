@@ -76,7 +76,7 @@ class LoginFragment : Fragment() {
                     )
 
                     SUCCESS -> {
-                        findNavController().navigate(R.id.action_registerFragment_to_userProfilesFragment)
+                        findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
                     }
 //                    RESET_PASSWORD -> {
 //                        showSnackBar(getString(R.string.password_reseted), binding.root)
