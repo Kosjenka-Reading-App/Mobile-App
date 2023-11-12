@@ -71,12 +71,14 @@ class LoginFragment : Fragment() {
         lifecycleScope.launch {
             viewModel.eventFlow.collectLatest {
                 when (it) {
-                    NO_INTERNET_CONNECTION -> showToast(
-                        binding.root.context, getString(R.string.network_error)
-                    )
+                    NO_INTERNET_CONNECTION -> {
+                        binding.loading.visibility = View.GONE
+                        binding.login.visibility = View.VISIBLE
+                        showToast(binding.root.context, getString(R.string.network_error))
+                    }
 
                     SUCCESS -> {
-                        findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
+                        findNavController().navigate(R.id.action_loginFragment_to_userProfilesFragment)
                     }
 //                    RESET_PASSWORD -> {
 //                        showSnackBar(getString(R.string.password_reseted), binding.root)
@@ -84,6 +86,8 @@ class LoginFragment : Fragment() {
 //                    }
 
                     else -> {
+                        binding.loading.visibility = View.GONE
+                        binding.login.visibility = View.VISIBLE
                         showToast(binding.root.context, getString(R.string.default_error))
                         return@collectLatest
                     }

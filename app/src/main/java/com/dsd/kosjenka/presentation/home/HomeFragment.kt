@@ -28,7 +28,6 @@ class HomeFragment : Fragment() {
 
     private var scrollToTop = false
     private var showProgressBar = true
-//    private var category = "category"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -130,9 +129,7 @@ class HomeFragment : Fragment() {
                 // If it is error and no data in adapter
                 if (loadState.source.refresh is LoadState.Error) {
                     Toast.makeText(
-                        root.context,
-                        getString(R.string.default_error),
-                        Toast.LENGTH_SHORT
+                        root.context, getString(R.string.default_error), Toast.LENGTH_SHORT
                     ).show()
                 }
 

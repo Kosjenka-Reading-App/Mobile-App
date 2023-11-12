@@ -12,7 +12,7 @@ import retrofit2.http.Query
 
 interface ApiService {
 
-    @POST("register")
+    @POST("register/")
     suspend fun register(
         @Body user: User,
     ): Response<RegisterResponseObject>
