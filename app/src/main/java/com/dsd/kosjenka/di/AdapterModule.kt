@@ -2,14 +2,18 @@ package com.dsd.kosjenka.di
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.lifecycle.LiveData
+import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.dsd.kosjenka.R
 import com.dsd.kosjenka.databinding.UserProfileListItemBinding
+import com.dsd.kosjenka.domain.models.Exercise
 import com.dsd.kosjenka.domain.models.UserProfile
 
 object AdapterModule {
     class UserProfilesAdapter(
-        private val userProfiles: MutableList<UserProfile>,
+
         private val mListener: ProfileItemClickListener
     ) : RecyclerView.Adapter<UserProfilesAdapter.UserProfileViewHolder>() {
 
@@ -18,7 +22,7 @@ object AdapterModule {
         ) : RecyclerView.ViewHolder(binding.root) {
             fun bind(currentProfile: UserProfile, listener: ProfileItemClickListener, isSpecialItem: Boolean){
                 if (isSpecialItem) {
-                    binding.profileListName.text = ""
+                    binding.profileListName.text = "Add Profile"
                     binding.profileImageView.setImageResource(R.drawable.outline_add_box_24)
                     binding.root.setOnClickListener {
                         listener.let {
@@ -53,54 +57,44 @@ object AdapterModule {
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserProfileViewHolder {
-//            val adapterLayout : View = if (viewType == R.layout.item_button_add_profile)
-//                    LayoutInflater.from(parent.context).inflate(
-//                        R.layout.user_profile_list_item, parent, false)
-//            else
-//                LayoutInflater.from(parent.context).inflate(
-//                        R.layout.user_profile_list_item, parent, false)
-
             return UserProfileViewHolder.from(parent)
         }
 
         override fun getItemCount(): Int {
-            return userProfiles.size + 1
+            return differ.currentList.size + 1
         }
 
         override fun onBindViewHolder(holder: UserProfileViewHolder, position: Int) {
-//            if (holder.itemViewType == R.layout.item_button_add_profile) {
-//                holder.bind(userProfiles[position], mListener)
-//            } else {
-//                holder.bind(userProfiles[position], mListener)
-//            }
-            val isSpecialItem : Boolean = (position == userProfiles.size)
+            val isSpecialItem : Boolean = (position == differ.currentList.size)
+
             if (isSpecialItem){
                 holder.bind(UserProfile(-1, "", 0.0), mListener, isSpecialItem)
             } else {
-                holder.bind(userProfiles[position], mListener, isSpecialItem)
+                holder.bind(differ.currentList[position], mListener, isSpecialItem)
             }
 
         }
 
-//        override fun getItemViewType(position: Int): Int {
-//            return if(userProfiles.size == position) R.layout.item_button_add_profile else R.layout.user_profile_list_item
-//        }
+        private val differCallback = object : DiffUtil.ItemCallback<UserProfile>() {
+            override fun areItemsTheSame(
+                oldItem: UserProfile,
+                newItem: UserProfile,
+            ): Boolean =
+                oldItem == newItem
+
+            override fun areContentsTheSame(
+                oldItem: UserProfile,
+                newItem: UserProfile,
+            ): Boolean =
+                oldItem.username == newItem.username && oldItem.profileId == newItem.profileId
+        }
+
+        val differ = AsyncListDiffer(this, differCallback)
 
         interface ProfileItemClickListener{
             fun onProfileClick(profile: UserProfile)
             fun onAddProfileClick()
         }
-//
-//        private var onProfileClickListener: ((UserProfile) -> Unit)? = null
-//        private var onNewClickListener: (() -> Unit)? = null
-//
-//        fun setOnProfileClickListener(listener: (UserProfile) -> Unit) {
-//            onProfileClickListener = listener
-//        }
-//
-//        fun setOnNewClickListener(listener: () -> Unit) {
-//            onNewClickListener = listener
-//        }
 
     }
 }
