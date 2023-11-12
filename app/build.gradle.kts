@@ -5,6 +5,7 @@ plugins {
     id("kotlin-parcelize")
     id("com.google.dagger.hilt.android")
     id("androidx.navigation.safeargs.kotlin")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -16,10 +17,6 @@ android {
         buildConfig = true
         viewBinding = true
     }
-
-
-
-
 
     defaultConfig {
         applicationId = "com.dsd.kosjenka"
@@ -112,9 +109,9 @@ dependencies {
     implementation("androidx.compose.material3:material3:1.1.2")
     implementation("androidx.compose.material3:material3-window-size-class:1.1.2")
 
-    //Responsivnes
-    implementation("com.intuit.sdp:sdp-android:1.1.0")
 
+    implementation(platform("com.google.firebase:firebase-bom:32.5.0"))
+    implementation("com.google.firebase:firebase-analytics")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

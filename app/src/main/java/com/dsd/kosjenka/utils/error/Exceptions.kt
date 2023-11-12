@@ -1,4 +1,4 @@
-package com.vosaa.kosjenka.utils.error
+package com.dsd.kosjenka.utils.error
 
 class NoInternetException : Exception()
 

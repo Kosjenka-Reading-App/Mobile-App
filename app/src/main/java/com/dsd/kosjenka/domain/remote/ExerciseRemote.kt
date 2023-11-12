@@ -6,7 +6,7 @@ import androidx.paging.liveData
 import com.dsd.kosjenka.data.remote.ApiService
 import com.dsd.kosjenka.data.remote.BaseRemote
 import com.dsd.kosjenka.presentation.home.ExercisePagingSource
-import com.vosaa.kosjenka.utils.error.ErrorManager
+import com.dsd.kosjenka.utils.error.ErrorManager
 import javax.inject.Inject
 import javax.inject.Singleton
 
