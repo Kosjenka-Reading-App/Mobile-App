@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dsd.kosjenka.domain.repository.AuthRepository
 import com.dsd.kosjenka.domain.response_objects.LoginResponseObject
+import com.dsd.kosjenka.utils.SharedPreferences
 import com.dsd.kosjenka.utils.UiStates
 import com.dsd.kosjenka.utils.UiStates.*
 import com.dsd.kosjenka.utils.error.EmailUnavailableException
@@ -20,6 +21,9 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     private val authRepository: AuthRepository,
 ) : ViewModel() {
+
+    @Inject
+    lateinit var preferences: SharedPreferences
 
     private val _tokenDataFlow = MutableSharedFlow<LoginResponseObject>()
     val tokenDataFlow = _tokenDataFlow.asSharedFlow()
@@ -48,8 +52,11 @@ class LoginViewModel @Inject constructor(
                 email = email,
                 password = password
             ).collect {
-                if (it != null) _tokenDataFlow.emit(it)
-                _eventFlow.emit(SUCCESS)
+                if (it != null) {
+                    _tokenDataFlow.emit(it)
+                    preferences.accessToken = it.access_token
+                    _eventFlow.emit(SUCCESS)
+                }
             }
         }
     }
