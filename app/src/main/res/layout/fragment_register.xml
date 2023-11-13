@@ -1,127 +1,146 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
     <data>
 
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:background="@color/background"
-        android:layout_height="match_parent">
+        tools:context=".presentation.auth.register.RegisterFragment">
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/mytoolbar"
+            android:id="@+id/register_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/background"
+            android:layout_height="?attr/actionBarSize"
             app:layout_constraintTop_toTopOf="parent"
-            app:title="Register" />
-
+            app:title="@string/register" />
 
         <com.google.android.material.textfield.TextInputLayout
-
-            android:id="@+id/email"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:layout_width="match_parent"
+            android:id="@+id/register_email_layout"
+            style="@style/Widget.Material3.TextInputEditText.FilledBox"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="28dp"
-            android:hint="Email"
-            app:endIconMode="clear_text"
-            app:helperTextTextColor="#FF0000"
+            android:layout_marginHorizontal="32dp"
+            android:layout_marginTop="8dp"
+            android:hint="@string/email"
+            android:paddingStart="0dp"
+            android:paddingTop="16dp"
+            android:paddingEnd="0dp"
+            android:paddingBottom="0dp"
+            app:errorEnabled="true"
+            app:errorIconDrawable="@null"
+            app:hintTextColor="@color/colorPrimary"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-
-            app:layout_constraintTop_toBottomOf="@+id/mytoolbar">
+            app:layout_constraintTop_toBottomOf="@id/register_toolbar"
+            app:placeholderText="@string/your_email"
+            app:placeholderTextColor="@color/text_50">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/email_text"
+                android:id="@+id/register_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
-                app:errorEnabled="true" />
+                android:nextFocusDown="@id/register_password"
+                android:selectAllOnFocus="true"
+                tools:text="savo123@gmail.com" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/password1"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:layout_width="match_parent"
+            android:id="@+id/register_password_layout"
+            style="@style/Widget.Material3.TextInputEditText.OutlinedBox"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="Enter password"
-            app:endIconMode="password_toggle"
-            app:helperTextTextColor="#FF0000"
-            app:layout_constraintBottom_toTopOf="@+id/confirm_pwd"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/email"
-            app:layout_constraintVertical_bias="0.500">
+            android:hint="@string/password"
+            android:paddingStart="0dp"
+            android:paddingTop="0dp"
+            android:paddingEnd="0dp"
+            android:paddingBottom="0dp"
+            app:errorEnabled="true"
+            app:errorIconDrawable="@null"
+            app:hintTextColor="@color/colorPrimary"
+            app:layout_constraintEnd_toEndOf="@id/register_email_layout"
+            app:layout_constraintStart_toStartOf="@id/register_email_layout"
+            app:layout_constraintTop_toBottomOf="@id/register_email_layout"
+            app:passwordToggleEnabled="true"
+            app:placeholderText="@string/your_password"
+            app:placeholderTextColor="@color/text_50">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/password_text"
+                android:id="@+id/register_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
+                android:backgroundTint="@color/colorOnPrimary"
                 android:inputType="textPassword"
-                app:errorEnabled="true" />
+                android:nextFocusDown="@id/register_password_repeat"
+                android:selectAllOnFocus="true"
+                tools:text="12341234" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/confirm_pwd"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:layout_width="match_parent"
+            android:id="@+id/register_password_repeat_layout"
+            style="@style/Widget.Material3.TextInputEditText.OutlinedBox"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="180dp"
-            android:hint="Confirm password"
-            app:endIconMode="password_toggle"
-            app:helperTextTextColor="#FF0000"
-            app:layout_constraintBottom_toTopOf="@+id/button_layout"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent">
+            android:hint="@string/repeat_password"
+            android:paddingStart="0dp"
+            android:paddingTop="0dp"
+            android:paddingEnd="0dp"
+            android:paddingBottom="0dp"
+            app:errorEnabled="true"
+            app:errorIconDrawable="@null"
+            app:hintTextColor="@color/colorPrimary"
+            app:layout_constraintEnd_toEndOf="@id/register_email_layout"
+            app:layout_constraintStart_toStartOf="@id/register_email_layout"
+            app:layout_constraintTop_toBottomOf="@id/register_password_layout"
+            app:passwordToggleEnabled="true"
+            app:placeholderText="@string/repeat_password"
+            app:placeholderTextColor="@color/text_50">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/password_conf_text"
+                android:id="@+id/register_password_repeat"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
+                android:backgroundTint="@color/colorOnPrimary"
                 android:inputType="textPassword"
-                app:errorEnabled="true" />
+                android:selectAllOnFocus="true"
+                tools:text="12341234" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
-
-        <LinearLayout
-            android:id="@+id/button_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="84dp"
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/register"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_marginBottom="32dp"
+            android:backgroundTint="@color/colorPrimaryVariant"
+            android:text="@string/continue_btn"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.497"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/mytoolbar"
-            app:layout_constraintVertical_bias="1.0"
-            >
-            <com.google.android.material.button.MaterialButton
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
-                android:id="@+id/button"
-                android:layout_width="288dp"
-                android:layout_height="71dp"
-                android:text="Continue"
-                android:textColor="@color/background"
-                app:backgroundTint="@color/colorPrimaryVariant"
-                />
+            app:layout_constraintEnd_toEndOf="@id/register_email_layout"
+            app:layout_constraintStart_toStartOf="@id/register_email_layout" />
 
-        </LinearLayout>
+        <ProgressBar
+            android:id="@+id/loading"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="32dp"
+            android:indeterminateDrawable="@drawable/progress_bar_blue"
+            android:indeterminateDuration="@android:integer/config_longAnimTime"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/register_email_layout"
+            app:layout_constraintStart_toStartOf="@id/register_email_layout" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </layout>

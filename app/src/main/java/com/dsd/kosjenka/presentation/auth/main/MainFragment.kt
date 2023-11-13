@@ -9,29 +9,32 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import com.dsd.kosjenka.R
 import com.dsd.kosjenka.databinding.FragmentMainBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainFragment : Fragment() {
 
     private lateinit var binding: FragmentMainBinding
 
+    companion object {
+        fun newInstance() = MainFragment()
+    }
+
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?,
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
     ): View {
         binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_main, container, false)
-
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.register.setOnClickListener {
-            Navigation.findNavController(view)
-                .navigate(R.id.action_mainFragment_to_registerFragment)
-        }
-        binding.login.setOnClickListener {
-            Navigation.findNavController(view).navigate(R.id.action_mainFragment_to_loginFragment)
-        }
-    }
 
+        binding.registerBtn.setOnClickListener(
+            Navigation.createNavigateOnClickListener(R.id.action_mainFragment_to_registerFragment)
+        )
+        binding.loginBtn.setOnClickListener(
+            Navigation.createNavigateOnClickListener(R.id.action_mainFragment_to_loginFragment)
+        )
+    }
 }

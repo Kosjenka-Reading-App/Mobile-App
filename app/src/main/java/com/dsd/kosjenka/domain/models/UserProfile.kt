@@ -1,9 +1,12 @@
 package com.dsd.kosjenka.domain.models
 
-import androidx.annotation.StringRes
-import androidx.annotation.DrawableRes
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class UserProfile(
+    val id_user: Int,
+    val id_account: Int,
     val username: String,
-    val proficiency: Double) {
+    val proficiency: Double) : Parcelable {
 }

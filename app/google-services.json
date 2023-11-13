@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "119107094008",
+    "project_id": "kosjenka-readingapp",
+    "storage_bucket": "kosjenka-readingapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:119107094008:android:0f28ffeb3e7044ebbac20d",
+        "android_client_info": {
+          "package_name": "com.dsd.kosjenka"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAKWK3GBdPm9hB6vLUEu-5PCyQX7z11rHo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
