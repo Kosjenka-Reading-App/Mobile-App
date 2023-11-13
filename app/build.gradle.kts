@@ -74,6 +74,7 @@ dependencies {
     //Hilt
     implementation("com.google.dagger:hilt-android:2.48.1")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
+    implementation("androidx.paging:paging-common-android:3.3.0-alpha02")
     kapt("com.google.dagger:hilt-android-compiler:2.48.1")
 
     //Paging 3

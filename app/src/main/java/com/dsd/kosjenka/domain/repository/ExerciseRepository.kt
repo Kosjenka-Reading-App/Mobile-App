@@ -6,7 +6,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class ExerciseRepository @Inject constructor(
+class  ExerciseRepository @Inject constructor(
     private val remote: ExerciseRemote,
 ) : BaseRepository() {
     fun getExercises(orderBy: String, order: String, category: String?, query: String?) =

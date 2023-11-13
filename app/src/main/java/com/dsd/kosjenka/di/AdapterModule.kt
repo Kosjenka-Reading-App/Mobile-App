@@ -2,13 +2,11 @@ package com.dsd.kosjenka.di
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.dsd.kosjenka.R
 import com.dsd.kosjenka.databinding.UserProfileListItemBinding
-import com.dsd.kosjenka.domain.models.Exercise
 import com.dsd.kosjenka.domain.models.UserProfile
 
 object AdapterModule {
@@ -68,7 +66,7 @@ object AdapterModule {
             val isSpecialItem : Boolean = (position == differ.currentList.size)
 
             if (isSpecialItem){
-                holder.bind(UserProfile(-1, "", 0.0), mListener, isSpecialItem)
+                holder.bind(UserProfile(-1, 0,"", 0.0), mListener, isSpecialItem)
             } else {
                 holder.bind(differ.currentList[position], mListener, isSpecialItem)
             }
@@ -86,7 +84,7 @@ object AdapterModule {
                 oldItem: UserProfile,
                 newItem: UserProfile,
             ): Boolean =
-                oldItem.username == newItem.username && oldItem.profileId == newItem.profileId
+                oldItem.username == newItem.username && oldItem.id_user == newItem.id_user
         }
 
         val differ = AsyncListDiffer(this, differCallback)
