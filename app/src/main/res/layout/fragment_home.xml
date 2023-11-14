@@ -89,6 +89,18 @@
             app:layout_constraintTop_toBottomOf="@id/search_layout"
             app:strokeWidth="0dp" />
 
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/filter_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:backgroundTint="@color/background"
+            android:contentDescription="@null"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/ic_filter"
+            app:strokeColor="@color/colorPrimary"
+            app:strokeWidtg="1dp" />
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/home_container"
