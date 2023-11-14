@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#000000</color>
+    <color name="colorPrimary_50">#80000000</color>
     <color name="colorPrimaryVariant">#0099ff</color>
     <color name="colorOnPrimary">#FFFFFFFF</color>
 
@@ -9,7 +10,7 @@
 
     <color name="register_bg">#D9D9D9</color>
     <color name="text_50">#80000000</color>
-
+    <color name="text_35">#59000000</color>
     <color name="text_25">#40000000</color>
 
     <color name="easy">#10CA00</color>

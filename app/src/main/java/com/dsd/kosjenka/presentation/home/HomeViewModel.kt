@@ -1,6 +1,5 @@
 package com.dsd.kosjenka.presentation.home
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -13,6 +12,8 @@ import com.dsd.kosjenka.domain.repository.ExerciseRepository
 import com.dsd.kosjenka.utils.defaultOrder
 import com.dsd.kosjenka.utils.defaultOrderBy
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,15 +27,14 @@ class HomeViewModel @Inject constructor(
     private var currentOrderBy = defaultOrderBy
     private var currentOrder = defaultOrder
 
-    fun getExercises(): LiveData<PagingData<Exercise>> =
-        currentQuery.switchMap { queryString ->
-            repository.getExercises(
-                orderBy = currentOrderBy,
-                order = currentOrder,
-                category = currentCategory.value,
-                query = queryString,
-            ).cachedIn(viewModelScope)
-        }
+    fun getExercises(): LiveData<PagingData<Exercise>> = currentQuery.switchMap { queryString ->
+        repository.getExercises(
+            orderBy = currentOrderBy,
+            order = currentOrder,
+            category = currentCategory.value,
+            query = queryString,
+        ).cachedIn(viewModelScope)
+    }
 
     fun refresh() {
         currentQuery.value = currentQuery.value
@@ -44,6 +44,13 @@ class HomeViewModel @Inject constructor(
         if (query == "") currentQuery.value = null
         else currentQuery.value = query
     }
+
+    fun getCategories() {
+        viewModelScope.launch {
+            launch { repository.getCategories().collect() }
+        }
+    }
+
 
 //    fun sortByComplexity() {
 //        // If already sorting by complexity in ascending order, switch to descending order

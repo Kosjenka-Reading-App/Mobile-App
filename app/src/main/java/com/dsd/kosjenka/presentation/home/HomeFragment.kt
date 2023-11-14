@@ -15,17 +15,21 @@ import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dsd.kosjenka.R
 import com.dsd.kosjenka.databinding.FragmentHomeBinding
+import com.dsd.kosjenka.domain.models.Category
 import com.dsd.kosjenka.presentation.MyLoadStateAdapter
+import com.dsd.kosjenka.presentation.home.filter.FilterBottomSheet
 import com.dsd.kosjenka.utils.Common
+import com.dsd.kosjenka.utils.interfaces.CategoryFilterListener
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), CategoryFilterListener {
 
     private lateinit var binding: FragmentHomeBinding
     private lateinit var pagingAdapter: PagingExerciseAdapter
     private val viewModel by viewModels<HomeViewModel>()
 
+    private var category: Category? = null
     private var scrollToTop = false
     private var showProgressBar = true
 
@@ -43,7 +47,19 @@ class HomeFragment : Fragment() {
         setupSearch()
 //        setupSort()
         setupRefresh()
+        setupFAB()
         observeViewModel()
+        //viewModel.getCategories()
+    }
+
+    private fun setupFAB() {
+        binding.filterFab.setOnClickListener {
+            if (category == null)
+                category = Category(null)
+            val bottomSheet = FilterBottomSheet.newInstance(category = category!!)
+            bottomSheet.filterCategorySelectedListener = this
+            bottomSheet.show(childFragmentManager, FilterBottomSheet.TAG)
+        }
     }
 
     private fun setupRefresh() {
@@ -156,5 +172,13 @@ class HomeFragment : Fragment() {
 //                    jobsErrorContainer.root.visibility = View.GONE
             }
         }
+    }
+
+    override fun onCategoryFilterSelected(category: Category) {
+        Toast.makeText(
+            binding.root.context,
+            "Category ${category.category} selected!",
+            Toast.LENGTH_SHORT
+        ).show()
     }
 }

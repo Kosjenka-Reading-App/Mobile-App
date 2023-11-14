@@ -32,5 +32,9 @@ class ExerciseRemote @Inject constructor(
             }
         ).liveData
 
+    suspend fun getCategories() = parseResult {
+        apiService.getCategories()
+    }
+
 
 }

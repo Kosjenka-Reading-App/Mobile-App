@@ -1,11 +1,12 @@
 package com.dsd.kosjenka.data.remote
 
+import com.dsd.kosjenka.domain.models.Category
 import com.dsd.kosjenka.domain.models.Exercise
-import com.dsd.kosjenka.domain.response_objects.LoginResponseObject
 import com.dsd.kosjenka.domain.models.User
-import com.dsd.kosjenka.domain.response_objects.RegisterResponseObject
 import com.dsd.kosjenka.domain.models.UserProfile
 import com.dsd.kosjenka.domain.request_objects.CreateUserRequestObject
+import com.dsd.kosjenka.domain.response_objects.LoginResponseObject
+import com.dsd.kosjenka.domain.response_objects.RegisterResponseObject
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -35,16 +36,20 @@ interface ApiService {
         @Query("title_like") query: String?,
     ): Response<ArrayList<Exercise>>
 
+    @GET("categories")
+    suspend fun getCategories()
+            : Response<ArrayList<Category>>
+
     @GET("users/")
     suspend fun getUsers(
         @Header("Authorization") token: String,
         @Query("skip") skip: Int,
-        @Query("limit") limit: Int
+        @Query("limit") limit: Int,
     ): Response<ArrayList<UserProfile>>
 
     @POST("users/")
     suspend fun addUser(
         @Header("Authorization") token: String,
-        @Body createUserObj: CreateUserRequestObject
-    ) : Response<UserProfile>
+        @Body createUserObj: CreateUserRequestObject,
+    ): Response<UserProfile>
 }
