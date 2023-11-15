@@ -31,7 +31,7 @@ object AdapterModule {
                 }
                 else {
                     binding.profileListName.text = currentProfile.username
-                    binding.profileImageView.setImageResource(R.drawable.start_image)
+                    binding.profileImageView.setImageResource(R.drawable.user_avatar_1)
                     binding.root.setOnClickListener {
                         listener.let {
                             it.onProfileClick(
