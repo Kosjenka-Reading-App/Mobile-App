@@ -8,7 +8,10 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.dsd.kosjenka.domain.models.Exercise
+import com.dsd.kosjenka.domain.models.UserProfile
 import com.dsd.kosjenka.domain.repository.ExerciseRepository
+import com.dsd.kosjenka.domain.repository.UserProfileRepository
+import com.dsd.kosjenka.utils.SharedPreferences
 import com.dsd.kosjenka.utils.defaultOrder
 import com.dsd.kosjenka.utils.defaultOrderBy
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,7 +22,11 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val repository: ExerciseRepository,
+    private val user_repository: UserProfileRepository,
 ) : ViewModel() {
+
+    @Inject
+    lateinit var sharedPreferences: SharedPreferences
 
     private val currentQuery = MutableLiveData<String?>(null)
     private val currentCategory = MutableLiveData<String?>(null)
@@ -51,6 +58,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun getUsers(): LiveData<ArrayList<UserProfile>?> = user_repository.getUserProfiles(sharedPreferences.accessToken)
 
 //    fun sortByComplexity() {
 //        // If already sorting by complexity in ascending order, switch to descending order

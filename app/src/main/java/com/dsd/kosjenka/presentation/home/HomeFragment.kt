@@ -1,32 +1,42 @@
 package com.dsd.kosjenka.presentation.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.findViewTreeViewModelStoreOwner
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dsd.kosjenka.R
 import com.dsd.kosjenka.databinding.FragmentHomeBinding
 import com.dsd.kosjenka.domain.models.Category
+import com.dsd.kosjenka.domain.models.UserProfile
 import com.dsd.kosjenka.presentation.MyLoadStateAdapter
+import com.dsd.kosjenka.presentation.auth.main.MainFragmentDirections
+import com.dsd.kosjenka.presentation.home.exercise.ExerciseFragmentArgs
 import com.dsd.kosjenka.presentation.home.filter.FilterBottomSheet
+import com.dsd.kosjenka.presentation.user_profiles.UserProfilesFragmentDirections
 import com.dsd.kosjenka.utils.Common
 import com.dsd.kosjenka.utils.interfaces.CategoryFilterListener
 import dagger.hilt.android.AndroidEntryPoint
+import okhttp3.internal.userAgent
 
 @AndroidEntryPoint
 class HomeFragment : Fragment(), CategoryFilterListener {
 
     private lateinit var binding: FragmentHomeBinding
     private lateinit var pagingAdapter: PagingExerciseAdapter
+    private var  profiles: MutableList<UserProfile> = mutableListOf()
     private val viewModel by viewModels<HomeViewModel>()
 
     private var category: Category? = null
@@ -43,12 +53,14 @@ class HomeFragment : Fragment(), CategoryFilterListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.greeting.text="Welcome "+ userAgent//Username
         setupRecycler()
         setupSearch()
 //        setupSort()
         setupRefresh()
         setupFAB()
         observeViewModel()
+        switchUser()
         //viewModel.getCategories()
     }
 
@@ -59,6 +71,38 @@ class HomeFragment : Fragment(), CategoryFilterListener {
             val bottomSheet = FilterBottomSheet.newInstance(category = category!!)
             bottomSheet.filterCategorySelectedListener = this
             bottomSheet.show(childFragmentManager, FilterBottomSheet.TAG)
+        }
+    }
+
+
+
+
+    private fun switchUser()=viewModel.getUsers().observe(viewLifecycleOwner){profileData ->
+        binding.switchUser.setOnClickListener{
+            val popupMenu=PopupMenu(requireContext(), it)
+            popupMenu.menuInflater.inflate(R.menu.users_menu, popupMenu.menu)
+
+            val a=viewModel.getUsers()
+
+            if (profileData != null && profileData.isNotEmpty()) {
+                for ((index, userProfile) in profileData.withIndex()) {
+                    popupMenu.menu.add(Menu.NONE, index, Menu.NONE, userProfile.username)
+                }
+                popupMenu.setOnMenuItemClickListener { menuItem ->
+                    val selectedUserProfile = profileData[menuItem.itemId]
+                    findNavController().navigate(
+                        HomeFragmentDirections.actionHomeFragmentSelf(selectedUserProfile.id_user)
+                    )
+                    true
+                }
+                popupMenu.show()
+            } else {
+                Toast.makeText(requireContext(), "There is no user profiles", Toast.LENGTH_SHORT).show()
+            }
+
+            popupMenu.show()
+
+
         }
     }
 
