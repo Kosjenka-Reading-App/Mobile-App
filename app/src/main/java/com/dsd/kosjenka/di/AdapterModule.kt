@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnLongClickListener
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -22,7 +23,8 @@ object AdapterModule {
             fun bind(currentProfile: UserProfile, listener: ProfileItemClickListener, isSpecialItem: Boolean){
                 if (isSpecialItem) {
                     binding.profileListName.text = "Add Profile"
-                    binding.profileImageView.setImageResource(R.drawable.outline_add_box_24)
+                    binding.profileImageView.setImageResource(R.drawable.add_profile_btn_view)
+                    binding.editProfileButton.visibility = ImageView.GONE
                     binding.root.setOnClickListener {
                         listener.let {
                             it.onAddProfileClick()
@@ -38,9 +40,12 @@ object AdapterModule {
                             currentProfile
                         )
                     }
-                    binding.root.setOnLongClickListener{
-                        listener.onLongProfileClick(currentProfile)
-                        true
+//                    binding.root.setOnLongClickListener{
+//                        listener.onLongProfileClick(currentProfile)
+//                        true
+//                    }
+                    binding.editProfileButton.setOnClickListener{
+                        listener.onEditProfileClick(currentProfile)
                     }
                     binding.executePendingBindings()
                 }
@@ -96,6 +101,7 @@ object AdapterModule {
         interface ProfileItemClickListener{
             fun onProfileClick(profile: UserProfile)
             fun onAddProfileClick()
+            fun onEditProfileClick(profile: UserProfile)
             fun onLongProfileClick(profile: UserProfile)
         }
     }
