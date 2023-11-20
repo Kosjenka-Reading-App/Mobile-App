@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".presentation.user_profiles.UserProfilesFragment"
-        android:background="@color/background" >
+        android:background="@color/background">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/profiles_toolbar"
@@ -24,13 +24,15 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view_user_profiles"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="30dp"
-            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            android:layout_height="match_parent"
+            android:paddingHorizontal="15dp"
+            android:paddingTop="?attr/actionBarSize"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/profiles_toolbar"
-            tools:listitem="@layout/user_profile_list_item"
-            app:spanCount="2"/>
+            app:layout_constraintTop_toBottomOf="@+id/profiles_toolbar"
+            tools:listitem="@layout/user_profile_list_item" />
+<!--            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"-->
+<!--            app:spanCount="2"-->
+<!--            tools:itemCount="2"-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

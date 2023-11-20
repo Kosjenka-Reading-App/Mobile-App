@@ -19,7 +19,7 @@
             android:layout_height="150dp"
             android:contentDescription="User profile image"
             android:scaleType="centerCrop"
-            android:src="@drawable/start_image" />
+            android:src="@drawable/user_avatar_1" />
 
         <TextView
             android:id="@+id/profile_list_name"
