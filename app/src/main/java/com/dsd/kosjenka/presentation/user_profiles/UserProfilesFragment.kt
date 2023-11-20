@@ -123,6 +123,10 @@ class UserProfilesFragment : Fragment(),
     }
 
     override fun onLongProfileClick(profile: UserProfile) {
+        //showProfileDialog(profile)
+    }
+
+    override fun onEditProfileClick(profile: UserProfile) {
         showProfileDialog(profile)
     }
 
@@ -155,6 +159,7 @@ class UserProfilesFragment : Fragment(),
                     if (isValidUsername(dialogBinding.addProfileEditText.text.toString())){
                         //createNewProfile(dialogBinding.addProfileEditText.text.toString())
                         executeEditUserAction(profile, dialogBinding.addProfileEditText.text.toString())
+                        userProfilesAdapter.notifyItemChanged(userProfilesAdapter.differ.currentList.indexOf(profile))
                     }
                 }
                 setNegativeButton("Cancel") {dialog: DialogInterface?, _: Int -> dialog?.cancel()}
