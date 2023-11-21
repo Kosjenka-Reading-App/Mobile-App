@@ -6,8 +6,10 @@ import com.dsd.kosjenka.domain.models.User
 import com.dsd.kosjenka.domain.response_objects.RegisterResponseObject
 import com.dsd.kosjenka.domain.models.UserProfile
 import com.dsd.kosjenka.domain.request_objects.CreateUserRequestObject
+import com.dsd.kosjenka.domain.response_objects.DeleteUserResponseObject
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.PATCH
@@ -57,4 +59,10 @@ interface ApiService {
         @Path("user_id") userId: Int,
         @Body createUserObj: CreateUserRequestObject
     ) : Response<UserProfile>
+
+    @DELETE("/users/{user_id}")
+    suspend fun deleteUser(
+        @Header("Authorization") token: String,
+        @Path("user_id") userId: Int
+    ) : Response<DeleteUserResponseObject>
 }
