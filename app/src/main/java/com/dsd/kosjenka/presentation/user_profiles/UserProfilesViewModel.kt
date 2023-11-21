@@ -55,7 +55,7 @@ class UserProfilesViewModel @Inject constructor(
             ).collect{
 
                 if (it != null){
-                    Log.d("UPVM", it.toString())
+//                    Log.d("UPVM", it.toString())
                     _profileDataFlow.emit(it)
                 }
             }
@@ -88,5 +88,4 @@ class UserProfilesViewModel @Inject constructor(
             }
         }
     }
-
 }
