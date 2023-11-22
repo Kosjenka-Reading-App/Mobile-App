@@ -86,6 +86,7 @@ class UserProfilesFragment : Fragment(),
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 return when (menuItem.itemId) {
                     R.id.menu_action_logout -> {
+                        context?.let { Common.showToast(it, "Log Out") }
                         executeLogoutAction()
                         true
                     }
