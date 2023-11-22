@@ -22,29 +22,12 @@ class AuthRepository @Inject constructor(
         } else throw NoInternetException()
     }
 
-    fun login(email: String, password: String, token: String? = null) = retrieveResourceAsFlow {
+    fun login(email: String, password: String) = retrieveResourceAsFlow {
         if (netManager.isConnectedToInternet()) remote.login(
             email = email,
-            password = password,
-            token = token
+            password = password
         )
         else throw NoInternetException()
     }
 
-    fun reset(token: String, newPassword: String) = retrieveResourceAsFlow {
-        if (netManager.isConnectedToInternet()) {
-            remote.reset(
-                token = token,
-                newPassword = newPassword,
-            )
-        } else throw NoInternetException()
-    }
-
-    fun forgotPassword(email:String) = retrieveResourceAsFlow {
-        if(netManager.isConnectedToInternet()){
-            remote.forgotPassword(
-                email=email
-            )
-        }else throw NoInternetException()
-    }
 }

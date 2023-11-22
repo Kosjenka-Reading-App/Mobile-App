@@ -6,4 +6,3 @@ const val PAGE_SIZE = 30
 
 const val defaultOrder = "asc"
 const val defaultOrderBy = "complexity"
-const val ARG_CATEGORY = "ARG_CATEGORY"
