@@ -33,6 +33,7 @@ class LoginFragment : Fragment() {
 
     private lateinit var binding: FragmentLoginBinding
     private val viewModel by viewModels<LoginViewModel>()
+
     @Inject
     lateinit var preferences: SharedPreferences
 
