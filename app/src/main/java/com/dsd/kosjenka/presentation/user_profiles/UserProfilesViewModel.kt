@@ -1,7 +1,9 @@
 package com.dsd.kosjenka.presentation.user_profiles
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.dsd.kosjenka.domain.models.UserProfile
 import com.dsd.kosjenka.domain.repository.UserProfileRepository
@@ -13,6 +15,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -25,7 +28,7 @@ class UserProfilesViewModel @Inject constructor(
     @Inject
     lateinit var sharedPreferences: SharedPreferences
 
-    private val _profileDataFlow = MutableSharedFlow<UserProfile>()
+    private val _profileDataFlow = MutableSharedFlow<ArrayList<UserProfile>>()
     val profileDataFlow = _profileDataFlow.asSharedFlow()
 
     private val _eventFlow = MutableSharedFlow<UiStates>()
@@ -45,7 +48,19 @@ class UserProfilesViewModel @Inject constructor(
         }
     }
 
-    fun getUsers(): LiveData<ArrayList<UserProfile>?> = repository.getUserProfiles(sharedPreferences.accessToken)
+    fun getUsers() {
+        viewModelScope.launch(handler) {
+            repository.getUserProfiles(
+                sharedPreferences.accessToken
+            ).collect{
+
+                if (it != null){
+//                    Log.d("UPVM", it.toString())
+                    _profileDataFlow.emit(it)
+                }
+            }
+        }
+    }
 
     fun addUser(usernaeme: String){
         viewModelScope.launch(handler) {
@@ -54,11 +69,36 @@ class UserProfilesViewModel @Inject constructor(
                 UserProfile(0,0,usernaeme, 1.0)
             ).collect {
                 if (it != null) {
-                    _profileDataFlow.emit(it)
                     _eventFlow.emit(UiStates.SUCCESS)
                 }
             }
         }
     }
 
+    fun editUser(profile: UserProfile, usernaeme: String){
+        viewModelScope.launch(handler) {
+            profile.username = usernaeme
+            repository.editUserProfile(
+                sharedPreferences.accessToken,
+                profile
+            ).collect {
+                if (it != null) {
+                    _eventFlow.emit(UiStates.SUCCESS)
+                }
+            }
+        }
+    }
+
+    fun deleteUser(profile: UserProfile){
+        viewModelScope.launch(handler) {
+            repository.deleteUserProfile(
+                sharedPreferences.accessToken,
+                profile
+            ).collect {
+                if (it != null) {
+                    _eventFlow.emit(UiStates.SUCCESS)
+                }
+            }
+        }
+    }
 }

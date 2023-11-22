@@ -13,9 +13,10 @@ open class BaseRepository {
         }
 
 
-    protected fun <T> retrieveResourceAsFlow(response: suspend () -> T) = flow {
-        val result = response.invoke()
-        emit(result)
-    }
+    protected fun <T> retrieveResourceAsFlow(response: suspend () -> T) =
+        flow {
+            val result = response.invoke()
+            emit(result)
+        }
 
 }

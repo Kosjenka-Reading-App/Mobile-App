@@ -16,13 +16,21 @@ class UserProfileRepository @Inject constructor(
     private val netManager: NetManager
 ) : BaseRepository() {
 
-    fun getUserProfiles(token: String) = retrieveResourceAsLiveData {
+    fun getUserProfiles(token: String) = retrieveResourceAsFlow {
         if (netManager.isConnectedToInternet()) remote.getUserProfiles(token)
         else throw NoInternetException()
     }
 
     fun addUserProfile(token: String, userProfile: UserProfile) = retrieveResourceAsFlow {
         remote.createUserProfile(token, userProfile)
+    }
+
+    fun editUserProfile(token: String, userProfile: UserProfile) = retrieveResourceAsFlow {
+        remote.editUserProfile(token, userProfile)
+    }
+
+    fun deleteUserProfile(token: String, userProfile: UserProfile) = retrieveResourceAsFlow {
+        remote.deleteUserProfile(token, userProfile)
     }
 
 }
