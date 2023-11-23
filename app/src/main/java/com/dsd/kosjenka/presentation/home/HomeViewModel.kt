@@ -1,6 +1,5 @@
 package com.dsd.kosjenka.presentation.home
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,16 +8,25 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.dsd.kosjenka.domain.models.Exercise
+import com.dsd.kosjenka.domain.models.UserProfile
 import com.dsd.kosjenka.domain.repository.ExerciseRepository
+import com.dsd.kosjenka.domain.repository.UserProfileRepository
+import com.dsd.kosjenka.utils.SharedPreferences
 import com.dsd.kosjenka.utils.defaultOrder
 import com.dsd.kosjenka.utils.defaultOrderBy
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val repository: ExerciseRepository,
+    private val user_repository: UserProfileRepository,
 ) : ViewModel() {
+
+    @Inject
+    lateinit var sharedPreferences: SharedPreferences
 
     private val currentQuery = MutableLiveData<String?>(null)
     private val currentCategory = MutableLiveData<String?>(null)
@@ -26,15 +34,14 @@ class HomeViewModel @Inject constructor(
     private var currentOrderBy = defaultOrderBy
     private var currentOrder = defaultOrder
 
-    fun getExercises(): LiveData<PagingData<Exercise>> =
-        currentQuery.switchMap { queryString ->
-            repository.getExercises(
-                orderBy = currentOrderBy,
-                order = currentOrder,
-                category = currentCategory.value,
-                query = queryString,
-            ).cachedIn(viewModelScope)
-        }
+    fun getExercises(): LiveData<PagingData<Exercise>> = currentQuery.switchMap { queryString ->
+        repository.getExercises(
+            orderBy = currentOrderBy,
+            order = currentOrder,
+            category = currentCategory.value,
+            query = queryString,
+        ).cachedIn(viewModelScope)
+    }
 
     fun refresh() {
         currentQuery.value = currentQuery.value
@@ -44,6 +51,14 @@ class HomeViewModel @Inject constructor(
         if (query == "") currentQuery.value = null
         else currentQuery.value = query
     }
+
+    fun getCategories() {
+        viewModelScope.launch {
+            launch { repository.getCategories().collect() }
+        }
+    }
+
+    fun getUsers(): LiveData<ArrayList<UserProfile>?> = user_repository.getUserProfiles(sharedPreferences.accessToken)
 
 //    fun sortByComplexity() {
 //        // If already sorting by complexity in ascending order, switch to descending order
