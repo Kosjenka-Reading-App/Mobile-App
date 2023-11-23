@@ -77,32 +77,33 @@ class HomeFragment : Fragment(), CategoryFilterListener {
 
 
 
-    private fun switchUser()=viewModel.getUsers().observe(viewLifecycleOwner){profileData ->
+    private fun switchUser() { //=viewModel.getUsers().observe(viewLifecycleOwner){profileData ->
         binding.switchUser.setOnClickListener{
-            val popupMenu=PopupMenu(requireContext(), it)
-            popupMenu.menuInflater.inflate(R.menu.users_menu, popupMenu.menu)
-
-            val a=viewModel.getUsers()
-
-            if (profileData != null && profileData.isNotEmpty()) {
-                for ((index, userProfile) in profileData.withIndex()) {
-                    popupMenu.menu.add(Menu.NONE, index, Menu.NONE, userProfile.username)
-                }
-                popupMenu.setOnMenuItemClickListener { menuItem ->
-                    val selectedUserProfile = profileData[menuItem.itemId]
-                    findNavController().navigate(
-                        HomeFragmentDirections.actionHomeFragmentSelf(selectedUserProfile.id_user)
+            findNavController().navigate(
+                        HomeFragmentDirections.actionHomeFragmentToUserProfilesFragment()
                     )
-                    true
-                }
-                popupMenu.show()
-            } else {
-                Toast.makeText(requireContext(), "There is no user profiles", Toast.LENGTH_SHORT).show()
-            }
-
-            popupMenu.show()
-
-
+//            val popupMenu=PopupMenu(requireContext(), it)
+//            popupMenu.menuInflater.inflate(R.menu.users_menu, popupMenu.menu)
+//
+//            val a=viewModel.getUsers()
+//
+//            if (profileData != null && profileData.isNotEmpty()) {
+//                for ((index, userProfile) in profileData.withIndex()) {
+//                    popupMenu.menu.add(Menu.NONE, index, Menu.NONE, userProfile.username)
+//                }
+//                popupMenu.setOnMenuItemClickListener { menuItem ->
+//                    val selectedUserProfile = profileData[menuItem.itemId]
+//                    findNavController().navigate(
+//                        HomeFragmentDirections.actionHomeFragmentSelf(selectedUserProfile.id_user)
+//                    )
+//                    true
+//                }
+//                popupMenu.show()
+//            } else {
+//                Toast.makeText(requireContext(), "There is no user profiles", Toast.LENGTH_SHORT).show()
+//            }
+//
+//            popupMenu.show()
         }
     }
 

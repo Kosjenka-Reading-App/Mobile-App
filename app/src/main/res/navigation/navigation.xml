@@ -52,6 +52,9 @@
         <action
             android:id="@+id/action_homeFragment_to_userProfilesFragment"
             app:destination="@id/userProfilesFragment" />
+        <action
+            android:id="@+id/action_homeFragment_self"
+            app:destination="@id/homeFragment" />
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
@@ -70,5 +73,14 @@
         <action
             android:id="@+id/action_userProfilesFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/resetPasswordFragment"
+        android:name="com.dsd.kosjenka.presentation.reset.ResetPasswordFragment"
+        android:label="fragment_reset_password"
+        tools:layout="@layout/fragment_reset_password" >
+    <action
+        android:id="@+id/action_resetPasswordFragment_to_loginFragment"
+        app:destination="@id/loginFragment" />
     </fragment>
 </navigation>
