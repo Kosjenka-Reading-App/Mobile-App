@@ -64,7 +64,6 @@ class UserProfilesFragment : Fragment(),
     private fun setupRecycler(){
         userProfilesAdapter = AdapterModule.UserProfilesAdapter(this)
 
-
         binding.recyclerViewUserProfiles.apply {
             setHasFixedSize(true)
             layoutManager = GridLayoutManager(this.context, 2)
@@ -100,17 +99,17 @@ class UserProfilesFragment : Fragment(),
                     }
                 }
             }
-        }
-        lifecycleScope.launch {
-            viewModel.profileDataFlow.collect {profileList ->
-                userProfilesAdapter.differ.submitList(profileList.map {
-                    it.copy()
-                })
+            launch {
+                viewModel.profileDataFlow.collectLatest {
+
+                }
             }
         }
     }
 
-    private fun getUsers() = excecuteGetUsersAction()
+    private fun getUsers() = viewModel.getUsers().observe(viewLifecycleOwner) { profileData ->
+        userProfilesAdapter.differ.submitList(profileData)
+    }
 
     override fun onProfileClick(profile: UserProfile) {
         Toast.makeText(context, profile.username, Toast.LENGTH_SHORT).show()
@@ -119,47 +118,27 @@ class UserProfilesFragment : Fragment(),
     }
 
     override fun onAddProfileClick() {
-        showProfileDialog(null)
+        addProfileDialog()
     }
 
-    override fun onLongProfileClick(profile: UserProfile) {
-        showProfileDialog(profile)
-    }
-
-    private fun showProfileDialog(profile: UserProfile?){
+    private fun addProfileDialog(){
         val builder = AlertDialog.Builder(this.context)
         val dialogBinding : AlertAddProfileBinding = DataBindingUtil.inflate(layoutInflater,
             R.layout.alert_add_profile, null, false)
 
-        if (profile == null){
-            with(builder){
-                setTitle("Add Profile")
-                setView(dialogBinding.root)
-                setPositiveButton("Add") { _: DialogInterface?, _: Int ->
-                    //Toast.makeText(context, "New profile Add", Toast.LENGTH_SHORT).show()
-                    if (isValidUsername(dialogBinding.addProfileEditText.text.toString())){
-                        //createNewProfile(dialogBinding.addProfileEditText.text.toString())
-                        executeAddUserAction(dialogBinding.addProfileEditText.text.toString())
-                    }
+        with(builder){
+            setTitle("Add Profile")
+            setMessage("Please enter the new user-name")
+            setView(dialogBinding.root)
+            setPositiveButton("Add") { _: DialogInterface?, _: Int ->
+                //Toast.makeText(context, "New profile Add", Toast.LENGTH_SHORT).show()
+                if (isValidUsername(dialogBinding.addProfileEditText.text.toString())){
+                    //createNewProfile(dialogBinding.addProfileEditText.text.toString())
+                    executeAddUserAction(dialogBinding.addProfileEditText.text.toString())
                 }
-                setNegativeButton("Cancel") {dialog: DialogInterface?, _: Int -> dialog?.cancel()}
-                show()
             }
-        } else {
-            with(builder){
-                setTitle("Edit Profile")
-                setView(dialogBinding.root)
-                dialogBinding.addProfileEditText.setText(profile.username)
-                setPositiveButton("Save") { _: DialogInterface?, _: Int ->
-                    //Toast.makeText(context, "New profile Add", Toast.LENGTH_SHORT).show()
-                    if (isValidUsername(dialogBinding.addProfileEditText.text.toString())){
-                        //createNewProfile(dialogBinding.addProfileEditText.text.toString())
-                        executeEditUserAction(profile, dialogBinding.addProfileEditText.text.toString())
-                    }
-                }
-                setNegativeButton("Cancel") {dialog: DialogInterface?, _: Int -> dialog?.cancel()}
-                show()
-            }
+            setNegativeButton("Cancel") {dialog: DialogInterface?, _: Int -> dialog?.cancel()}
+            show()
         }
 
     }
@@ -172,31 +151,13 @@ class UserProfilesFragment : Fragment(),
         }
     }
 
-    private fun executeEditUserAction(
-        profile: UserProfile,
-        username: String
-    ) {
-        lifecycleScope.launch {
-            viewModel.editUser(profile, username)
-        }
+    private fun createNewProfile(username: String){
+        val newuser = UserProfile(profilesList.size, 0, username, 0.0)
+        profilesList.add(newuser)
+        //Timber.tag("UserProfiles").d(profilesList.toString())
+        userProfilesAdapter.differ.submitList(profilesList)
+        userProfilesAdapter.notifyDataSetChanged()
     }
-
-    private fun excecuteGetUsersAction(){
-        lifecycleScope.launch {
-            viewModel.getUsers()
-//                .observe(viewLifecycleOwner) { profileData ->
-//                userProfilesAdapter.differ.submitList(profileData)
-//            }
-        }
-    }
-
-//    private fun createNewProfile(username: String){
-//        val newuser = UserProfile(profilesList.size, 0, username, 0.0)
-//        profilesList.add(newuser)
-//        //Timber.tag("UserProfiles").d(profilesList.toString())
-//        userProfilesAdapter.differ.submitList(profilesList)
-//        userProfilesAdapter.notifyDataSetChanged()
-//    }
 
     private fun isValidUsername(username: String) : Boolean{
         return !TextUtils.isEmpty(username)
