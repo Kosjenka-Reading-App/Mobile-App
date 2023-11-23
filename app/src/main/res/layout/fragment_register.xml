@@ -1,13 +1,146 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".presentation.auth.register.RegisterFragment">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <TextView
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Hello" />
+        android:background="@color/background"
+        tools:context=".presentation.auth.register.RegisterFragment">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/register_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:layout_constraintTop_toTopOf="parent"
+            app:title="@string/register" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/register_email_layout"
+            style="@style/Widget.Material3.TextInputEditText.FilledBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="32dp"
+            android:layout_marginTop="8dp"
+            android:hint="@string/email"
+            android:paddingStart="0dp"
+            android:paddingTop="16dp"
+            android:paddingEnd="0dp"
+            android:paddingBottom="0dp"
+            app:errorEnabled="true"
+            app:errorIconDrawable="@null"
+            app:hintTextColor="@color/colorPrimary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/register_toolbar"
+            app:placeholderText="@string/your_email"
+            app:placeholderTextColor="@color/text_50">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/register_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"
+                android:nextFocusDown="@id/register_password"
+                android:selectAllOnFocus="true"
+                tools:text="savo123@gmail.com" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/register_password_layout"
+            style="@style/Widget.Material3.TextInputEditText.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/password"
+            android:paddingStart="0dp"
+            android:paddingTop="0dp"
+            android:paddingEnd="0dp"
+            android:paddingBottom="0dp"
+            app:errorEnabled="true"
+            app:errorIconDrawable="@null"
+            app:hintTextColor="@color/colorPrimary"
+            app:layout_constraintEnd_toEndOf="@id/register_email_layout"
+            app:layout_constraintStart_toStartOf="@id/register_email_layout"
+            app:layout_constraintTop_toBottomOf="@id/register_email_layout"
+            app:passwordToggleEnabled="true"
+            app:placeholderText="@string/your_password"
+            app:placeholderTextColor="@color/text_50">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/register_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/colorOnPrimary"
+                android:inputType="textPassword"
+                android:nextFocusDown="@id/register_password_repeat"
+                android:selectAllOnFocus="true"
+                tools:text="12341234" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/register_password_repeat_layout"
+            style="@style/Widget.Material3.TextInputEditText.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/repeat_password"
+            android:paddingStart="0dp"
+            android:paddingTop="0dp"
+            android:paddingEnd="0dp"
+            android:paddingBottom="0dp"
+            app:errorEnabled="true"
+            app:errorIconDrawable="@null"
+            app:hintTextColor="@color/colorPrimary"
+            app:layout_constraintEnd_toEndOf="@id/register_email_layout"
+            app:layout_constraintStart_toStartOf="@id/register_email_layout"
+            app:layout_constraintTop_toBottomOf="@id/register_password_layout"
+            app:passwordToggleEnabled="true"
+            app:placeholderText="@string/repeat_password"
+            app:placeholderTextColor="@color/text_50">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/register_password_repeat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/colorOnPrimary"
+                android:inputType="textPassword"
+                android:selectAllOnFocus="true"
+                tools:text="12341234" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/register"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_marginBottom="32dp"
+            android:backgroundTint="@color/colorPrimaryVariant"
+            android:text="@string/continue_btn"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/register_email_layout"
+            app:layout_constraintStart_toStartOf="@id/register_email_layout" />
+
+        <ProgressBar
+            android:id="@+id/loading"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="32dp"
+            android:indeterminateDrawable="@drawable/progress_bar_blue"
+            android:indeterminateDuration="@android:integer/config_longAnimTime"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/register_email_layout"
+            app:layout_constraintStart_toStartOf="@id/register_email_layout" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

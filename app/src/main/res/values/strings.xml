@@ -22,4 +22,10 @@
     <string name="email_unavailable">This e-mail already exists in the database</string>
     <string name="default_error">Something went wrong. Try again later.</string>
     <string name="password_reseted">If your e-mail address exists in our system, we will send you a link to change your password.</string>
+    <string name="search">Search exercises</string>
+    <string name="sort_by">Sort by:</string>
+    <string name="completion">Completion</string>
+    <string name="complexity">Complexity</string>
+    <string name="results_cannot_load">Unable to load results</string>
+    <string name="try_again">Try again</string>
 </resources>

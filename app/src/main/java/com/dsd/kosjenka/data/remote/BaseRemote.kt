@@ -1,6 +1,6 @@
 package com.dsd.kosjenka.data.remote
 
-import com.vosaa.kosjenka.utils.error.ErrorManager
+import com.dsd.kosjenka.utils.error.ErrorManager
 import retrofit2.Response
 
 open class BaseRemote(private val errorManager: ErrorManager) {
