@@ -7,6 +7,6 @@ import kotlinx.parcelize.Parcelize
 data class UserProfile(
     val id_user: Int,
     val id_account: Int,
-    var username: String,
-    var proficiency: Double) : Parcelable {
+    val username: String,
+    val proficiency: Double) : Parcelable {
 }

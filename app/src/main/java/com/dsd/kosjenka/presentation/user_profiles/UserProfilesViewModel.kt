@@ -88,17 +88,4 @@ class UserProfilesViewModel @Inject constructor(
             }
         }
     }
-
-    fun deleteUser(profile: UserProfile){
-        viewModelScope.launch(handler) {
-            repository.deleteUserProfile(
-                sharedPreferences.accessToken,
-                profile
-            ).collect {
-                if (it != null) {
-                    _eventFlow.emit(UiStates.SUCCESS)
-                }
-            }
-        }
-    }
 }

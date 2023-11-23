@@ -28,8 +28,4 @@ class UserProfileRemote @Inject constructor(
     suspend fun editUserProfile(token: String, userProfile: UserProfile) = parseResult {
         apiService.editUser("Bearer $token", userProfile.id_user, CreateUserRequestObject(userProfile.username, userProfile.proficiency.toInt()))
     }
-
-    suspend fun deleteUserProfile(token: String, userProfile: UserProfile) = parseResult {
-        apiService.deleteUser("Bearer $token", userProfile.id_user)
-    }
 }

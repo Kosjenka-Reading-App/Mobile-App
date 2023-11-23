@@ -29,8 +29,4 @@ class UserProfileRepository @Inject constructor(
         remote.editUserProfile(token, userProfile)
     }
 
-    fun deleteUserProfile(token: String, userProfile: UserProfile) = retrieveResourceAsFlow {
-        remote.deleteUserProfile(token, userProfile)
-    }
-
 }

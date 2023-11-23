@@ -2,7 +2,6 @@ package com.dsd.kosjenka.presentation.user_profiles
 
 import android.app.AlertDialog
 import android.content.DialogInterface
-import android.content.res.Resources.Theme
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
@@ -99,6 +98,8 @@ class UserProfilesFragment : Fragment(),
         setupRecycler()
         observeViewModel()
         getUsers()
+
+
     }
 
     private fun setupRecycler(){
@@ -191,7 +192,7 @@ class UserProfilesFragment : Fragment(),
                 show()
             }
         } else {
-            val d = with(builder){
+            with(builder){
                 setTitle("Edit Profile")
                 setView(dialogBinding.root)
                 dialogBinding.addProfileEditText.setText(profile.username)
@@ -204,15 +205,8 @@ class UserProfilesFragment : Fragment(),
                     }
                 }
                 setNegativeButton("Cancel") {dialog: DialogInterface?, _: Int -> dialog?.cancel()}
-                setNeutralButton("Delete Profile") {_: DialogInterface?, _: Int ->
-                    executeDeleteUserAction(profile)
-                }
-                create()
+                show()
             }
-            d.setOnShowListener() {_: DialogInterface? ->
-                d.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(resources.getColor(R.color.hard, resources.newTheme()))
-            }
-            d.show()
         }
 
     }
@@ -238,12 +232,6 @@ class UserProfilesFragment : Fragment(),
         findNavController().navigate(
             UserProfilesFragmentDirections.actionUserProfilesFragmentToMainFragment()
         )
-    }
-
-    fun executeDeleteUserAction(profile: UserProfile){
-        lifecycleScope.launch {
-            viewModel.deleteUser(profile)
-        }
     }
 
     private fun createNewProfile(username: String){
