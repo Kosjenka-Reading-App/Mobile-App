@@ -18,7 +18,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.GridLayoutManager
 import com.dsd.kosjenka.R
 import com.dsd.kosjenka.databinding.AlertAddProfileBinding
 import com.dsd.kosjenka.databinding.FragmentUserProfilesBinding
@@ -64,11 +63,8 @@ class UserProfilesFragment : Fragment(),
     private fun setupRecycler(){
         userProfilesAdapter = AdapterModule.UserProfilesAdapter(this)
 
-        binding.recyclerViewUserProfiles.apply {
-            setHasFixedSize(true)
-            layoutManager = GridLayoutManager(this.context, 2)
-            adapter = userProfilesAdapter
-        }
+        binding.recyclerViewUserProfiles.adapter = userProfilesAdapter
+        binding.recyclerViewUserProfiles.setHasFixedSize(true)
     }
 
 //    private fun getProfiles(){
