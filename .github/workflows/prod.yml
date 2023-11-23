@@ -3,7 +3,7 @@ name: Build & upload to Firebase App Distribution
 on:
   push:
     branches:
-      - dev
+      - master
 
 jobs:
   build:
@@ -18,9 +18,6 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
 
-      - name: Replace dev name
-        run: cd .github/workflows && ./replace_dev_version.sh
-
       - name: build release
         run: ./gradlew assembleRelease
 
@@ -29,5 +26,5 @@ jobs:
         with:
           appId: ${{secrets.FIREBASE_APP_ID}}
           serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
-          groups: testers
+          groups: production
           file: app/build/outputs/apk/release/app-release-unsigned.apk
