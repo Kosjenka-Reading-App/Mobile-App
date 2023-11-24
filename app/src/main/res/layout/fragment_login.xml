@@ -75,18 +75,6 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <TextView
-            android:id="@+id/forgot_password"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="@string/forgot_password"
-            android:textColor="@color/colorPrimaryVariant"
-            android:textSize="13sp"
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="@id/login_password_layout"
-            app:layout_constraintTop_toBottomOf="@id/login_password_layout" />
-
         <com.google.android.material.button.MaterialButton
             android:id="@+id/login"
             style="@style/Widget.MaterialComponents.Button.TextButton"
@@ -153,6 +141,18 @@
                 app:layout_constraintStart_toEndOf="@id/tv_3" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:id="@+id/forgotPassword"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="@string/forgot_password"
+            android:textColor="@color/colorPrimaryVariant"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.09"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/login_password_layout" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

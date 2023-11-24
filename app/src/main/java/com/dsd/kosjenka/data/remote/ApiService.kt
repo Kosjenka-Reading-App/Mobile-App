@@ -6,6 +6,7 @@ import com.dsd.kosjenka.domain.models.User
 import com.dsd.kosjenka.domain.response_objects.RegisterResponseObject
 import com.dsd.kosjenka.domain.models.UserProfile
 import com.dsd.kosjenka.domain.request_objects.CreateUserRequestObject
+import com.dsd.kosjenka.domain.request_objects.ForgotPasswordRequest
 import com.dsd.kosjenka.domain.response_objects.DeleteUserResponseObject
 import retrofit2.Response
 import retrofit2.http.Body
@@ -65,4 +66,9 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Path("user_id") userId: Int
     ) : Response<DeleteUserResponseObject>
+
+    @POST("/password/forgot")
+    suspend fun forgotPassword(
+        @Body request:ForgotPasswordRequest
+    ):Response<ForgotPasswordRequest>
 }

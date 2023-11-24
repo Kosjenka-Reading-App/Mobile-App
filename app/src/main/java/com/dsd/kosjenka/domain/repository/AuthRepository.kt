@@ -30,4 +30,10 @@ class AuthRepository @Inject constructor(
         else throw NoInternetException()
     }
 
+    fun forgotPassword(email:String)=retrieveResourceAsFlow {
+        if(netManager.isConnectedToInternet()) remote.forgotPassword(
+            email=email
+        )else throw NoInternetException()
+    }
+
 }

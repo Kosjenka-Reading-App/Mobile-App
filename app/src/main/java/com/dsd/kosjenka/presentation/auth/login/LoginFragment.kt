@@ -58,6 +58,10 @@ class LoginFragment : Fragment() {
             Navigation.createNavigateOnClickListener(R.id.action_loginFragment_to_registerFragment)
         )
 
+        binding.forgotPassword.setOnClickListener(
+            Navigation.createNavigateOnClickListener(R.id.action_loginFragment_to_forgotPasswordFragment)
+        )
+
         binding.login.setOnClickListener {
             submitAction()
         }
