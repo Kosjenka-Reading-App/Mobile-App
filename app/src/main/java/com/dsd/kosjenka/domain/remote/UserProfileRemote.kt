@@ -16,12 +16,12 @@ class UserProfileRemote @Inject constructor(
 
     private var currentOffset = 0
     suspend fun getUserProfiles(token: String) = parseResult {
-//        Log.d("TOKEN", token)
+        //Log.d("TOKEN", token)
         apiService.getUsers("Bearer $token", currentOffset, 20)
     }
 
     suspend fun createUserProfile(token: String, userProfile: UserProfile) = parseResult {
-//        Log.d("TOKEN", token)
+        //Log.d("TOKEN", token)
         apiService.addUser("Bearer $token", CreateUserRequestObject(userProfile.username, userProfile.proficiency.toInt()))
     }
 

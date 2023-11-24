@@ -2,26 +2,26 @@ package com.dsd.kosjenka.data.remote
 
 import com.dsd.kosjenka.domain.models.Category
 import com.dsd.kosjenka.domain.models.Exercise
+import com.dsd.kosjenka.domain.response_objects.LoginResponseObject
 import com.dsd.kosjenka.domain.models.User
+import com.dsd.kosjenka.domain.response_objects.RegisterResponseObject
 import com.dsd.kosjenka.domain.models.UserProfile
 import com.dsd.kosjenka.domain.request_objects.CreateUserRequestObject
 import com.dsd.kosjenka.domain.request_objects.ForgotPasswordRequest
 import com.dsd.kosjenka.domain.request_objects.ResetPasswordRequest
 import com.dsd.kosjenka.domain.response_objects.ForgotPasswordResponse
-import com.dsd.kosjenka.domain.response_objects.LoginResponseObject
-import com.dsd.kosjenka.domain.response_objects.RegisterResponseObject
 import com.dsd.kosjenka.domain.response_objects.ResetResponseObject
 import com.dsd.kosjenka.domain.response_objects.DeleteUserResponseObject
 import retrofit2.Response
 import retrofit2.http.Body
-import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
-import retrofit2.http.PATCH
 import retrofit2.http.POST
+import retrofit2.http.Query
 import retrofit2.http.PUT
 import retrofit2.http.Path
-import retrofit2.http.Query
+import retrofit2.http.PATCH
+import retrofit2.http.DELETE
 
 interface ApiService {
 
@@ -38,9 +38,8 @@ interface ApiService {
 
     @POST("/password/forgot")
     suspend fun passwordForgot(
-        @Body request:ForgotPasswordRequest
+        @Body request: ForgotPasswordRequest
     ):Response<ForgotPasswordResponse>
-
 
     @POST("login")
     suspend fun login(
@@ -56,6 +55,7 @@ interface ApiService {
         @Query("category") category: String?,
         @Query("title_like") query: String?,
     ): Response<ArrayList<Exercise>>
+
 
     @GET("categories")
     suspend fun getCategories()
