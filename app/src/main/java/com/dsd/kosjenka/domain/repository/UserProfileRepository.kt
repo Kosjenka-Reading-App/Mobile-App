@@ -25,7 +25,7 @@ class UserProfileRepository @Inject constructor(
         remote.createUserProfile(token, userProfile)
     }
 
-    fun editUserProfile(token: String, userProfile: UserProfile) = retrieveResourceAsFlow {
+     fun editUserProfile(token: String, userProfile: UserProfile) = retrieveResourceAsFlow {
         remote.editUserProfile(token, userProfile)
     }
 
