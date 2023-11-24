@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -8,14 +9,29 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="20dp">
+        android:layout_height="match_parent" >
 
-        <EditText
-            android:id="@+id/add_profile_edit_text"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/dialog_profile_name_layout"
+            style="@style/Widget.Material3.TextInputEditText.FilledBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="New username" />
+            android:layout_marginHorizontal="32dp"
+            android:layout_marginTop="8dp"
+            android:hint="Profile Name"
+            android:paddingStart="0dp"
+            android:paddingEnd="0dp"
+            app:placeholderText="Name"
+            app:placeholderTextColor="@color/text_50">
+
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/add_profile_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text" />
+
+        </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>
 </layout>

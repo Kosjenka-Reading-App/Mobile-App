@@ -8,29 +8,26 @@
 
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".presentation.user_profiles.UserProfilesFragment"
-        android:background="@color/background" >
+        android:background="@color/background"
+        android:orientation="vertical">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/profiles_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:layout_constraintTop_toTopOf="parent"
+            app:menu="@menu/profiles_fragment_menu"
             app:title="Manage Profiles" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view_user_profiles"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="30dp"
-            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/profiles_toolbar"
-            tools:listitem="@layout/user_profile_list_item"
-            app:spanCount="2"/>
+            android:layout_height="match_parent"
+            android:paddingHorizontal="15dp"
+            tools:listitem="@layout/user_profile_list_item" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 </layout>

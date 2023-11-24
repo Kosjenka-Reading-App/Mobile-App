@@ -1,7 +1,10 @@
 package com.dsd.kosjenka.di
 
 import android.view.LayoutInflater
+import android.view.View
+import android.view.View.OnLongClickListener
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -11,9 +14,8 @@ import com.dsd.kosjenka.domain.models.UserProfile
 
 object AdapterModule {
     class UserProfilesAdapter(
-
         private val mListener: ProfileItemClickListener
-    ) : RecyclerView.Adapter<UserProfilesAdapter.UserProfileViewHolder>() {
+    ) : RecyclerView.Adapter<UserProfilesAdapter.UserProfileViewHolder>(){
 
         class UserProfileViewHolder(
             val binding: UserProfileListItemBinding
@@ -21,7 +23,8 @@ object AdapterModule {
             fun bind(currentProfile: UserProfile, listener: ProfileItemClickListener, isSpecialItem: Boolean){
                 if (isSpecialItem) {
                     binding.profileListName.text = "Add Profile"
-                    binding.profileImageView.setImageResource(R.drawable.outline_add_box_24)
+                    binding.profileImageView.setImageResource(R.drawable.add_profile_btn_view)
+                    binding.editProfileButton.visibility = ImageView.GONE
                     binding.root.setOnClickListener {
                         listener.let {
                             it.onAddProfileClick()
@@ -31,13 +34,18 @@ object AdapterModule {
                 }
                 else {
                     binding.profileListName.text = currentProfile.username
-                    binding.profileImageView.setImageResource(R.drawable.start_image)
+                    binding.profileImageView.setImageResource(R.drawable.user_avatar_1)
                     binding.root.setOnClickListener {
-                        listener.let {
-                            it.onProfileClick(
-                                currentProfile
-                            )
-                        }
+                        listener.onProfileClick(
+                            currentProfile
+                        )
+                    }
+//                    binding.root.setOnLongClickListener{
+//                        listener.onLongProfileClick(currentProfile)
+//                        true
+//                    }
+                    binding.editProfileButton.setOnClickListener{
+                        listener.onEditProfileClick(currentProfile)
                     }
                     binding.executePendingBindings()
                 }
@@ -78,13 +86,14 @@ object AdapterModule {
                 oldItem: UserProfile,
                 newItem: UserProfile,
             ): Boolean =
-                oldItem == newItem
+                oldItem.id_user == newItem.id_user && oldItem.username == newItem.username
 
             override fun areContentsTheSame(
                 oldItem: UserProfile,
                 newItem: UserProfile,
             ): Boolean =
-                oldItem.username == newItem.username && oldItem.id_user == newItem.id_user
+                oldItem.id_account == newItem.id_account
+                        && oldItem.proficiency == newItem.proficiency
         }
 
         val differ = AsyncListDiffer(this, differCallback)
@@ -92,7 +101,8 @@ object AdapterModule {
         interface ProfileItemClickListener{
             fun onProfileClick(profile: UserProfile)
             fun onAddProfileClick()
+            fun onEditProfileClick(profile: UserProfile)
+            fun onLongProfileClick(profile: UserProfile)
         }
-
     }
 }
