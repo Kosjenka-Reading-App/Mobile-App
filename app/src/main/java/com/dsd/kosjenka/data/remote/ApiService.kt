@@ -12,6 +12,9 @@ import com.dsd.kosjenka.domain.request_objects.ResetPasswordRequest
 import com.dsd.kosjenka.domain.response_objects.ForgotPasswordResponse
 import com.dsd.kosjenka.domain.response_objects.ResetResponseObject
 import com.dsd.kosjenka.domain.response_objects.DeleteUserResponseObject
+import com.dsd.kosjenka.domain.response_objects.GetCategoriesResponseObject
+import com.dsd.kosjenka.domain.response_objects.GetExercisesResponseObject
+import com.dsd.kosjenka.domain.response_objects.GetUsersResponseObject
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -54,19 +57,19 @@ interface ApiService {
         @Query("order") order: String,
         @Query("category") category: String?,
         @Query("title_like") query: String?,
-    ): Response<ArrayList<Exercise>>
+    ): Response<GetExercisesResponseObject>
 
 
     @GET("categories")
     suspend fun getCategories()
-            : Response<ArrayList<Category>>
+            : Response<GetCategoriesResponseObject>
 
     @GET("/users")
     suspend fun getUsers(
         @Header("Authorization") token: String,
         @Query("skip") skip: Int,
         @Query("limit") limit: Int,
-    ): Response<ArrayList<UserProfile>>
+    ): Response<GetUsersResponseObject>
 
     @POST("/users")
     suspend fun addUser(

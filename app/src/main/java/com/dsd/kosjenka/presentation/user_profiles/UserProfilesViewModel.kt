@@ -56,7 +56,7 @@ class UserProfilesViewModel @Inject constructor(
 
                 if (it != null){
 //                    Log.d("UPVM", it.toString())
-                    _profileDataFlow.emit(it)
+                    _profileDataFlow.emit(it.items)
                 }
             }
         }
