@@ -49,7 +49,7 @@ class HomeFragment : Fragment(), CategoryFilterListener {
         setupRefresh()
         setupFAB()
         observeViewModel()
-        //viewModel.getCategories()
+        //sviewModel.getCategories()
     }
 
     private fun setupFAB() {
@@ -112,7 +112,7 @@ class HomeFragment : Fragment(), CategoryFilterListener {
         pagingAdapter = PagingExerciseAdapter()
         pagingAdapter.setOnExerciseClickListener {
             findNavController().navigate(
-                HomeFragmentDirections.actionHomeFragmentToExerciseFragment(exercise = it)
+                HomeFragmentDirections.actionHomeFragmentToExerciseFragment(exerciseId = it)
             )
         }
         //Init recyclerView

@@ -32,7 +32,7 @@ class ExercisePagingSource(
                 category = category,
                 query = query,
             )
-            val exercises = response.body() ?: emptyList()
+            val exercises = response.body()?.items ?: emptyList()
 
             currentOffset += exercises.size
 

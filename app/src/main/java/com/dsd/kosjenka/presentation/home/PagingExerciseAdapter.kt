@@ -20,7 +20,7 @@ class PagingExerciseAdapter :
         @SuppressLint("UseCompatTextViewDrawableApis")
         fun bind(
             exercise: Exercise,
-            onExerciseClickListener: ((Exercise) -> Unit)?,
+            onExerciseClickListener: ((Int) -> Unit)?,
         ) {
             binding.apply {
 
@@ -60,11 +60,11 @@ class PagingExerciseAdapter :
                 }
                 exerciseComplexity.text = exercise.complexity
 
-                //Completion is not required for the MVP
-//                exerciseCompletion.text = "90%"
+                val completionString = "${exercise.completion.completion} %"
+                exerciseCompletion.text = completionString
 
                 root.setOnClickListener {
-                    onExerciseClickListener?.let { it(exercise) }
+                    onExerciseClickListener?.let { it(exercise.id) }
                 }
             }
         }
@@ -98,9 +98,9 @@ class PagingExerciseAdapter :
         holder.bind(getItem(position)!!, onExerciseClickListener)
     }
 
-    private var onExerciseClickListener: ((Exercise) -> Unit)? = null
+    private var onExerciseClickListener: ((Int) -> Unit)? = null
 
-    fun setOnExerciseClickListener(listener: (Exercise) -> Unit) {
+    fun setOnExerciseClickListener(listener: (Int) -> Unit) {
         onExerciseClickListener = listener
     }
 

@@ -68,7 +68,6 @@
                 android:textColor="@color/colorPrimaryVariant"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="@id/exercise_complexity"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/exercise_complexity"

@@ -5,6 +5,7 @@ import com.dsd.kosjenka.domain.models.Exercise
 import com.dsd.kosjenka.domain.models.User
 import com.dsd.kosjenka.domain.models.UserProfile
 import com.dsd.kosjenka.domain.request_objects.CreateUserRequestObject
+import com.dsd.kosjenka.domain.response_objects.ExerciseResponseObject
 import com.dsd.kosjenka.domain.response_objects.LoginResponseObject
 import com.dsd.kosjenka.domain.response_objects.RegisterResponseObject
 import retrofit2.Response
@@ -34,7 +35,7 @@ interface ApiService {
         @Query("order") order: String,
         @Query("category") category: String?,
         @Query("title_like") query: String?,
-    ): Response<ArrayList<Exercise>>
+    ): Response<ExerciseResponseObject>
 
     @GET("categories")
     suspend fun getCategories()
