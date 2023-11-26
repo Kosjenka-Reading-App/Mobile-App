@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import com.dsd.kosjenka.R
 import com.dsd.kosjenka.databinding.BottomSheetFilterBinding
@@ -41,7 +40,7 @@ class FilterBottomSheet : BottomSheetDialogFragment() {
     lateinit var sharedPreferences: SharedPreferences
 
     private lateinit var binding: BottomSheetFilterBinding
-    private lateinit var category: Category
+    private lateinit var thisCategory: Category
 
     var filterCategorySelectedListener: CategoryFilterListener? = null
 
@@ -59,7 +58,7 @@ class FilterBottomSheet : BottomSheetDialogFragment() {
             )
 
         @Suppress("DEPRECATION")
-        category =
+        thisCategory =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
                 requireArguments().getParcelable(ARG_CATEGORY, Category::class.java)!!
             else
@@ -86,18 +85,18 @@ class FilterBottomSheet : BottomSheetDialogFragment() {
         //initChips
         sharedPreferences.categories.forEach {
             binding.filterChipGroup.addView(
-                initCategoryChip(it)
+                createChip(it)
             )
         }
 
         binding.filterClear.setOnClickListener {
-            category.category = null
-            filterCategorySelectedListener?.onCategoryFilterSelected(category)
+            thisCategory.category = null
+            filterCategorySelectedListener?.onCategoryFilterSelected(thisCategory)
             this.dismiss()
         }
 
         binding.filterSubmit.setOnClickListener {
-            filterCategorySelectedListener?.onCategoryFilterSelected(category)
+            filterCategorySelectedListener?.onCategoryFilterSelected(thisCategory)
             this.dismiss()
         }
 
@@ -107,33 +106,20 @@ class FilterBottomSheet : BottomSheetDialogFragment() {
 
     }
 
-    private fun initCategoryChip(category: Category): View {
-        val binding = ItemChipFilterBinding.inflate(LayoutInflater.from(binding.root.context))
-
-        binding.tagChip.text = category.category
-
-//        binding.tagChip.setOnCheckedChangeListener { _, isChipChecked ->
-//            if (isChipChecked) {
-//                binding.tagChip.setCheckedColors(binding.root.context)
-//                selectedCategories.add(category)
-//            } else {
-//                binding.tagChip.setUnCheckedColors(binding.root.context)
-//                selectedCategories.remove(category)
-//            }
-//        }
-//        if (filterObject.categories?.contains(category) != null)
-//            binding.tagChip.isChecked = filterObject.categories?.contains(category)!!
-        return binding.root
-    }
-
-    private fun createBaseChip(text: String): Chip {
+    private fun createChip(category: Category): Chip {
         val chip = Chip(binding.root.context)
-        chip.setChipStrokeColorResource(R.color.colorPrimary_50)
-        chip.setTextColor(ContextCompat.getColor(binding.root.context, R.color.colorPrimary_50))
-        chip.setChipBackgroundColorResource(R.color.background)
-        chip.setEnsureMinTouchTargetSize(false)
-        chip.text = text
+        chip.text = category.category
         chip.isCheckable = true
+        chip.setOnCheckedChangeListener { _, isChipChecked ->
+            if (isChipChecked)
+                thisCategory = category
+            else {
+                if (thisCategory == category)
+                    thisCategory = Category(null)
+            }
+        }
+        if (thisCategory.category != null)
+            chip.isChecked = thisCategory == category
         return chip
     }
 

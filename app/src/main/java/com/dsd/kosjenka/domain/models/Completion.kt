@@ -5,7 +5,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Completion(
-    val completion: Int,
+    val completion: Int?,
     val position: Int,
     val time_spent: Int,
     val user_id: Int,

@@ -1,19 +1,15 @@
 package com.dsd.kosjenka.presentation.home
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.findViewTreeViewModelStoreOwner
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,24 +18,20 @@ import com.dsd.kosjenka.databinding.FragmentHomeBinding
 import com.dsd.kosjenka.domain.models.Category
 import com.dsd.kosjenka.domain.models.UserProfile
 import com.dsd.kosjenka.presentation.MyLoadStateAdapter
-import com.dsd.kosjenka.presentation.auth.main.MainFragmentDirections
-import com.dsd.kosjenka.presentation.home.exercise.ExerciseFragmentArgs
 import com.dsd.kosjenka.presentation.home.filter.FilterBottomSheet
-import com.dsd.kosjenka.presentation.user_profiles.UserProfilesFragmentDirections
 import com.dsd.kosjenka.utils.Common
 import com.dsd.kosjenka.utils.interfaces.CategoryFilterListener
 import dagger.hilt.android.AndroidEntryPoint
-import okhttp3.internal.userAgent
 
 @AndroidEntryPoint
 class HomeFragment : Fragment(), CategoryFilterListener {
 
     private lateinit var binding: FragmentHomeBinding
     private lateinit var pagingAdapter: PagingExerciseAdapter
-    private var  profiles: MutableList<UserProfile> = mutableListOf()
+    private var profiles: MutableList<UserProfile> = mutableListOf()
     private val viewModel by viewModels<HomeViewModel>()
 
-    private var category: Category? = null
+    private var thisCategory: Category? = null
     private var scrollToTop = false
     private var showProgressBar = true
 
@@ -53,7 +45,6 @@ class HomeFragment : Fragment(), CategoryFilterListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.greeting.text="Welcome "+ userAgent//Username
         setupRecycler()
         setupSearch()
 //        setupSort()
@@ -61,49 +52,24 @@ class HomeFragment : Fragment(), CategoryFilterListener {
         setupFAB()
         observeViewModel()
         switchUser()
-        //viewModel.getCategories()
+        viewModel.getCategories()
     }
 
     private fun setupFAB() {
         binding.filterFab.setOnClickListener {
-            if (category == null)
-                category = Category(null)
-            val bottomSheet = FilterBottomSheet.newInstance(category = category!!)
+            if (thisCategory == null) thisCategory = Category(null)
+            val bottomSheet = FilterBottomSheet.newInstance(category = thisCategory!!)
             bottomSheet.filterCategorySelectedListener = this
             bottomSheet.show(childFragmentManager, FilterBottomSheet.TAG)
         }
     }
 
 
-
-
     private fun switchUser() { //=viewModel.getUsers().observe(viewLifecycleOwner){profileData ->
-        binding.switchUser.setOnClickListener{
+        binding.switchUser.setOnClickListener {
             findNavController().navigate(
-                        HomeFragmentDirections.actionHomeFragmentToUserProfilesFragment()
-                    )
-//            val popupMenu=PopupMenu(requireContext(), it)
-//            popupMenu.menuInflater.inflate(R.menu.users_menu, popupMenu.menu)
-//
-//            val a=viewModel.getUsers()
-//
-//            if (profileData != null && profileData.isNotEmpty()) {
-//                for ((index, userProfile) in profileData.withIndex()) {
-//                    popupMenu.menu.add(Menu.NONE, index, Menu.NONE, userProfile.username)
-//                }
-//                popupMenu.setOnMenuItemClickListener { menuItem ->
-//                    val selectedUserProfile = profileData[menuItem.itemId]
-//                    findNavController().navigate(
-//                        HomeFragmentDirections.actionHomeFragmentSelf(selectedUserProfile.id_user)
-//                    )
-//                    true
-//                }
-//                popupMenu.show()
-//            } else {
-//                Toast.makeText(requireContext(), "There is no user profiles", Toast.LENGTH_SHORT).show()
-//            }
-//
-//            popupMenu.show()
+                HomeFragmentDirections.actionHomeFragmentToUserProfilesFragment()
+            )
         }
     }
 
@@ -122,15 +88,15 @@ class HomeFragment : Fragment(), CategoryFilterListener {
         }
     }
 
-//    private fun setupSort() {
-//        binding.homeComplexityBtn.setOnClickListener {
-//            viewModel.sortByComplexity()
-//        }
-//        //Remove comments once completion is added
-//        binding.homeCompletionBtn.setOnClickListener {
-//            viewModel.sortByCompletion()
-//        }
-//    }
+    private fun setupSort() {
+        binding.homeComplexityBtn.setOnClickListener {
+            viewModel.sortByComplexity()
+        }
+        //Remove comments once completion is added
+        binding.homeCompletionBtn.setOnClickListener {
+            viewModel.sortByCompletion()
+        }
+    }
 
     private fun setupSearch() {
         binding.search.setOnEditorActionListener { _, actionId, _ ->
@@ -157,11 +123,10 @@ class HomeFragment : Fragment(), CategoryFilterListener {
         pagingAdapter = PagingExerciseAdapter()
         pagingAdapter.setOnExerciseClickListener {
             findNavController().navigate(
-                HomeFragmentDirections.actionHomeFragmentToExerciseFragment(exercise = it)
+                HomeFragmentDirections.actionHomeFragmentToExerciseFragment(exerciseId = it)
             )
         }
         //Init recyclerView
-        //Initialize Recycler
         binding.homeRecycler.apply {
             itemAnimator = null
             setHasFixedSize(true)
@@ -201,29 +166,28 @@ class HomeFragment : Fragment(), CategoryFilterListener {
                 }
 
 
-//                // Empty (no employers)
-//                if (loadState.source.refresh is LoadState.NotLoading &&
-//                    loadState.append.endOfPaginationReached &&
-//                    pagingAdapter.itemCount < 1
-//                ) {
-//                    homeRecycler.isVisible = false
-//                    jobsErrorContainer.root.visibility = View.VISIBLE
-//                } else if (loadState.source.refresh is LoadState.Error &&
-//                    pagingJobsAdapter.itemCount > 0
-//                ) {
-//                    jobsRecycler.isVisible = true
-//                    jobsErrorContainer.root.visibility = View.GONE
-//                } else
-//                    jobsErrorContainer.root.visibility = View.GONE
+                // Empty (no employers)
+                if (loadState.source.refresh is LoadState.NotLoading &&
+                    loadState.append.endOfPaginationReached &&
+                    pagingAdapter.itemCount < 1
+                ) {
+                    homeRecycler.isVisible = false
+                    homeErrorContainer.root.visibility = View.VISIBLE
+                } else if (loadState.source.refresh is LoadState.Error &&
+                    pagingAdapter.itemCount > 0
+                ) {
+                    homeRecycler.isVisible = true
+                    homeErrorContainer.root.visibility = View.GONE
+                } else
+                    homeErrorContainer.root.visibility = View.GONE
             }
         }
     }
 
     override fun onCategoryFilterSelected(category: Category) {
-        Toast.makeText(
-            binding.root.context,
-            "Category ${category.category} selected!",
-            Toast.LENGTH_SHORT
-        ).show()
+        thisCategory = category
+        viewModel.filterByCategory(
+            category = thisCategory!!.category
+        )
     }
 }

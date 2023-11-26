@@ -60,33 +60,33 @@ class HomeViewModel @Inject constructor(
 
 //    fun getUsers(): LiveData<ArrayList<UserProfile>?> = user_repository.getUserProfiles(sharedPreferences.accessToken)
 
-//    fun sortByComplexity() {
-//        // If already sorting by complexity in ascending order, switch to descending order
-//        if (currentOrderBy == "complexity" && currentOrder == "asc") {
-//            currentOrder = "desc"
-//        } else {
-//            // Otherwise, set it to ascending order
-//            currentOrderBy = "complexity"
-//            currentOrder = "asc"
-//        }
-//        refresh()
-//    }
-//
-//    fun sortByCompletion() {
-//        // If already sorting by completion in ascending order, switch to descending order
-//        if (currentOrderBy == "completion" && currentOrder == "asc") {
-//            currentOrder = "desc"
-//        } else {
-//            // Otherwise, set it to ascending order
-//            currentOrderBy = "completion"
-//            currentOrder = "asc"
-//        }
-//        refresh()
-//    }
+    fun sortByComplexity() {
+        // If already sorting by complexity in ascending order, switch to descending order
+        if (currentOrderBy == "complexity" && currentOrder == "asc") {
+            currentOrder = "desc"
+        } else {
+            // Otherwise, set it to ascending order
+            currentOrderBy = "complexity"
+            currentOrder = "asc"
+        }
+        refresh()
+    }
 
-//    fun filterByCategory(category: String?) {
-//        currentCategory.value = category
-//        // Trigger the search by updating the currentQuery value
-//        currentQuery.value = currentQuery.value
-//    }
+    fun sortByCompletion() {
+        // If already sorting by completion in ascending order, switch to descending order
+        if (currentOrderBy == "completion" && currentOrder == "asc") {
+            currentOrder = "desc"
+        } else {
+            // Otherwise, set it to ascending order
+            currentOrderBy = "completion"
+            currentOrder = "asc"
+        }
+        refresh()
+    }
+
+    fun filterByCategory(category: String?) {
+        currentCategory.value = category
+        // Trigger the search by updating the currentQuery value
+        currentQuery.value = currentQuery.value
+    }
 }
