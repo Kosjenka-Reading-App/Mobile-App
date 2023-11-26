@@ -1,3 +1,13 @@
+import java.util.Properties
+import java.io.FileInputStream
+// Create a variable called keystorePropertiesFile, and initialize it to your
+// keystore.properties file, in the rootProject folder.
+val keystorePropertiesFile = rootProject.file("keystore.properties")
+// Initialize a new Properties() object called keystoreProperties.
+val keystoreProperties = Properties()
+// Load your keystore.properties file into the keystoreProperties object.
+keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -28,12 +38,22 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        create("release") {
+            keyAlias = keystoreProperties["keyAlias"] as String
+            keyPassword = keystoreProperties["keyPassword"] as String
+            storeFile = file(keystoreProperties["storeFile"] as String)
+            storePassword = keystoreProperties["storePassword"] as String
+        }
+    }
+
     buildTypes {
         debug {
             buildConfigField("String", "BASE_URL", "\"https://dev-kosj-api.fly.dev/\"")
         }
         release {
             buildConfigField("String", "BASE_URL", "\"https://dev-kosj-api.fly.dev/\"")
+            signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
