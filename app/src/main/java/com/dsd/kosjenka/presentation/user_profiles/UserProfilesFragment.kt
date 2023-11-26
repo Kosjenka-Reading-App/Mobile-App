@@ -63,22 +63,6 @@ class UserProfilesFragment : Fragment(),
         super.onViewCreated(view, savedInstanceState)
 
 
-//        binding.profilesToolbar.inflateMenu(R.menu.profiles_fragment_menu)
-//        binding.profilesToolbar.setOnMenuItemClickListener {
-//            context?.let { it1 -> Common.showToast(it1, "Menu item") }
-//            when (it.itemId) {
-//                R.id.menu_action_logout -> {
-//                    context?.let { it1 -> Common.showToast(it1, "Logout") }
-//                    executeLogoutAction()
-//                    true
-//                }
-//                else -> {
-//                    @Suppress("DEPRECATION")
-//                    super.onOptionsItemSelected(it)
-//                }
-//            }
-//        }
-
         requireActivity().addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.profiles_fragment_menu, menu)
@@ -100,6 +84,8 @@ class UserProfilesFragment : Fragment(),
         observeViewModel()
         getUsers()
     }
+
+
 
     private fun setupRecycler(){
         userProfilesAdapter = AdapterModule.UserProfilesAdapter(this)
