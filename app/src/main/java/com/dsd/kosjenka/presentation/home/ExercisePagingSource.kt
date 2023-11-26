@@ -32,12 +32,11 @@ class ExercisePagingSource(
                 category = category,
                 query = query,
             )
-            val resBody = response.body()
-            val exercises = resBody?.items ?: emptyList()
+            val exercises = response.body()?.items ?: emptyList()
 
             currentOffset += exercises.size
 
-            val nextKey = if (resBody?.page == resBody?.pages) null else position + 1
+            val nextKey = if (exercises.isEmpty()) null else position + 1
 
             LoadResult.Page(
                 data = exercises,
