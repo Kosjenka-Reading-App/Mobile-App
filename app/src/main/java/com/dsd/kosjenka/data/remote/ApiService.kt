@@ -38,7 +38,6 @@ interface ApiService {
         @Body request: ResetPasswordRequest
     ): Response<ResetResponseObject>
 
-
     @POST("/password/forgot")
     suspend fun passwordForgot(
         @Body request: ForgotPasswordRequest
@@ -71,8 +70,8 @@ interface ApiService {
     @GET("/users")
     suspend fun getUsers(
         @Header("Authorization") token: String,
-        @Query("skip") skip: Int,
-        @Query("limit") limit: Int,
+        @Query("page") page: Int,
+        @Query("size") size: Int,
     ): Response<GetUsersResponseObject>
 
     @POST("/users")
