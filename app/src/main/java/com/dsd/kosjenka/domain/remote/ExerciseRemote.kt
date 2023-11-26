@@ -36,5 +36,9 @@ class ExerciseRemote @Inject constructor(
         apiService.getCategories()
     }
 
+    suspend fun getExercise(exerciseId: Int) = parseResult {
+        apiService.getExercise(exerciseId)
+    }
+
 
 }

@@ -21,7 +21,7 @@ class PagingExerciseAdapter :
         @SuppressLint("UseCompatTextViewDrawableApis")
         fun bind(
             exercise: Exercise,
-            onExerciseClickListener: ((Int) -> Unit)?,
+            onExerciseClickListener: ((Exercise) -> Unit)?,
         ) {
             binding.apply {
 
@@ -69,7 +69,7 @@ class PagingExerciseAdapter :
                 exerciseCompletion.text = completionString
 
                 root.setOnClickListener {
-                    onExerciseClickListener?.let { it(exercise.id) }
+                    onExerciseClickListener?.let { it(exercise) }
                 }
             }
         }
@@ -103,9 +103,9 @@ class PagingExerciseAdapter :
         holder.bind(getItem(position)!!, onExerciseClickListener)
     }
 
-    private var onExerciseClickListener: ((Int) -> Unit)? = null
+    private var onExerciseClickListener: ((Exercise) -> Unit)? = null
 
-    fun setOnExerciseClickListener(listener: (Int) -> Unit) {
+    fun setOnExerciseClickListener(listener: (Exercise) -> Unit) {
         onExerciseClickListener = listener
     }
 

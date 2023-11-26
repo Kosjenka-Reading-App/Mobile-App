@@ -123,7 +123,7 @@ class HomeFragment : Fragment(), CategoryFilterListener {
         pagingAdapter = PagingExerciseAdapter()
         pagingAdapter.setOnExerciseClickListener {
             findNavController().navigate(
-                HomeFragmentDirections.actionHomeFragmentToExerciseFragment(exerciseId = it)
+                HomeFragmentDirections.actionHomeFragmentToExerciseFragment(exerciseId = it.id, exerciseTitle = it.title)
             )
         }
         //Init recyclerView
