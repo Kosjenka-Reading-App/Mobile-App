@@ -67,6 +67,11 @@ interface ApiService {
     suspend fun getCategories()
             : Response<GetCategoriesResponseObject>
 
+    @GET("exercises/{exercise_id}")
+    suspend fun getExercise(
+        @Path("exercise_id") exerciseId: Int
+    ):Response<Exercise>
+
     @GET("/users")
     suspend fun getUsers(
         @Header("Authorization") token: String,
