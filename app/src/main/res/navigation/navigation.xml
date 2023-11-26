@@ -87,7 +87,7 @@
     </fragment>
     <fragment
         android:id="@+id/resetPasswordFragment"
-        android:name="com.dsd.kosjenka.presentation.reset.ResetPasswordFragment"
+        android:name=".presentation.auth.ForgotPassword.ForgotPasswordFragment"
         android:label="fragment_reset_password"
         tools:layout="@layout/fragment_reset_password" >
     <action

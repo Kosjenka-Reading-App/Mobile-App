@@ -59,6 +59,10 @@ interface ApiService {
         @Query("title_like") query: String?,
     ): Response<GetExercisesResponseObject>
 
+    @POST("password/forgot")
+    suspend fun forgotPassword(
+        @Body forgotPassword:ForgotPasswordRequest
+    ):Response<ForgotPasswordResponse>
 
     @GET("categories")
     suspend fun getCategories()
