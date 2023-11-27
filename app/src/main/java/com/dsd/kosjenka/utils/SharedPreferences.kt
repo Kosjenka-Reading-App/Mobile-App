@@ -22,6 +22,10 @@ class SharedPreferences
         get() = preferences.getString(REFRESH_TOKEN, "").toString()
         set(newToken) = preferences.edit().putString(REFRESH_TOKEN, newToken).apply()
 
+    var userId: String
+        get() = preferences.getString(USER_ID, "").toString()
+        set(newToken) = preferences.edit().putString(USER_ID, newToken).apply()
+
     var categories: List<Category>
         get() {
             val json = preferences.getString(CATEGORIES, null)
@@ -43,6 +47,7 @@ class SharedPreferences
         private const val PREF_FILENAME = "com.example.radnikme.pref"
         private const val ACCESS_TOKEN = " ACCESS_TOKEN"
         private const val REFRESH_TOKEN = " REFRESH_TOKEN"
+        private const val USER_ID = " USER_ID"
         private const val CATEGORIES = "CATEGORIES"
     }
 }

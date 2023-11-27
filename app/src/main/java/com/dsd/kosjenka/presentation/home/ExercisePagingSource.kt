@@ -12,21 +12,21 @@ import java.io.IOException
 
 class ExercisePagingSource(
     private val apiService: ApiService,
+    private val userId: String,
     private val orderBy: String,
     private val order: String,
     private val category: String?,
     private val query: String?,
 ) : PagingSource<Int, Exercise>() {
 
-    private var currentOffset = 0
-
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Exercise> {
-        val position = params.key ?: STARTING_PAGE_INDEX
+        val page = params.key ?: STARTING_PAGE_INDEX
 
         return try {
             val response = apiService.getExercises(
-                skip = currentOffset,
-                limit = PAGE_SIZE,
+                page = page,
+                size = PAGE_SIZE,
+                userId = userId,
                 orderBy = orderBy,
                 order = order,
                 category = category,
@@ -34,13 +34,12 @@ class ExercisePagingSource(
             )
             val exercises = response.body()?.items ?: emptyList()
 
-            currentOffset += exercises.size
-
-            val nextKey = if (exercises.isEmpty()) null else position + 1
+            val prevKey = if (page == STARTING_PAGE_INDEX) null else page - 1
+            val nextKey = if (exercises.isEmpty()) null else page + 1
 
             LoadResult.Page(
                 data = exercises,
-                prevKey = if (position == STARTING_PAGE_INDEX) null else position - 1,
+                prevKey = prevKey,
                 nextKey = nextKey
             )
         } catch (exception: IOException) {

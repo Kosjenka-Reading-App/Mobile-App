@@ -50,18 +50,14 @@ interface ApiService {
 
     @GET("exercises")
     suspend fun getExercises(
-        @Query("skip") skip: Int,
-        @Query("limit") limit: Int,
+        @Query("page") page: Int,
+        @Query("size") size: Int,
+        @Query("user_id") userId: String,
         @Query("order_by") orderBy: String,
         @Query("order") order: String,
         @Query("category") category: String?,
         @Query("title_like") query: String?,
     ): Response<GetExercisesResponseObject>
-
-    @POST("password/forgot")
-    suspend fun forgotPassword(
-        @Body forgotPassword:ForgotPasswordRequest
-    ):Response<ForgotPasswordResponse>
 
     @GET("categories")
     suspend fun getCategories()
