@@ -5,8 +5,8 @@
 
 cmake_minimum_required(VERSION 3.4.1)
 message("project directory is: ${PROJECT_SOURCE_DIR}")
-set( Visage_LIBS ${PROJECT_SOURCE_DIR}/../../../course-miscelanious/visageSDK-Android_v9/visageSDK-Android/lib/${ANDROID_ABI} )
-set( Visage_HEADERS ../../../course-miscelanious/visageSDK-Android_v9/visageSDK-Android/include)
+set( Visage_LIBS ${PROJECT_SOURCE_DIR}/../visage-sdk/lib/${ANDROID_ABI} )
+set( Visage_HEADERS ../visage-sdk/include)
 
 include_directories( ${Visage_HEADERS} )
 set(ANDROID_STL "c++_shared")
