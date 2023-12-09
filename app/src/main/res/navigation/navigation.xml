@@ -87,11 +87,12 @@
     </fragment>
     <fragment
         android:id="@+id/resetPasswordFragment"
-        android:name=".presentation.auth.ForgotPassword.ForgotPasswordFragment"
+        android:name="com.dsd.kosjenka.presentation.auth.ForgotPassword.ForgotPasswordFragment"
         android:label="fragment_reset_password"
         tools:layout="@layout/fragment_reset_password" >
     <action
         android:id="@+id/action_resetPasswordFragment_to_loginFragment"
         app:destination="@id/loginFragment" />
     </fragment>
+
 </navigation>

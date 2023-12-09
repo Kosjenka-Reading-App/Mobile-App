@@ -1,14 +1,17 @@
 package com.dsd.kosjenka.presentation.home.exercise
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.navigation.Navigation
 import com.dsd.kosjenka.R
 import com.dsd.kosjenka.databinding.FragmentExerciseBinding
 import com.dsd.kosjenka.presentation.MainActivity
+import com.dsd.kosjenka.presentation.home.camera.CameraActivity
 
 class ExerciseFragment : Fragment() {
 
@@ -34,6 +37,15 @@ class ExerciseFragment : Fragment() {
 
         binding.exerciseToolbar.title = args.exercise.title
         binding.exerciseText.text = args.exercise.text
+
+        //            Navigation.createNavigateOnClickListener(R.id.action_exerciseFragment_to_cameraFragment)
+        binding.startCameraBtn.setOnClickListener {
+            activity.let {
+                val intent = Intent(it, CameraActivity::class.java)
+                it.startActivity(intent)
+            }
+        }
     }
 
 }
+

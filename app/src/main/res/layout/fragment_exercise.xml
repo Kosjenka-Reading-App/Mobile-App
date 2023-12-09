@@ -23,21 +23,29 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <!-- Define a Scrollable TextView -->
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/background"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-            <TextView
-                android:id="@+id/exercise_text"
+            <!-- Define a Scrollable TextView -->
+            <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:background="@color/background"
-                android:text="Hello World!" />
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        </ScrollView>
+                <TextView
+                    android:id="@+id/exercise_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/background"
+                    android:text="Hello World!" />
+
+            </ScrollView>
+
+        <Button
+            android:id="@+id/startCameraBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="Camera"
+            android:layout_gravity="bottom" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
