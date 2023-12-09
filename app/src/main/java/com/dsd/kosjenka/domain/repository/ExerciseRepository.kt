@@ -31,4 +31,13 @@ class  ExerciseRepository @Inject constructor(
         } else
             throw NoInternetException()
     }
+
+    fun getExercise(exerciseId: Int) = retrieveResourceAsFlow {
+        if (netManager.isConnectedToInternet())
+            remote.getExercise(exerciseId)
+         else
+            throw NoInternetException()
+    }
+
+
 }

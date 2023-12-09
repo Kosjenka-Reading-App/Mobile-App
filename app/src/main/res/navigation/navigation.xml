@@ -43,8 +43,12 @@
         android:label="fragment_exercise"
         tools:layout="@layout/fragment_exercise">
         <argument
-            android:name="exercise"
-            app:argType="com.dsd.kosjenka.domain.models.Exercise" />
+            android:name="exerciseId"
+            app:argType="integer" />
+        <argument
+            android:name="exerciseTitle"
+            app:argType="string" />
+
     </fragment>
     <fragment
         android:id="@+id/homeFragment"

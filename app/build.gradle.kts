@@ -1,5 +1,7 @@
-import java.util.Properties
+import java.io.ByteArrayOutputStream
 import java.io.FileInputStream
+import java.util.Properties
+
 // Create a variable called keystorePropertiesFile, and initialize it to your
 // keystore.properties file, in the rootProject folder.
 val keystorePropertiesFile = rootProject.file("keystore.properties")
@@ -18,6 +20,19 @@ plugins {
     id("com.google.gms.google-services")
 }
 
+val getVersionCode = {
+    try {
+        val code = ByteArrayOutputStream()
+        project.exec {
+            commandLine("git", "rev-list", "--remotes")
+            standardOutput = code
+        }
+        code.toString().split("\n").size
+    } catch (ignored: Exception) {
+        -1
+    }
+}
+
 android {
     namespace = "com.dsd.kosjenka"
     compileSdk = 34
@@ -28,11 +43,13 @@ android {
         viewBinding = true
     }
 
+
+
     defaultConfig {
         applicationId = "com.dsd.kosjenka"
         minSdk = 24
         targetSdk = 34
-        versionCode = 4
+        versionCode = getVersionCode()
         versionName = "3.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -63,8 +80,7 @@ android {
             signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = false
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
         }
     }

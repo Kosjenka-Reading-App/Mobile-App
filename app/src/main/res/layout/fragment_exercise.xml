@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -22,23 +23,42 @@
                 android:background="@color/background" />
 
         </com.google.android.material.appbar.AppBarLayout>
+      
+        <!-- Define a Scrollable TextView -->
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/background"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <!-- Define a Scrollable TextView -->
-            <ScrollView
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/background"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior">
+                android:layout_height="wrap_content"
+                android:padding="16dp">
 
                 <TextView
                     android:id="@+id/exercise_text"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:background="@color/background"
-                    android:text="Hello World!" />
+                    tools:text="Hello World!" />
 
-            </ScrollView>
+                <ProgressBar
+                    android:id="@+id/loading"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:indeterminateDrawable="@drawable/progress_bar_blue"
+                    android:indeterminateDuration="@android:integer/config_longAnimTime"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </ScrollView>
         <Button
             android:id="@+id/startCameraBtn"
             android:layout_width="wrap_content"
@@ -46,6 +66,7 @@
             android:layout_margin="10dp"
             android:text="Camera"
             android:layout_gravity="bottom" />
+
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

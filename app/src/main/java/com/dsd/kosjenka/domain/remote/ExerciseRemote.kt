@@ -6,6 +6,7 @@ import androidx.paging.liveData
 import com.dsd.kosjenka.data.remote.ApiService
 import com.dsd.kosjenka.data.remote.BaseRemote
 import com.dsd.kosjenka.presentation.home.ExercisePagingSource
+import com.dsd.kosjenka.utils.SharedPreferences
 import com.dsd.kosjenka.utils.error.ErrorManager
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -13,6 +14,7 @@ import javax.inject.Singleton
 @Singleton
 class ExerciseRemote @Inject constructor(
     private val apiService: ApiService,
+    private val preferences: SharedPreferences,
     errorManager: ErrorManager,
 ) : BaseRemote(errorManager) {
 
@@ -24,6 +26,7 @@ class ExerciseRemote @Inject constructor(
             ), pagingSourceFactory = {
                 ExercisePagingSource(
                     apiService,
+                    preferences.userId,
                     orderBy = orderBy,
                     order = order,
                     category = category,
@@ -34,6 +37,10 @@ class ExerciseRemote @Inject constructor(
 
     suspend fun getCategories() = parseResult {
         apiService.getCategories()
+    }
+
+    suspend fun getExercise(exerciseId: Int) = parseResult {
+        apiService.getExercise(exerciseId)
     }
 
 

@@ -1,25 +1,26 @@
-package com.dsd.kosjenka.utils
+package com.dsd.kosjenka.data.remote
 
-import android.content.Context
-import dagger.hilt.android.qualifiers.ApplicationContext
+import com.dsd.kosjenka.utils.SharedPreferences
 import okhttp3.Interceptor
 import okhttp3.Response
 import javax.inject.Inject
+import javax.inject.Singleton
 
-class AuthInterceptor : Interceptor {
+@Singleton
+class AuthInterceptor @Inject constructor() : Interceptor {
 
+    @Inject
     lateinit var sharedPreferences: SharedPreferences
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val requestBuilder = chain.request().newBuilder()
 
         // If token has been saved, add it to the request
-        sharedPreferences?.let {
+        sharedPreferences.let {
             requestBuilder.addHeader("Authorization", "Bearer ${it.accessToken}")
         }
         val request = requestBuilder.build()
-        val response: Response = chain.proceed(request)
-        return response
+        return chain.proceed(request)
     }
 
 }
