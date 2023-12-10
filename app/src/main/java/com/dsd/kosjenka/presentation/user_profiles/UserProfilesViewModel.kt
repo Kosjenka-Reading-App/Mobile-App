@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.util.Collections
 import javax.inject.Inject
 
 @HiltViewModel
@@ -55,8 +56,14 @@ class UserProfilesViewModel @Inject constructor(
             ).collect{
 
                 if (it != null){
-//                    Log.d("UPVM", it.toString())
-                    _profileDataFlow.emit(it)
+                    it.items.sortWith { left, right ->
+                        if (left.id_user > right.id_user) {
+                            return@sortWith -1
+                        } else {
+                            return@sortWith 1
+                        }
+                    }
+                    _profileDataFlow.emit(it.items)
                 }
             }
         }

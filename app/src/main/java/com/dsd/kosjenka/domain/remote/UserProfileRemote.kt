@@ -14,10 +14,10 @@ class UserProfileRemote @Inject constructor(
     errorManager: ErrorManager,
 ) : BaseRemote(errorManager) {
 
-    private var currentOffset = 0
     suspend fun getUserProfiles(token: String) = parseResult {
-        //Log.d("TOKEN", token)
-        apiService.getUsers("Bearer $token", currentOffset, 20)
+        val currentPage = 1
+        val pageSize = 30
+        apiService.getUsers("Bearer $token", currentPage, pageSize)
     }
 
     suspend fun createUserProfile(token: String, userProfile: UserProfile) = parseResult {

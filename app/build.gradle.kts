@@ -1,3 +1,15 @@
+import java.io.ByteArrayOutputStream
+import java.io.FileInputStream
+import java.util.Properties
+
+// Create a variable called keystorePropertiesFile, and initialize it to your
+// keystore.properties file, in the rootProject folder.
+val keystorePropertiesFile = rootProject.file("keystore.properties")
+// Initialize a new Properties() object called keystoreProperties.
+val keystoreProperties = Properties()
+// Load your keystore.properties file into the keystoreProperties object.
+keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -6,6 +18,19 @@ plugins {
     id("com.google.dagger.hilt.android")
     id("androidx.navigation.safeargs.kotlin")
     id("com.google.gms.google-services")
+}
+
+val getVersionCode = {
+    try {
+        val code = ByteArrayOutputStream()
+        project.exec {
+            commandLine("git", "rev-list", "--remotes")
+            standardOutput = code
+        }
+        code.toString().split("\n").size
+    } catch (ignored: Exception) {
+        -1
+    }
 }
 
 android {
@@ -18,14 +43,25 @@ android {
         viewBinding = true
     }
 
+
+
     defaultConfig {
         applicationId = "com.dsd.kosjenka"
         minSdk = 24
         targetSdk = 34
-        versionCode = 2
-        versionName = "1.1"
+        versionCode = getVersionCode()
+        versionName = "2.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    signingConfigs {
+        create("release") {
+            keyAlias = keystoreProperties["keyAlias"] as String
+            keyPassword = keystoreProperties["keyPassword"] as String
+            storeFile = file(keystoreProperties["storeFile"] as String)
+            storePassword = keystoreProperties["storePassword"] as String
+        }
     }
 
     buildTypes {
@@ -34,10 +70,10 @@ android {
         }
         release {
             buildConfigField("String", "BASE_URL", "\"https://dev-kosj-api.fly.dev/\"")
+            signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = false
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
         }
     }

@@ -27,8 +27,17 @@ class  ExerciseRepository @Inject constructor(
         if (netManager.isConnectedToInternet()) {
             val categories = remote.getCategories()
             if (categories != null)
-                preferences.categories = categories
+                preferences.categories = categories.items
         } else
             throw NoInternetException()
     }
+
+    fun getExercise(exerciseId: Int) = retrieveResourceAsFlow {
+        if (netManager.isConnectedToInternet())
+            remote.getExercise(exerciseId)
+         else
+            throw NoInternetException()
+    }
+
+
 }

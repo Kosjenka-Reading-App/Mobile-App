@@ -54,6 +54,10 @@ class LoginFragment : Fragment() {
         activity.setSupportActionBar(binding.loginToolbar)
         activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        binding.resetPwd.setOnClickListener(
+            Navigation.createNavigateOnClickListener(R.id.action_loginFragment_to_resetPasswordFragment)
+        )
+
         binding.registerLink.setOnClickListener(
             Navigation.createNavigateOnClickListener(R.id.action_loginFragment_to_registerFragment)
         )
@@ -80,15 +84,9 @@ class LoginFragment : Fragment() {
                         binding.login.visibility = View.VISIBLE
                         showToast(binding.root.context, getString(R.string.network_error))
                     }
-
                     SUCCESS -> {
                         findNavController().navigate(R.id.action_loginFragment_to_userProfilesFragment)
                     }
-//                    RESET_PASSWORD -> {
-//                        showSnackBar(getString(R.string.password_reseted), binding.root)
-//                        forgotPasswordDialog.dismiss()
-//                    }
-
                     else -> {
                         binding.loading.visibility = View.GONE
                         binding.login.visibility = View.VISIBLE

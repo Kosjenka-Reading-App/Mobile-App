@@ -2,6 +2,7 @@ package com.dsd.kosjenka.presentation.home
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.paging.PagingDataAdapter
@@ -30,6 +31,8 @@ class PagingExerciseAdapter :
                     categoriesString += category.category
                     if (index < exercise.category.size - 1) categoriesString += ", "
                 }
+                if (categoriesString != "")
+                    exerciseCategory.visibility = View.VISIBLE
                 exerciseCategory.text = categoriesString
 
 
@@ -60,8 +63,10 @@ class PagingExerciseAdapter :
                 }
                 exerciseComplexity.text = exercise.complexity
 
-                //Completion is not required for the MVP
-//                exerciseCompletion.text = "90%"
+                val completionString = if (exercise.completion == null) "0%"
+                else "${exercise.completion.completion}%"
+
+                exerciseCompletion.text = completionString
 
                 root.setOnClickListener {
                     onExerciseClickListener?.let { it(exercise) }

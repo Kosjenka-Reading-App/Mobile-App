@@ -11,8 +11,10 @@ import com.dsd.kosjenka.domain.request_objects.ForgotPasswordRequest
 import com.dsd.kosjenka.domain.request_objects.ResetPasswordRequest
 import com.dsd.kosjenka.domain.response_objects.ForgotPasswordResponse
 import com.dsd.kosjenka.domain.response_objects.ResetResponseObject
-import com.dsd.kosjenka.domain.request_objects.ForgotPasswordRequest
 import com.dsd.kosjenka.domain.response_objects.DeleteUserResponseObject
+import com.dsd.kosjenka.domain.response_objects.GetCategoriesResponseObject
+import com.dsd.kosjenka.domain.response_objects.GetExercisesResponseObject
+import com.dsd.kosjenka.domain.response_objects.GetUsersResponseObject
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -36,7 +38,6 @@ interface ApiService {
         @Body request: ResetPasswordRequest
     ): Response<ResetResponseObject>
 
-
     @POST("/password/forgot")
     suspend fun passwordForgot(
         @Body request: ForgotPasswordRequest
@@ -49,25 +50,30 @@ interface ApiService {
 
     @GET("exercises")
     suspend fun getExercises(
-        @Query("skip") skip: Int,
-        @Query("limit") limit: Int,
+        @Query("page") page: Int,
+        @Query("size") size: Int,
+        @Query("user_id") userId: String,
         @Query("order_by") orderBy: String,
         @Query("order") order: String,
         @Query("category") category: String?,
         @Query("title_like") query: String?,
-    ): Response<ArrayList<Exercise>>
-
+    ): Response<GetExercisesResponseObject>
 
     @GET("categories")
     suspend fun getCategories()
-            : Response<ArrayList<Category>>
+            : Response<GetCategoriesResponseObject>
+
+    @GET("exercises/{exercise_id}")
+    suspend fun getExercise(
+        @Path("exercise_id") exerciseId: Int
+    ):Response<Exercise>
 
     @GET("/users")
     suspend fun getUsers(
         @Header("Authorization") token: String,
-        @Query("skip") skip: Int,
-        @Query("limit") limit: Int
-    ): Response<ArrayList<UserProfile>>
+        @Query("page") page: Int,
+        @Query("size") size: Int,
+    ): Response<GetUsersResponseObject>
 
     @POST("/users")
     suspend fun addUser(
@@ -87,9 +93,4 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Path("user_id") userId: Int
     ) : Response<DeleteUserResponseObject>
-
-    @POST("/password/forgot")
-    suspend fun forgotPassword(
-        @Body request:ForgotPasswordRequest
-    ):Response<ForgotPasswordRequest>
 }

@@ -9,6 +9,10 @@ data class Exercise(
     val title: String,
     val complexity: String,
     val category: List<Category>,
-    val date: String?,
-    val text: String?
+    val completion: Completion?,
+    val date: String,
+    val text: String? = null
 ) : Parcelable
+
+
+

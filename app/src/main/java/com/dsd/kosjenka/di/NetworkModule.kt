@@ -1,20 +1,16 @@
 package com.dsd.kosjenka.di
 
-import android.content.Context
 import com.dsd.kosjenka.BuildConfig
 import com.dsd.kosjenka.data.remote.ApiService
-import com.dsd.kosjenka.presentation.auth.login.LoginViewModel
-import com.dsd.kosjenka.utils.AuthInterceptor
+import com.dsd.kosjenka.data.remote.AuthInterceptor
 import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import okhttp3.Dispatcher
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
@@ -26,13 +22,16 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    fun provideOkHttpClient(): OkHttpClient {
+    fun provideOkHttpClient(
+        authorizationInterceptor: AuthInterceptor,
+    ): OkHttpClient {
         val dispatcher = Dispatcher()
         dispatcher.maxRequests = 1
         val builder = OkHttpClient.Builder()
             .connectTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS).readTimeout(30, TimeUnit.SECONDS)
             .dispatcher(dispatcher)
+            .addInterceptor(authorizationInterceptor)
         if (BuildConfig.DEBUG)
             builder.addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
         return builder.build()
