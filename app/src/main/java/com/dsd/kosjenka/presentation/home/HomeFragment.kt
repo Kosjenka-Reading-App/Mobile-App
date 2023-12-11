@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.dsd.kosjenka.R
 import com.dsd.kosjenka.databinding.FragmentHomeBinding
 import com.dsd.kosjenka.domain.models.Category
-import com.dsd.kosjenka.domain.models.UserProfile
 import com.dsd.kosjenka.presentation.MyLoadStateAdapter
 import com.dsd.kosjenka.presentation.home.filter.FilterBottomSheet
 import com.dsd.kosjenka.utils.Common
@@ -28,7 +27,6 @@ class HomeFragment : Fragment(), CategoryFilterListener {
 
     private lateinit var binding: FragmentHomeBinding
     private lateinit var pagingAdapter: PagingExerciseAdapter
-    private var profiles: MutableList<UserProfile> = mutableListOf()
     private val viewModel by viewModels<HomeViewModel>()
 
     private var thisCategory: Category? = null
@@ -47,7 +45,7 @@ class HomeFragment : Fragment(), CategoryFilterListener {
         super.onViewCreated(view, savedInstanceState)
         setupRecycler()
         setupSearch()
-//        setupSort()
+        setupSort()
         setupRefresh()
         setupFAB()
         observeViewModel()
@@ -90,10 +88,20 @@ class HomeFragment : Fragment(), CategoryFilterListener {
 
     private fun setupSort() {
         binding.homeComplexityBtn.setOnClickListener {
+            val density = resources.displayMetrics.density
+            val selectedStroke = (1 * density).toInt() // Converting 2dp to pixels
+            binding.homeComplexityBtn.strokeWidth = selectedStroke
+            binding.homeCompletionBtn.strokeWidth = 0
+
             viewModel.sortByComplexity()
         }
-        //Remove comments once completion is added
+
         binding.homeCompletionBtn.setOnClickListener {
+            val density = resources.displayMetrics.density
+            val selectedStroke = (1 * density).toInt() // Converting 2dp to pixels
+            binding.homeCompletionBtn.strokeWidth = selectedStroke
+            binding.homeComplexityBtn.strokeWidth = 0
+
             viewModel.sortByCompletion()
         }
     }
