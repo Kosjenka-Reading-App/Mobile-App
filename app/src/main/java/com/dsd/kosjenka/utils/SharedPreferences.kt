@@ -26,6 +26,10 @@ class SharedPreferences
         get() = preferences.getString(USER_ID, "").toString()
         set(newToken) = preferences.edit().putString(USER_ID, newToken).apply()
 
+    var isLoggedIn: Boolean
+        get() = preferences.getBoolean(IS_LOGGED_IN, false)
+        set(newToken) = preferences.edit().putBoolean(IS_LOGGED_IN, newToken).apply()
+
     var categories: List<Category>
         get() {
             val json = preferences.getString(CATEGORIES, null)
@@ -48,6 +52,7 @@ class SharedPreferences
         private const val ACCESS_TOKEN = " ACCESS_TOKEN"
         private const val REFRESH_TOKEN = " REFRESH_TOKEN"
         private const val USER_ID = " USER_ID"
+        private const val IS_LOGGED_IN = " IS_LOGGED_IN"
         private const val CATEGORIES = "CATEGORIES"
     }
 }

@@ -67,7 +67,7 @@ class UserProfilesFragment : Fragment(),
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 return when (menuItem.itemId) {
                     R.id.menu_action_logout -> {
-                        context?.let { Common.showToast(it, "Log Out") }
+                        sharedPreferences.isLoggedIn = false
                         executeLogoutAction()
                         true
                     }
@@ -86,22 +86,12 @@ class UserProfilesFragment : Fragment(),
     private fun setupRecycler() {
         userProfilesAdapter = AdapterModule.UserProfilesAdapter(this)
 
-
         binding.recyclerViewUserProfiles.apply {
             setHasFixedSize(true)
             layoutManager = GridLayoutManager(this.context, 2)
             adapter = userProfilesAdapter
         }
     }
-
-//    private fun getProfiles(){
-//        profilesList = mutableListOf(
-//            UserProfile(0, "user1", 5.0),
-//            UserProfile(1, "user2", 1.0),
-//            UserProfile(2, "user3", 2.0))
-
-//        userProfilesAdapter.differ.submitList(profilesList)
-//    }
 
     private fun observeViewModel() {
         lifecycleScope.launch {
@@ -113,7 +103,6 @@ class UserProfilesFragment : Fragment(),
                     }
 
                     UiStates.SUCCESS -> {
-                        //Common.showToast(binding.root.context, "User created")
                         getUsers()
                     }
 
@@ -134,12 +123,9 @@ class UserProfilesFragment : Fragment(),
     private fun getUsers() = executeGetUsersAction()
 
     override fun onProfileClick(profile: UserProfile) {
-        //Toast.makeText(context, profile.username, Toast.LENGTH_SHORT).show()
-        context?.let { Common.showToast(it, profile.username) }
         sharedPreferences.userId = profile.id_user.toString()
         findNavController().navigate(
-            UserProfilesFragmentDirections
-                .actionUserProfilesFragmentToHomeFragment(profile.id_user)
+            UserProfilesFragmentDirections.actionUserProfilesFragmentToHomeFragment(profile.id_user)
         )
     }
 
@@ -147,9 +133,7 @@ class UserProfilesFragment : Fragment(),
         showProfileDialog(null)
     }
 
-    override fun onLongProfileClick(profile: UserProfile) {
-        //showProfileDialog(profile)
-    }
+    override fun onLongProfileClick(profile: UserProfile) {}
 
     override fun onEditProfileClick(profile: UserProfile) {
         showProfileDialog(profile)
@@ -159,8 +143,7 @@ class UserProfilesFragment : Fragment(),
         val builder = AlertDialog.Builder(this.context)
 
         val dialogBinding: AlertAddProfileBinding = DataBindingUtil.inflate(
-            layoutInflater,
-            R.layout.alert_add_profile, null, false
+            layoutInflater, R.layout.alert_add_profile, null, false
         )
 
         if (profile == null) {
@@ -187,8 +170,7 @@ class UserProfilesFragment : Fragment(),
                     if (isValidUsername(dialogBinding.addProfileEditText.text.toString())) {
                         //createNewProfile(dialogBinding.addProfileEditText.text.toString())
                         executeEditUserAction(
-                            profile,
-                            dialogBinding.addProfileEditText.text.toString()
+                            profile, dialogBinding.addProfileEditText.text.toString()
                         )
                         userProfilesAdapter.notifyItemChanged(
                             userProfilesAdapter.differ.currentList.indexOf(
