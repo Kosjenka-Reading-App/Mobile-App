@@ -12,7 +12,7 @@ import java.io.IOException
 
 class ExercisePagingSource(
     private val apiService: ApiService,
-    private val userId: String,
+    private val userId: String?,
     private val orderBy: String,
     private val order: String,
     private val category: String?,
