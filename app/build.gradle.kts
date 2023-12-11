@@ -50,7 +50,7 @@ android {
         minSdk = 24
         targetSdk = 34
         versionCode = getVersionCode()
-        versionName = "2.0"
+        versionName = "3.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -69,7 +69,7 @@ android {
             buildConfigField("String", "BASE_URL", "\"https://dev-kosj-api.fly.dev/\"")
         }
         release {
-            buildConfigField("String", "BASE_URL", "\"https://dev-kosj-api.fly.dev/\"")
+            buildConfigField("String", "BASE_URL", "\"https://kosj-api.fly.dev/\"")
             signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = false
             proguardFiles(
