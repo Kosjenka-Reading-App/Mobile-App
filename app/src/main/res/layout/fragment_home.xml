@@ -68,7 +68,6 @@
             android:textColor="@color/colorPrimary"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/home_completion_btn"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/home_completion_btn" />
@@ -82,10 +81,10 @@
             android:backgroundTint="@color/secondary_background"
             android:text="@string/completion"
             android:textColor="@color/colorPrimary"
-            android:visibility="gone"
-            app:layout_constraintEnd_toStartOf="@id/home_complexity_btn"
-            app:layout_constraintStart_toEndOf="@id/sort_tv"
-            app:layout_constraintTop_toBottomOf="@id/search_layout" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/home_complexity_btn"
+            app:layout_constraintTop_toBottomOf="@id/search_layout"
+            app:strokeWidth="0dp"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/home_complexity_btn"
@@ -96,11 +95,10 @@
             android:backgroundTint="@color/secondary_background"
             android:text="@string/complexity"
             android:textColor="@color/colorPrimary"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/home_completion_btn"
+            app:layout_constraintEnd_toStartOf="@id/home_completion_btn"
+            app:layout_constraintStart_toEndOf="@id/sort_tv"
             app:layout_constraintTop_toBottomOf="@id/search_layout"
-            app:strokeWidth="0dp" />
+            app:strokeWidth="1dp" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/filter_fab"

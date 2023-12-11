@@ -52,7 +52,7 @@ interface ApiService {
     suspend fun getExercises(
         @Query("page") page: Int,
         @Query("size") size: Int,
-        @Query("user_id") userId: String,
+        @Query("user_id") userId: String?,
         @Query("order_by") orderBy: String,
         @Query("order") order: String,
         @Query("category") category: String?,

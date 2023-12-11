@@ -16,24 +16,27 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.dsd.kosjenka.R
 import com.dsd.kosjenka.databinding.FragmentHomeBinding
 import com.dsd.kosjenka.domain.models.Category
-import com.dsd.kosjenka.domain.models.UserProfile
 import com.dsd.kosjenka.presentation.MyLoadStateAdapter
 import com.dsd.kosjenka.presentation.home.filter.FilterBottomSheet
 import com.dsd.kosjenka.utils.Common
+import com.dsd.kosjenka.utils.SharedPreferences
 import com.dsd.kosjenka.utils.interfaces.CategoryFilterListener
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class HomeFragment : Fragment(), CategoryFilterListener {
 
     private lateinit var binding: FragmentHomeBinding
     private lateinit var pagingAdapter: PagingExerciseAdapter
-    private var profiles: MutableList<UserProfile> = mutableListOf()
     private val viewModel by viewModels<HomeViewModel>()
 
     private var thisCategory: Category? = null
     private var scrollToTop = false
     private var showProgressBar = true
+
+    @Inject
+    lateinit var preferences: SharedPreferences
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,7 +50,7 @@ class HomeFragment : Fragment(), CategoryFilterListener {
         super.onViewCreated(view, savedInstanceState)
         setupRecycler()
         setupSearch()
-//        setupSort()
+        setupSort()
         setupRefresh()
         setupFAB()
         observeViewModel()
@@ -65,8 +68,9 @@ class HomeFragment : Fragment(), CategoryFilterListener {
     }
 
 
-    private fun switchUser() { //=viewModel.getUsers().observe(viewLifecycleOwner){profileData ->
+    private fun switchUser() {
         binding.switchUser.setOnClickListener {
+            preferences.userId = ""
             findNavController().navigate(
                 HomeFragmentDirections.actionHomeFragmentToUserProfilesFragment()
             )
@@ -90,10 +94,24 @@ class HomeFragment : Fragment(), CategoryFilterListener {
 
     private fun setupSort() {
         binding.homeComplexityBtn.setOnClickListener {
+            scrollToTop = true
+
+            val density = resources.displayMetrics.density
+            val selectedStroke = (1 * density).toInt() // Converting 2dp to pixels
+            binding.homeComplexityBtn.strokeWidth = selectedStroke
+            binding.homeCompletionBtn.strokeWidth = 0
+
             viewModel.sortByComplexity()
         }
-        //Remove comments once completion is added
+
         binding.homeCompletionBtn.setOnClickListener {
+            scrollToTop = true
+
+            val density = resources.displayMetrics.density
+            val selectedStroke = (1 * density).toInt() // Converting 2dp to pixels
+            binding.homeCompletionBtn.strokeWidth = selectedStroke
+            binding.homeComplexityBtn.strokeWidth = 0
+
             viewModel.sortByCompletion()
         }
     }
@@ -123,7 +141,9 @@ class HomeFragment : Fragment(), CategoryFilterListener {
         pagingAdapter = PagingExerciseAdapter()
         pagingAdapter.setOnExerciseClickListener {
             findNavController().navigate(
-                HomeFragmentDirections.actionHomeFragmentToExerciseFragment(exerciseId = it.id, exerciseTitle = it.title)
+                HomeFragmentDirections.actionHomeFragmentToExerciseFragment(
+                    exerciseId = it.id, exerciseTitle = it.title
+                )
             )
         }
         //Init recyclerView
@@ -167,24 +187,19 @@ class HomeFragment : Fragment(), CategoryFilterListener {
 
 
                 // Empty (no employers)
-                if (loadState.source.refresh is LoadState.NotLoading &&
-                    loadState.append.endOfPaginationReached &&
-                    pagingAdapter.itemCount < 1
-                ) {
+                if (loadState.source.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached && pagingAdapter.itemCount < 1) {
                     homeRecycler.isVisible = false
                     homeErrorContainer.root.visibility = View.VISIBLE
-                } else if (loadState.source.refresh is LoadState.Error &&
-                    pagingAdapter.itemCount > 0
-                ) {
+                } else if (loadState.source.refresh is LoadState.Error && pagingAdapter.itemCount > 0) {
                     homeRecycler.isVisible = true
                     homeErrorContainer.root.visibility = View.GONE
-                } else
-                    homeErrorContainer.root.visibility = View.GONE
+                } else homeErrorContainer.root.visibility = View.GONE
             }
         }
     }
 
     override fun onCategoryFilterSelected(category: Category) {
+        scrollToTop = true
         thisCategory = category
         viewModel.filterByCategory(
             category = thisCategory!!.category

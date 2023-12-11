@@ -26,7 +26,7 @@ class ExerciseRemote @Inject constructor(
             ), pagingSourceFactory = {
                 ExercisePagingSource(
                     apiService,
-                    preferences.userId,
+                    userId = if (orderBy == "complexity") null else preferences.userId,
                     orderBy = orderBy,
                     order = order,
                     category = category,

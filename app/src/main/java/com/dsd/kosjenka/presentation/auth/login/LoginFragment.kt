@@ -67,7 +67,6 @@ class LoginFragment : Fragment() {
         }
 
         initOnTextChange()
-//        initForgotPasswordDialog()
         observeViewModel()
     }
 
@@ -81,6 +80,7 @@ class LoginFragment : Fragment() {
                         showToast(binding.root.context, getString(R.string.network_error))
                     }
                     SUCCESS -> {
+                        preferences.isLoggedIn = true
                         findNavController().navigate(R.id.action_loginFragment_to_userProfilesFragment)
                     }
                     else -> {
