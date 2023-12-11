@@ -55,8 +55,6 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-//    fun getUsers(): LiveData<ArrayList<UserProfile>?> = user_repository.getUserProfiles(sharedPreferences.accessToken)
-
     fun sortByComplexity() {
         // If already sorting by complexity in ascending order, switch to descending order
         if (currentOrderBy == "complexity" && currentOrder == "asc") {

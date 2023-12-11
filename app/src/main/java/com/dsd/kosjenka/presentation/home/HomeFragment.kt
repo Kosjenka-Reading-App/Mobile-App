@@ -88,6 +88,8 @@ class HomeFragment : Fragment(), CategoryFilterListener {
 
     private fun setupSort() {
         binding.homeComplexityBtn.setOnClickListener {
+            scrollToTop = true
+
             val density = resources.displayMetrics.density
             val selectedStroke = (1 * density).toInt() // Converting 2dp to pixels
             binding.homeComplexityBtn.strokeWidth = selectedStroke
@@ -97,6 +99,8 @@ class HomeFragment : Fragment(), CategoryFilterListener {
         }
 
         binding.homeCompletionBtn.setOnClickListener {
+            scrollToTop = true
+
             val density = resources.displayMetrics.density
             val selectedStroke = (1 * density).toInt() // Converting 2dp to pixels
             binding.homeCompletionBtn.strokeWidth = selectedStroke
