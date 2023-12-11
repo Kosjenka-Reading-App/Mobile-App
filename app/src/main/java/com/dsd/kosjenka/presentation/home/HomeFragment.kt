@@ -199,6 +199,7 @@ class HomeFragment : Fragment(), CategoryFilterListener {
     }
 
     override fun onCategoryFilterSelected(category: Category) {
+        scrollToTop = true
         thisCategory = category
         viewModel.filterByCategory(
             category = thisCategory!!.category
