@@ -1,9 +1,11 @@
 package com.dsd.kosjenka.presentation.home.exercise
 
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -13,7 +15,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.dsd.kosjenka.R
 import com.dsd.kosjenka.databinding.FragmentExerciseBinding
+import com.dsd.kosjenka.databinding.FragmentTimer1Binding
 import com.dsd.kosjenka.presentation.MainActivity
+import com.dsd.kosjenka.utils.Common
 import com.dsd.kosjenka.utils.UiStates
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -24,6 +28,11 @@ class ExerciseFragment : Fragment() {
 
     private lateinit var binding: FragmentExerciseBinding
     private val viewModel by viewModels<ExerciseViewModel>()
+
+    lateinit var timer: CountDownTimer
+    private var minutes=0
+
+    private lateinit var Prog: ProgressBar
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,6 +57,39 @@ class ExerciseFragment : Fragment() {
         observeViewModel()
         viewModel.getExercise(args.exerciseId)
 
+        time_counter()
+
+    }
+
+    private fun time_counter(){
+
+        Prog = binding.Prog
+        val initialTimeMillis: Long = 60000
+
+        timer = object : CountDownTimer(initialTimeMillis, 1000) {
+
+            override fun onTick(millisUntilFinished: Long) {
+                val secondsRemaining = (initialTimeMillis - millisUntilFinished)
+                if((millisUntilFinished/1000)<=1) {
+                    timer.cancel()
+                    minutes+=1
+                    timer.start()
+                }
+                val percen = if (secondsRemaining != 0L) {
+                    ((secondsRemaining/1000.0)/(initialTimeMillis/1000.0))*100.0
+                } else {
+                    0
+                }
+                binding.textView2.setText(minutes.toString()+":"+(secondsRemaining/1000).toString())
+                Prog.progress = percen.toInt()
+            }
+
+            override fun onFinish() {
+                Common.showToast(binding.root.context, "Times ended")
+            }
+        }
+
+        timer.start()
     }
 
     private fun observeViewModel() {

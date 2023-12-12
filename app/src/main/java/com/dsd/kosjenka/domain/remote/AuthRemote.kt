@@ -28,7 +28,7 @@ class AuthRemote @Inject constructor(
     }
 
     suspend fun forgotPassword(email:String)= parseResult {
-        apiService.forgotPassword(request = ForgotPasswordRequest(email))
+        apiService.passwordForgot(request = ForgotPasswordRequest(email))
     }
 
 }

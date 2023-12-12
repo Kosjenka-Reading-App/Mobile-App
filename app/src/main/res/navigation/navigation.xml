@@ -116,4 +116,9 @@
             android:id="@+id/action_resetPasswordFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/timer_1"
+        android:name="com.dsd.kosjenka.timer_1"
+        android:label="fragment_timer_1"
+        tools:layout="@layout/fragment_timer_1" />
 </navigation>

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -54,16 +55,12 @@ class LoginFragment : Fragment() {
         activity.setSupportActionBar(binding.loginToolbar)
         activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        binding.resetPwd.setOnClickListener(
+        binding.forgotPassword.setOnClickListener(
             Navigation.createNavigateOnClickListener(R.id.action_loginFragment_to_resetPasswordFragment)
-        )
+            )
 
         binding.registerLink.setOnClickListener(
             Navigation.createNavigateOnClickListener(R.id.action_loginFragment_to_registerFragment)
-        )
-
-        binding.forgotPassword.setOnClickListener(
-            Navigation.createNavigateOnClickListener(R.id.action_loginFragment_to_forgotPasswordFragment)
         )
 
         binding.login.setOnClickListener {

@@ -7,14 +7,19 @@
 
     </data>
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/background">
 
         <!-- Define the Toolbar -->
         <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appBarLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/exercise_toolbar"
@@ -26,10 +31,13 @@
 
         <!-- Define a Scrollable TextView -->
         <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:id="@+id/scrollView2"
+            android:layout_width="418dp"
+            android:layout_height="573dp"
             android:background="@color/background"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:layout_constraintBottom_toTopOf="@+id/Prog"
+            app:layout_constraintTop_toBottomOf="@+id/appBarLayout">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -41,6 +49,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@color/background"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    tools:layout_editor_absoluteX="16dp"
                     tools:text="Hello World!" />
 
                 <ProgressBar
@@ -60,6 +70,31 @@
 
         </ScrollView>
 
+        <ProgressBar
+            android:id="@+id/Prog"
+            android:layout_width="106dp"
+            android:layout_height="89dp"
+            android:layout_gravity="center_horizontal"
+            android:indeterminateOnly="false"
+            android:progress="75"
+            android:progressDrawable="@drawable/circle"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:progress="1"></ProgressBar>
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/Prog"
+            app:layout_constraintEnd_toEndOf="@+id/Prog"
+            app:layout_constraintStart_toStartOf="@+id/Prog"
+            app:layout_constraintTop_toTopOf="@+id/Prog" />
 
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

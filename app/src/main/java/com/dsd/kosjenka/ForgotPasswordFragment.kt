@@ -67,7 +67,7 @@ class ForgotPasswordFragment : Fragment() {
                     }
 
                     UiStates.RESET_PASSWORD -> {
-                        findNavController().navigate(R.id.action_forgotPasswordFragment_to_loginFragment)
+                        findNavController().navigate(R.id.action_resetPasswordFragment_to_loginFragment)
                     }else -> {
                         Common.showToast(binding.root.context, getString(R.string.default_error))
 

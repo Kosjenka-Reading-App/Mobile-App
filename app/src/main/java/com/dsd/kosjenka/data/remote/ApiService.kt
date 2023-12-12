@@ -9,6 +9,7 @@ import com.dsd.kosjenka.domain.models.UserProfile
 import com.dsd.kosjenka.domain.request_objects.CreateUserRequestObject
 import com.dsd.kosjenka.domain.request_objects.ForgotPasswordRequest
 import com.dsd.kosjenka.domain.request_objects.ResetPasswordRequest
+import com.dsd.kosjenka.domain.request_objects.ResetPasswordRequest2
 import com.dsd.kosjenka.domain.response_objects.ForgotPasswordResponse
 import com.dsd.kosjenka.domain.response_objects.ResetResponseObject
 import com.dsd.kosjenka.domain.response_objects.DeleteUserResponseObject
@@ -35,7 +36,7 @@ interface ApiService {
 
     @POST("/password/reset")
     suspend fun resetPassword(
-        @Body request: ResetPasswordRequest
+        @Body request: ForgotPasswordRequest
     ): Response<ResetResponseObject>
 
     @POST("/password/forgot")
