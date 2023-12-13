@@ -1,11 +1,17 @@
 package com.dsd.kosjenka.presentation.home.exercise
 
+import android.graphics.Color
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.os.Handler
+import android.os.Looper
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -28,6 +34,10 @@ class ExerciseFragment : Fragment() {
 
     private lateinit var binding: FragmentExerciseBinding
     private val viewModel by viewModels<ExerciseViewModel>()
+
+    private lateinit var textView: TextView
+    private var currentIndex = 0
+    private val handler = Handler(Looper.getMainLooper())
 
     lateinit var timer: CountDownTimer
     private var minutes=0
@@ -58,7 +68,8 @@ class ExerciseFragment : Fragment() {
         viewModel.getExercise(args.exerciseId)
 
         time_counter()
-
+        textView=binding.exerciseText
+        animateText()
     }
 
     private fun time_counter(){
@@ -138,6 +149,24 @@ class ExerciseFragment : Fragment() {
             binding.loading.visibility = View.GONE
             binding.exerciseText.visibility = View.VISIBLE
         }
+    }
+
+    private fun animateText(currentIndex: Int = 0) {
+        handler.postDelayed({
+            val spannableString = SpannableString(textView.text)
+            val colorSpan = ForegroundColorSpan(Color.RED)
+
+            if (currentIndex > 0) {
+                val previousColorSpan = ForegroundColorSpan(Color.BLACK)
+                spannableString.setSpan(previousColorSpan, currentIndex - 1, currentIndex, 0)
+            }
+
+            spannableString.setSpan(colorSpan, currentIndex, currentIndex + 1, 0)
+            textView.text = spannableString
+
+            val nextIndex = (currentIndex + 1) % textView.text.length
+            animateText(nextIndex)
+        }, 500)
     }
 
 }
