@@ -72,7 +72,7 @@ class ExerciseFragment : Fragment() {
         followingPointer()
     }
 
-    private fun time_counter(){
+    private fun time_counter(){//
 
         Prog = binding.Prog
         val initialTimeMillis: Long = 60000
