@@ -72,7 +72,7 @@ class ExerciseFragment : Fragment() {
         followingPointer()
     }
 
-    private fun time_counter(){
+    private fun time_counter(){//
         Prog = binding.Prog
         val initialTimeMillis: Long = 60000
         timer = object : CountDownTimer(initialTimeMillis, 1000) {
@@ -91,12 +91,10 @@ class ExerciseFragment : Fragment() {
                 binding.textView2.setText(minutes.toString()+":"+(secondsRemaining/1000).toString())
                 Prog.progress = percen.toInt()
             }
-
             override fun onFinish() {
                 Common.showToast(binding.root.context, "Times ended")
             }
         }
-
         timer.start()
     }
 
