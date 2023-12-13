@@ -31,8 +31,9 @@ class PagingExerciseAdapter :
                     categoriesString += category.category
                     if (index < exercise.category.size - 1) categoriesString += ", "
                 }
-                if (categoriesString != "")
-                    exerciseCategory.visibility = View.VISIBLE
+                exerciseCategory.visibility =
+                    if (categoriesString != "") View.VISIBLE
+                    else View.GONE
                 exerciseCategory.text = categoriesString
 
 
