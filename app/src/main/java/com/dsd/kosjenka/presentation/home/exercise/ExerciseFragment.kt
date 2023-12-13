@@ -72,13 +72,10 @@ class ExerciseFragment : Fragment() {
         followingPointer()
     }
 
-    private fun time_counter(){//
-
+    private fun time_counter(){
         Prog = binding.Prog
         val initialTimeMillis: Long = 60000
-
         timer = object : CountDownTimer(initialTimeMillis, 1000) {
-
             override fun onTick(millisUntilFinished: Long) {
                 val secondsRemaining = (initialTimeMillis - millisUntilFinished)
                 if((millisUntilFinished/1000)<=1) {
