@@ -69,7 +69,7 @@ class ExerciseFragment : Fragment() {
 
         time_counter()
         textView=binding.exerciseText
-        animateText()
+        followingPointer()
     }
 
     private fun time_counter(){
@@ -151,7 +151,7 @@ class ExerciseFragment : Fragment() {
         }
     }
 
-    private fun animateText(currentIndex: Int = 0) {
+    private fun followingPointer(currentIndex: Int = 0) {
         handler.postDelayed({
             val spannableString = SpannableString(textView.text)
             val colorSpan = ForegroundColorSpan(Color.RED)
@@ -165,7 +165,7 @@ class ExerciseFragment : Fragment() {
             textView.text = spannableString
 
             val nextIndex = (currentIndex + 1) % textView.text.length
-            animateText(nextIndex)
+            followingPointer(nextIndex)
         }, 500)
     }
 
