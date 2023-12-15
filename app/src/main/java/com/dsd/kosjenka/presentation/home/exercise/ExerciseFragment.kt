@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
+import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
@@ -151,17 +152,39 @@ class ExerciseFragment : Fragment() {
             val spannableString = SpannableString(textView.text)
             val colorSpan = ForegroundColorSpan(Color.RED)
 
-            if (currentIndex > 0) {
-                val previousColorSpan = ForegroundColorSpan(Color.BLACK)
-                spannableString.setSpan(previousColorSpan, currentIndex - 1, currentIndex, 0)
-            }
+            val previousSpans = spannableString.getSpans(0, spannableString.length, ForegroundColorSpan::class.java)
+            for (span in previousSpans)
+                spannableString.removeSpan(span)
 
-            spannableString.setSpan(colorSpan, currentIndex, currentIndex + 1, 0)
+
+            val wordStart = findWordStart(currentIndex)
+            val wordEnd = findWordEnd(wordStart)
+
+            spannableString.setSpan(colorSpan, wordStart, wordEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+
             textView.text = spannableString
 
-            val nextIndex = (currentIndex + 1) % textView.text.length
+            val nextIndex = (wordEnd + 1) % textView.text.length
             followingPointer(nextIndex)
         }, 500)
     }
+
+    private fun findWordStart(index: Int): Int {
+        var start = index
+        while (start > 0 && !textView.text[start].isWhitespace()) {
+            start--
+        }
+        return start + 1
+    }
+
+    private fun findWordEnd(start: Int): Int {
+        var end = start
+        while (end < textView.text.length && !textView.text[end].isWhitespace()) {
+            end++
+        }
+        return end
+    }
+
+
 
 }
