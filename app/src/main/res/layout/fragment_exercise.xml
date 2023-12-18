@@ -22,8 +22,9 @@
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginBottom="8dp"
             android:fillViewport="true"
-            app:layout_constraintBottom_toTopOf="@id/exercise_play_pause"
+            app:layout_constraintBottom_toTopOf="@id/font_seek_bar"
             app:layout_constraintTop_toBottomOf="@id/exercise_toolbar">
 
             <com.dsd.kosjenka.presentation.home.exercise.HighlightTextView
@@ -31,10 +32,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/background"
+                android:gravity="top|center"
                 android:padding="16dp"
                 tools:text="Hello World!" />
 
         </androidx.core.widget.NestedScrollView>
+
+        <SeekBar
+            android:id="@+id/font_seek_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginBottom="8dp"
+            android:max="30"
+            android:progress="0"
+            app:layout_constraintBottom_toTopOf="@id/exercise_play_pause" />
 
         <ImageView
             android:id="@+id/speed_minus"

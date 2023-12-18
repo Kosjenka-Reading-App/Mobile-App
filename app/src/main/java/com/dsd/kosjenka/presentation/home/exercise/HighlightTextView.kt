@@ -6,6 +6,7 @@ import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.core.widget.NestedScrollView
 
 class HighlightTextView(context: Context, attrs: AttributeSet?) :
     AppCompatTextView(context, attrs) {
@@ -24,9 +25,13 @@ class HighlightTextView(context: Context, attrs: AttributeSet?) :
                 // Clear previous and highlight current word
                 clearPreviousHighlight()
                 highlightCurrentWord()
-            } else
-            // Reached the end, reset index
+
+                scrollToWord(currentIndex)
+            } else {
+                // Reached the end, reset index
                 currentIndex = -1
+                scrollToWord(0)
+            }
         } else resetCallback = false
     }
 
@@ -53,4 +58,24 @@ class HighlightTextView(context: Context, attrs: AttributeSet?) :
     fun resetCallback() {
         resetCallback = true
     }
+
+    private fun scrollToWord(index: Int) {
+        val layout = layout ?: return
+        val startIndex = wordList.take(index).sumOf { it.length + 1 } // +1 for the space
+        val endIndex = startIndex + wordList[index].length
+        val startY = layout.getLineTop(layout.getLineForOffset(startIndex.toInt()))
+        val endY = layout.getLineBottom(layout.getLineForOffset(endIndex.toInt()))
+        val textHeight = endY - startY
+        val viewHeight = height
+
+        // Calculate the scroll position to center the text vertically
+        val scrollY = (startY + endY - viewHeight) / 2
+
+        // Get the parent NestedScrollView (adjust the type if needed)
+        val parentScrollView = parent as? NestedScrollView
+
+        // Scroll smoothly to the calculated position
+        parentScrollView?.smoothScrollTo(0, scrollY)
+    }
+
 }

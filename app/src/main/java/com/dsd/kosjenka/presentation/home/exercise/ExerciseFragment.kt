@@ -6,6 +6,7 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SeekBar
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -56,6 +57,21 @@ class ExerciseFragment : Fragment() {
         viewModel.getExercise(args.exerciseId)
         setupSpeedButtons()
         setupPlayPause()
+        setupFontSlider()
+    }
+
+    private fun setupFontSlider() {
+        binding.exerciseText.textSize = 20f
+
+        binding.fontSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                val fontSize = 20 + progress
+                binding.exerciseText.textSize = fontSize.toFloat()
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+        })
     }
 
     private fun setupPlayPause() {
@@ -74,14 +90,29 @@ class ExerciseFragment : Fragment() {
 
     private fun setupSpeedButtons() {
         binding.speedMinus.setOnClickListener {
-            delayMillis -= 100
-            if (isPlaying)
-                resetCallback()
+            if (delayMillis > 200) {
+                delayMillis -= 100
+                if (isPlaying) resetCallback()
+            } else
+                Toast.makeText(context, "Minimum speed reached (0.2 seconds)", Toast.LENGTH_SHORT)
+                    .show()
+
+            // Enable speedPlus if it was disabled
+            binding.speedPlus.isEnabled = true
+            // Disable speedMinus if the lower limit is reached
+            if (delayMillis <= 200) binding.speedMinus.isEnabled = false
         }
         binding.speedPlus.setOnClickListener {
-            delayMillis += 100
-            if (isPlaying)
-                resetCallback()
+            if (delayMillis < 3000) {
+                delayMillis += 100
+                if (isPlaying) resetCallback()
+            } else
+                Toast.makeText(context, "Maximum speed reached (3 seconds)", Toast.LENGTH_SHORT)
+                    .show()
+            // Enable speedMinus if it was disabled
+            binding.speedMinus.isEnabled = true
+            // Disable speedPlus if the upper limit is reached
+            if (delayMillis >= 3000) binding.speedPlus.isEnabled = false
         }
     }
 
