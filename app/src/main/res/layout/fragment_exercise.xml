@@ -7,66 +7,84 @@
 
     </data>
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/background">
 
-        <!-- Define the Toolbar -->
-        <com.google.android.material.appbar.AppBarLayout
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/exercise_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/exercise_toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="@color/background" />
-
-        </com.google.android.material.appbar.AppBarLayout>
-
-        <!-- Define a Scrollable TextView -->
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="?attr/actionBarSize"
             android:background="@color/background"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:fillViewport="true"
+            app:layout_constraintBottom_toTopOf="@id/exercise_play_pause"
+            app:layout_constraintTop_toBottomOf="@id/exercise_toolbar">
+
+            <com.dsd.kosjenka.presentation.home.exercise.HighlightTextView
+                android:id="@+id/exercise_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="16dp">
+                android:background="@color/background"
+                android:padding="16dp"
+                tools:text="Hello World!" />
 
-                <com.dsd.kosjenka.presentation.home.exercise.HighlightTextView
-                    android:id="@+id/exercise_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@color/background"
-                    tools:text="Hello World!" />
+        </androidx.core.widget.NestedScrollView>
 
-<!--                <TextView-->
-<!--                    android:id="@+id/exercise_text"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="match_parent"-->
-<!--                    android:background="@color/background"-->
-<!--                    tools:text="Hello World!" />-->
+        <ImageView
+            android:id="@+id/speed_minus"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="16dp"
+            android:contentDescription="@null"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:src="@drawable/ic_minus"
+            app:layout_constraintBottom_toBottomOf="@id/exercise_play_pause"
+            app:layout_constraintEnd_toStartOf="@id/exercise_play_pause"
+            app:layout_constraintTop_toTopOf="@id/exercise_play_pause" />
 
-                <ProgressBar
-                    android:id="@+id/loading"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:indeterminateDrawable="@drawable/progress_bar_blue"
-                    android:indeterminateDuration="@android:integer/config_longAnimTime"
-                    android:visibility="gone"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+        <ImageView
+            android:id="@+id/exercise_play_pause"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginBottom="16dp"
+            android:contentDescription="@null"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:src="@drawable/ic_play"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+        <ImageView
+            android:id="@+id/speed_plus"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="16dp"
+            android:contentDescription="@null"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:src="@drawable/ic_plus"
+            app:layout_constraintBottom_toBottomOf="@id/exercise_play_pause"
+            app:layout_constraintStart_toEndOf="@id/exercise_play_pause"
+            app:layout_constraintTop_toTopOf="@id/exercise_play_pause" />
+
+        <ProgressBar
+            android:id="@+id/loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminateDrawable="@drawable/progress_bar_blue"
+            android:indeterminateDuration="@android:integer/config_longAnimTime"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-        </ScrollView>
-
-
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

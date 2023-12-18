@@ -3,57 +3,54 @@ package com.dsd.kosjenka.presentation.home.exercise
 import android.content.Context
 import android.graphics.Color
 import android.text.SpannableStringBuilder
-import android.text.style.BackgroundColorSpan
 import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatTextView
 
 class HighlightTextView(context: Context, attrs: AttributeSet?) :
     AppCompatTextView(context, attrs) {
+
     private var currentIndex = -1
+    private var resetCallback = false
     private val highlightSpan = ForegroundColorSpan(Color.YELLOW)
     private lateinit var wordList: List<String>
 
     fun highlightNextWord() {
-        currentIndex++
-
-        // Remove the previous highlight
-        clearPreviousHighlight()
-
         if (!this::wordList.isInitialized) wordList = text.split(" ")
 
-        // Check if we reached the end of the text
-        if (currentIndex < wordList.size) {
-            // Highlight the current word
-            highlightCurrentWord()
-        }
+        if (!resetCallback) {
+            // Increment index and check if it's valid
+            if (++currentIndex < wordList.size) {
+                // Clear previous and highlight current word
+                clearPreviousHighlight()
+                highlightCurrentWord()
+            } else
+            // Reached the end, reset index
+                currentIndex = -1
+        } else resetCallback = false
     }
 
     private fun clearPreviousHighlight() {
-        if (currentIndex >= 0) {
+        if (currentIndex > 0) {
             val spannableText = SpannableStringBuilder(text)
-            val spans =
-                spannableText.getSpans(0, spannableText.length, BackgroundColorSpan::class.java)
-
-            for (span in spans) {
-                spannableText.removeSpan(span)
-            }
-
+            spannableText.removeSpan(highlightSpan)
             text = spannableText
         }
     }
 
     private fun highlightCurrentWord() {
-        if (currentIndex >= 0 && currentIndex < wordList.size) {
-            val startIndex = wordList.take(currentIndex).sumOf { it.length + 1 } // +1 for the space
-            val endIndex = startIndex + wordList[currentIndex].length
+        val startIndex = wordList.take(currentIndex).sumOf { it.length + 1 } // +1 for the space
+        val endIndex = startIndex + wordList[currentIndex].length
 
-            val spannableText = SpannableStringBuilder(text)
-            spannableText.setSpan(
-                highlightSpan, startIndex, endIndex, SpannableStringBuilder.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
+        val spannableText = SpannableStringBuilder(text)
+        spannableText.setSpan(
+            highlightSpan, startIndex, endIndex, SpannableStringBuilder.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
 
-            text = spannableText
-        }
+        text = spannableText
+    }
+
+    fun resetCallback() {
+        resetCallback = true
     }
 }

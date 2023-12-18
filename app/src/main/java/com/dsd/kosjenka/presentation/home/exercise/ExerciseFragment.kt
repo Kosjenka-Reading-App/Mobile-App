@@ -27,10 +27,9 @@ class ExerciseFragment : Fragment() {
     private lateinit var binding: FragmentExerciseBinding
     private val viewModel by viewModels<ExerciseViewModel>()
 
-    private lateinit var textList: List<String>
-
-    var previousStartIndex = -1
-    var previousEndIndex = -1
+    private var delayMillis = 1000L
+    private var isPlaying = false
+    private lateinit var handler: Handler
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,10 +50,39 @@ class ExerciseFragment : Fragment() {
         val args = ExerciseFragmentArgs.fromBundle(requireArguments())
 
         binding.exerciseToolbar.title = args.exerciseTitle
+        handler = Handler(Looper.getMainLooper())
 
         observeViewModel()
         viewModel.getExercise(args.exerciseId)
+        setupSpeedButtons()
+        setupPlayPause()
+    }
 
+    private fun setupPlayPause() {
+        binding.exercisePlayPause.setOnClickListener {
+            if (isPlaying) {
+                //Pause Exercise
+                binding.exercisePlayPause.setImageResource(R.drawable.ic_play)
+                handler.removeCallbacksAndMessages(null)
+                isPlaying = false
+            } else
+            //Resume Exercise
+                startReadingMode()
+        }
+    }
+
+
+    private fun setupSpeedButtons() {
+        binding.speedMinus.setOnClickListener {
+            delayMillis -= 100
+            if (isPlaying)
+                resetCallback()
+        }
+        binding.speedPlus.setOnClickListener {
+            delayMillis += 100
+            if (isPlaying)
+                resetCallback()
+        }
     }
 
     private fun observeViewModel() {
@@ -97,14 +125,22 @@ class ExerciseFragment : Fragment() {
     }
 
     private fun startReadingMode() {
-        val handler = Handler(Looper.getMainLooper())
+        binding.exercisePlayPause.setImageResource(R.drawable.ic_pause)
+        isPlaying = true
         handler.post(object : Runnable {
             override fun run() {
                 binding.exerciseText.highlightNextWord()
-                handler.postDelayed(this, 1000L)
+                handler.postDelayed(this, delayMillis)
             }
         })
+    }
 
+    private fun resetCallback() {
+        // Remove any existing callbacks in the handler
+        handler.removeCallbacksAndMessages(null)
+        // Start the highlighting loop with the adjusted speed
+        binding.exerciseText.resetCallback()
+        startReadingMode()
     }
 
     private fun toggleProgressBar(isLoading: Boolean) {
