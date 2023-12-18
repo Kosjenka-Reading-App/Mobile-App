@@ -36,12 +36,19 @@
                 android:layout_height="wrap_content"
                 android:padding="16dp">
 
-                <TextView
+                <com.dsd.kosjenka.presentation.home.exercise.HighlightTextView
                     android:id="@+id/exercise_text"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@color/background"
                     tools:text="Hello World!" />
+
+<!--                <TextView-->
+<!--                    android:id="@+id/exercise_text"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:background="@color/background"-->
+<!--                    tools:text="Hello World!" />-->
 
                 <ProgressBar
                     android:id="@+id/loading"

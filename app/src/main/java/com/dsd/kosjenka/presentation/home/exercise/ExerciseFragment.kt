@@ -1,6 +1,8 @@
 package com.dsd.kosjenka.presentation.home.exercise
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,6 +26,11 @@ class ExerciseFragment : Fragment() {
 
     private lateinit var binding: FragmentExerciseBinding
     private val viewModel by viewModels<ExerciseViewModel>()
+
+    private lateinit var textList: List<String>
+
+    var previousStartIndex = -1
+    var previousEndIndex = -1
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -82,10 +89,22 @@ class ExerciseFragment : Fragment() {
                 launch {
                     viewModel.exerciseDataFlow.collectLatest {
                         binding.exerciseText.text = it.text
+                        startReadingMode()
                     }
                 }
             }
         }
+    }
+
+    private fun startReadingMode() {
+        val handler = Handler(Looper.getMainLooper())
+        handler.post(object : Runnable {
+            override fun run() {
+                binding.exerciseText.highlightNextWord()
+                handler.postDelayed(this, 1000L)
+            }
+        })
+
     }
 
     private fun toggleProgressBar(isLoading: Boolean) {
