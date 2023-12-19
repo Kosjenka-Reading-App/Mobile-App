@@ -19,12 +19,17 @@ set_target_properties( libomp PROPERTIES IMPORTED_LOCATION ${Visage_LIBS}/libomp
 set_target_properties( tfplugin PROPERTIES IMPORTED_LOCATION ${Visage_LIBS}/libTFPlugin.so )
 set_target_properties( VisageVision PROPERTIES IMPORTED_LOCATION ${Visage_LIBS}/libVisageVision.so )
 
+add_library( VisageAnalyser SHARED IMPORTED )
+
+set_target_properties( VisageAnalyser PROPERTIES
+        IMPORTED_LOCATION ${Visage_LIBS}/libVisageAnalyser.so )
+
 set( Wrapper_SOURCE src/main/jni/AndroidWrapper.cpp
-                    src/main/jni/AndroidCameraCapture.cpp
+                    src/main/jni/AndroidStreamCapture.cpp
                     src/main/jni/VisageRendering.cpp
                     src/main/jni/AndroidImageCapture.cpp
-                    src/main/jni/LivenessGUI.cpp )
+                    src/main/jni/AndroidCapture.cpp)
 
 add_library( VisageWrapper SHARED ${Wrapper_SOURCE} )
 
-target_link_libraries( VisageWrapper libomp tfplugin VisageVision "-lGLESv1_CM -llog -ldl -Wl,--gc-sections" )
+target_link_libraries( VisageWrapper libomp tfplugin VisageVision VisageAnalyser "-lGLESv1_CM -llog -ldl -Wl,--gc-sections" )

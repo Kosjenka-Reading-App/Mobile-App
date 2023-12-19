@@ -11,6 +11,8 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.dsd.kosjenka.R
 import com.dsd.kosjenka.databinding.ActivityMainBinding
+import com.dsd.kosjenka.presentation.home.camera.Camera2Fragment
+import com.dsd.kosjenka.presentation.home.camera.VisageWrapper
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
 import java.io.FileOutputStream
@@ -23,8 +25,13 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
+    private lateinit var visageWrapper: VisageWrapper
 
     private val MY_PERMISSIONS_REQUEST_STORAGE = 2
+
+    init {
+        System.loadLibrary("VisageWrapper")
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +40,9 @@ class MainActivity : AppCompatActivity() {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.navHostFragment) as NavHostFragment
         navController = navHostFragment.navController
+
+        visageWrapper = VisageWrapper.get(this)
+        visageWrapper.AllocateResources()
 
         copyAssets(filesDir.absolutePath)
 
@@ -67,6 +77,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Utility method called to copy required file to trackerdata folder.
+     *
+     * @param rootDir  absolute path to directory where files should be copied.
+     * @param filename name of file that will be copied.
+     */
     fun copyFile(rootDir: String, filename: String) {
         val assetManager = this.assets
         var inp: InputStream? = null
@@ -93,6 +109,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Utility method called to create required directories and initiate copy of all assets required for tracking.
+     *
+     * @param rootDir absolute path to root directory used for storing assets required for tracking.
+     */
     fun copyAssets(rootDir: String) {
         val assetManager = this.assets
         var assets: Array<String>? = null

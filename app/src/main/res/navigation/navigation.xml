@@ -60,7 +60,9 @@
         <argument
             android:name="exerciseTitle"
             app:argType="string" />
-
+        <action
+            android:id="@+id/action_exerciseFragment_to_cameraFragment"
+            app:destination="@id/cameraFragment" />
     </fragment>
     <fragment
         android:id="@+id/homeFragment"
@@ -116,5 +118,10 @@
             android:id="@+id/action_resetPasswordFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/cameraFragment"
+        android:name="com.dsd.kosjenka.presentation.home.camera.Camera2Fragment"
+        android:label="fragment_camera"
+        tools:layout="@layout/fragment_camera" />
 
 </navigation>
