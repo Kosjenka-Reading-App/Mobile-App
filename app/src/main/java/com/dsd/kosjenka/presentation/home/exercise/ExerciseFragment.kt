@@ -35,6 +35,7 @@ class ExerciseFragment : Fragment() {
 
     private lateinit var binding: FragmentExerciseBinding
     private val viewModel by viewModels<ExerciseViewModel>()
+    private var speed_of_pointer:Long=1000
 
     private lateinit var textView: TextView
     private var currentIndex = 0
@@ -66,6 +67,8 @@ class ExerciseFragment : Fragment() {
         binding.exerciseToolbar.title = args.exerciseTitle
 
         observeViewModel()
+
+        speed_up()
         viewModel.getExercise(args.exerciseId)
 
         time_counter()
@@ -166,7 +169,7 @@ class ExerciseFragment : Fragment() {
 
             val nextIndex = (wordEnd + 1) % textView.text.length
             followingPointer(nextIndex)
-        }, 500)
+        }, speed_of_pointer)
     }
 
     private fun findWordStart(index: Int): Int {
@@ -183,6 +186,18 @@ class ExerciseFragment : Fragment() {
             end++
         }
         return end
+    }
+
+    private fun speed_up(){
+        binding.speedUp.setOnClickListener(){
+            if(speed_of_pointer!= 500.toLong()) {
+                binding.speedUp.setImageResource(R.drawable.double_speed)
+                speed_of_pointer = 500
+            }else{
+                binding.speedUp.setImageResource(R.drawable.speed)
+                speed_of_pointer = 1000
+            }
+        }
     }
 
 

@@ -32,11 +32,13 @@
         <!-- Define a Scrollable TextView -->
         <ScrollView
             android:id="@+id/scrollView2"
-            android:layout_width="418dp"
-            android:layout_height="573dp"
+            android:layout_width="397dp"
+            android:layout_height="571dp"
             android:background="@color/background"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             app:layout_constraintBottom_toTopOf="@+id/Prog"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/appBarLayout">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -46,8 +48,10 @@
 
                 <TextView
                     android:id="@+id/exercise_text"
-                    android:layout_width="381dp"
-                    android:layout_height="16dp"
+                    android:layout_width="374dp"
+                    android:layout_height="542dp"
+                    android:padding="5dp"
+                    android:textSize="18dp"
                     android:background="@color/background"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -83,8 +87,9 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/speed_up"
             tools:progress="1"></ProgressBar>
+
         <TextView
             android:id="@+id/textView2"
             android:layout_width="wrap_content"
@@ -96,6 +101,15 @@
             app:layout_constraintEnd_toEndOf="@+id/Prog"
             app:layout_constraintStart_toStartOf="@+id/Prog"
             app:layout_constraintTop_toTopOf="@+id/Prog" />
+
+        <ImageView
+            android:id="@+id/speed_up"
+            android:layout_width="102dp"
+            android:layout_height="96dp"
+            android:layout_marginStart="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@drawable/speed" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
