@@ -44,18 +44,7 @@ class ExerciseFragment : Fragment() {
         activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val args = ExerciseFragmentArgs.fromBundle(requireArguments())
-        
 
-        if (BuildConfig.DEBUG) {
-            binding.startCameraBtn.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.action_exerciseFragment_to_cameraFragment))
-//            binding.startCameraBtn.setOnClickListener
-//            {
-//                activity.let {
-//                    val intent = Intent(it, CameraActivity::class.java)
-//                    it.startActivity(intent)
-//                }
-//            }
-        }
         binding.exerciseToolbar.title = args.exerciseTitle
 
         observeViewModel()

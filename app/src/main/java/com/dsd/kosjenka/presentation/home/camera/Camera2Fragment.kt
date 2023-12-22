@@ -33,7 +33,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
@@ -41,14 +40,14 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import com.dsd.kosjenka.R
 import com.dsd.kosjenka.databinding.FragmentCameraBinding
 import com.dsd.kosjenka.presentation.MainActivity
-import com.dsd.kosjenka.utils.Common
 import com.google.android.gms.common.util.concurrent.HandlerExecutor
+import kotlinx.coroutines.launch
 import java.nio.ByteBuffer
 import java.util.Collections
 import java.util.concurrent.Semaphore
@@ -152,6 +151,8 @@ class Camera2Fragment : Fragment(), ActivityCompat.OnRequestPermissionsResultCal
         }
     }
 
+    private lateinit var currentTrackingMode : TrackingMode
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -198,12 +199,61 @@ class Camera2Fragment : Fragment(), ActivityCompat.OnRequestPermissionsResultCal
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val trackerView : View = visageWrapper!!.trackerView
+        currentTrackingMode =
+            if (visageWrapper!!.isTrackingFromCamera) TrackingMode.Camera2 else TrackingMode.Calibration
 
-        if (trackerView.parent != null){
-            (trackerView.parent as ViewGroup).removeView(trackerView)
+        if (savedInstanceState == null){
+//            val trackerView : View = visageWrapper!!.trackerView
+//
+//            if (trackerView.parent != null){
+//                (trackerView.parent as ViewGroup).removeView(trackerView)
+//            }
+//            binding.cameraRoot.addView(trackerView, 0)
+//            val calibrationView : View = visageWrapper!!.gazeCalibrationView
+////            binding.cameraRoot.removeAllViews()
+//            if (calibrationView.parent != null){
+//                (calibrationView.parent as ViewGroup).removeView(calibrationView)
+//            }
+//            binding.cameraRoot.addView(calibrationView, 0)
         }
-        binding.cameraRoot.addView(trackerView, 0)
+
+        binding.calibrateBtn.setOnClickListener{
+            lifecycleScope.launch {
+                currentTrackingMode =
+                    if (visageWrapper!!.isTrackingFromCamera) TrackingMode.Camera2 else TrackingMode.Calibration
+
+                if (currentTrackingMode == TrackingMode.Camera2){
+                    val calibrationView : View = visageWrapper!!.gazeCalibrationView
+
+                    binding.cameraRoot.removeAllViews()
+                    if (calibrationView.parent != null){
+                        (calibrationView.parent as ViewGroup).removeView(calibrationView)
+                    }
+                    binding.cameraRoot.addView(calibrationView, 0)
+                    visageWrapper!!.switchToCalibration()
+                }
+            }
+        }
+
+        binding.tackerBtn.setOnClickListener{
+            lifecycleScope.launch {
+                currentTrackingMode =
+                    if (visageWrapper!!.isTrackingFromCamera) TrackingMode.Camera2 else TrackingMode.Calibration
+
+                if (currentTrackingMode == TrackingMode.Calibration){
+                    val trackerView : View = visageWrapper!!.trackerView
+
+                    binding.cameraRoot.removeAllViews()
+                    if (trackerView.parent != null){
+                        (trackerView.parent as ViewGroup).removeView(trackerView)
+                    }
+                    binding.cameraRoot.addView(trackerView, 0)
+                    visageWrapper!!.switchToCamera()
+                }
+            }
+        }
+
+        setTrackerDisplayOptions()
     }
 
     override fun onConfigurationChanged(newConfiguration: Configuration) {
@@ -539,11 +589,25 @@ class Camera2Fragment : Fragment(), ActivityCompat.OnRequestPermissionsResultCal
         return result
     }
 
+    private fun setTrackerDisplayOptions() {
+        var activeDisplay : Int = VisageWrapper.DISPLAY_POINT_QUALITY
+        val options = listOf(VisageWrapper.DISPLAY_IRIS,VisageWrapper.DISPLAY_GAZE)
+        for (op in options) {
+            activeDisplay += op
+        }
+        visageWrapper!!.SetDisplayOptions(activeDisplay)
+        //visageWrapper!!.toggleRefineLandmarks(true)
+    }
+
     fun switchCamera() {
         visageWrapper!!.PauseTracker()
         frontCameraActive = !frontCameraActive
         closeCamera()
         openCamera(640, 480, frontCameraActive)
+    }
+
+    private enum class TrackingMode {
+        Calibration, Camera2
     }
 
     /**

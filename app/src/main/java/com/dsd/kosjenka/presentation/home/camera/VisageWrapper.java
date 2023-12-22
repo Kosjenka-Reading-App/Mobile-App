@@ -2,13 +2,10 @@ package com.dsd.kosjenka.presentation.home.camera;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
 import android.os.Process;
-import androidx.core.content.res.ResourcesCompat;
 import android.util.Log;
 import android.view.View;
 
@@ -33,9 +30,9 @@ public class VisageWrapper {
     static final int DISPLAY_DEFAULT = DISPLAY_FEATURE_POINTS + DISPLAY_SPLINES + DISPLAY_GAZE + DISPLAY_IRIS + DISPLAY_AXES + DISPLAY_TRACKING_QUALITY + DISPLAY_POINT_QUALITY;
     public static final int NUM_EMOTIONS = 6; //should be 6 because neutral emotion won't be displayed
 
-    public enum TrackFrom {
+    public enum TrackMode {
         CAMERA,
-        MEDIA
+        CALIBRATION
     };
 
     private static volatile VisageWrapper instance = null;
@@ -46,10 +43,11 @@ public class VisageWrapper {
     private Handler visageWorkerHandler = null;
 
     private String path;
-    TrackFrom trackFrom;
+    TrackMode trackMode;
     private boolean trackerStarted = false;
 
     private TrackerView trackerView = null;
+    private GazeCalibrationView gazeCalibrationView = null;
 
 //    private Drawable logo;
 
@@ -68,8 +66,9 @@ public class VisageWrapper {
         ctx = context;
         path = ctx.getFilesDir().getAbsolutePath();
 
-        trackFrom = TrackFrom.CAMERA;
+        trackMode = TrackMode.CAMERA;
         trackerView = new TrackerView(context, this);
+        gazeCalibrationView = new GazeCalibrationView(context, this);
         SetDisplayOptions(DISPLAY_DEFAULT);
 
 
@@ -87,14 +86,21 @@ public class VisageWrapper {
 
     void onResume() {
 
-        trackerView.onResume();
+        if (trackMode == TrackMode.CAMERA)
+            trackerView.onResume();
+        else
+            gazeCalibrationView.onResume();
 
         Log.d(TAG, "backgroundHandler");
         visageWorkerHandler.sendMessage(visageWorkerHandler.obtainMessage(VisageWorkerThread.MSG_START_TRACKER));
     }
 
     void onPause() {
-        trackerView.onPause();
+        if (trackMode == TrackMode.CAMERA)
+            trackerView.onPause();
+        else
+            gazeCalibrationView.onPause();
+
         PauseTracker();
     }
 
@@ -144,12 +150,12 @@ public class VisageWrapper {
 
     void switchToCamera() {
         PauseTracker();
-        trackFrom = TrackFrom.CAMERA;
+        trackMode = TrackMode.CAMERA;
     }
 
-    void switchToMedia() {
+    void switchToCalibration() {
         PauseTracker();
-        trackFrom = TrackFrom.MEDIA;
+        trackMode = TrackMode.CALIBRATION;
     }
 
     void toggleEars() {
@@ -164,13 +170,15 @@ public class VisageWrapper {
     }
     void initAnalyser() { InitAnalyser();};
 
-    boolean isTrackingFromMedia() {
-        return trackFrom == TrackFrom.MEDIA;
+    boolean isTrackingFromCamera() {
+        return trackMode == TrackMode.CAMERA;
     }
 
     View getTrackerView() {
         return trackerView;
     }
+
+    View getGazeCalibrationView() { return gazeCalibrationView; }
 
     private class VisageWorkerThread extends HandlerThread {
 

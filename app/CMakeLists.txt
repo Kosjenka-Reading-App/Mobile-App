@@ -20,9 +20,12 @@ set_target_properties( tfplugin PROPERTIES IMPORTED_LOCATION ${Visage_LIBS}/libT
 set_target_properties( VisageVision PROPERTIES IMPORTED_LOCATION ${Visage_LIBS}/libVisageVision.so )
 
 add_library( VisageAnalyser SHARED IMPORTED )
-
 set_target_properties( VisageAnalyser PROPERTIES
         IMPORTED_LOCATION ${Visage_LIBS}/libVisageAnalyser.so )
+
+add_library( VisageGaze SHARED IMPORTED )
+set_target_properties( VisageGaze PROPERTIES
+        IMPORTED_LOCATION ${Visage_LIBS}/libVisageGaze.so )
 
 set( Wrapper_SOURCE src/main/jni/AndroidWrapper.cpp
                     src/main/jni/AndroidStreamCapture.cpp
@@ -32,4 +35,4 @@ set( Wrapper_SOURCE src/main/jni/AndroidWrapper.cpp
 
 add_library( VisageWrapper SHARED ${Wrapper_SOURCE} )
 
-target_link_libraries( VisageWrapper libomp tfplugin VisageVision VisageAnalyser "-lGLESv1_CM -llog -ldl -Wl,--gc-sections" )
+target_link_libraries( VisageWrapper libomp tfplugin VisageVision VisageAnalyser VisageGaze "-lGLESv1_CM -llog -ldl -Wl,--gc-sections" )

@@ -4,11 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <import type="android.view.View" />
 
-        <variable
-            name="buildConfig"
-            type="com.dsd.kosjenka.BuildConfig"/>
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -63,15 +59,6 @@
 
 
         </ScrollView>
-        <Button
-            android:id="@+id/startCameraBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:text="Camera"
-            android:visibility="@{buildConfig.DEBUG ? View.VISIBLE : View.GONE}"
-            android:layout_gravity="bottom" />
-
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

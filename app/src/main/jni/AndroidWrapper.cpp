@@ -7,6 +7,7 @@
 #include "VisageTracker.h"
 #include <VisageFaceAnalyser.h>
 #include "VisageRendering.h"
+#include "VisageGazeTracker.h"
 //#include "AndroidImageCapture.h"
 //#include "AndroidStreamCapture.h"
 #include "AndroidCapture.h"
@@ -57,7 +58,7 @@ extern "C" {
 // ********************************
 
 const int MAX_FACES = 4;
-static VisageTracker *m_Tracker = 0;
+static VisageGazeTracker *m_Tracker = 0;
 static FaceData trackingData[MAX_FACES];
 static VisageFaceAnalyser *m_Analyser = 0;
 int *trackingStatus = 0;
@@ -164,6 +165,9 @@ int *CountFaces();
 
 int tapPositionX;
 int tapPositionY;
+
+float tapPositionXfloat;
+float tapPositionYfloat;
 
 bool displayText = false;
 bool numFacesChanged = false;
@@ -311,7 +315,7 @@ void Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_TrackerInit(JN
     if (m_Tracker) {
         LOGI("m_tracker already initialised");
     } else {
-        m_Tracker = new VisageSDK::VisageTracker(
+        m_Tracker = new VisageSDK::VisageGazeTracker(
                 (std::string(_path) + "/" + std::string(_configFilename)).c_str());
     }
 
@@ -403,6 +407,30 @@ int Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_SetParameters(J
         m_Tracker->track(0,0,0,0);
     }
     return 0;
+}
+
+void Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_InitGazeCalibration(JNIEnv *env,
+                                                                            jobject obj) {
+    if (!m_Tracker)
+        return;
+
+    m_Tracker->InitOnlineGazeCalibration();
+}
+
+void Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_AddGazePoint(JNIEnv *env,
+                                                                                       jobject obj) {
+    if (!m_Tracker)
+        return;
+
+    m_Tracker->AddGazeCalibrationPoint(tapPositionXfloat, tapPositionYfloat);
+}
+
+void Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_FinishGazeCalibration(JNIEnv *env,
+                                                                               jobject obj) {
+    if (!m_Tracker)
+        return;
+
+    m_Tracker->FinalizeOnlineGazeCalibration();
 }
 
 /**
@@ -854,6 +882,9 @@ Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_SendCoordinates(JNI
 
     tapPositionX = vsRound(x);
     tapPositionY = vsRound(y);
+
+    tapPositionXfloat = x;
+    tapPositionYfloat = y;
 
     pthread_mutex_unlock(&displayRes_mutex);
 }

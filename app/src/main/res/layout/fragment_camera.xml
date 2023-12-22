@@ -20,7 +20,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_below="@id/camera_toolbar"
             android:id="@+id/camera_root">
 
@@ -29,6 +29,22 @@
                 android:layout_height="match_parent"/>
 
         </RelativeLayout>
+
+        <Button
+            android:id="@+id/calibrate_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Calibrate"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true" />
+
+        <Button
+            android:id="@+id/tacker_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Track"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true" />
 
 <!--        <FrameLayout-->
 <!--            android:id="@+id/camera_frame"-->
