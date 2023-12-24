@@ -19,18 +19,31 @@ import com.dsd.kosjenka.databinding.FragmentExerciseBinding
 import com.dsd.kosjenka.presentation.MainActivity
 import com.dsd.kosjenka.utils.UiStates
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class ExerciseFragment : Fragment(), HighlightCallback{
+class ExerciseFragment : Fragment(), HighlightCallback {
 
     private lateinit var binding: FragmentExerciseBinding
     private val viewModel by viewModels<ExerciseViewModel>()
 
     private var delayMillis = 1000L
     private var isPlaying = false
+    private var hasReachedEnd = false
     private lateinit var handler: Handler
+
+    private val timerScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
+    private var elapsedSeconds = 0
+    private var isTimerRunning = false
+    private var timerJob: Job? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -59,6 +72,43 @@ class ExerciseFragment : Fragment(), HighlightCallback{
         setupSpeedButtons()
         setupPlayPause()
         setupFontSlider()
+        binding.progressBarTimer.max = 100
+    }
+
+    private fun startTimer() {
+        isTimerRunning = true
+        timerJob = timerScope.launch {
+            while (isActive) {
+                delay(1000)
+                if (isTimerRunning) {
+                    elapsedSeconds++
+                    updateUIWithElapsedTime(elapsedSeconds)
+                }
+            }
+        }
+    }
+
+    private fun formatTime(seconds: Int): String {
+        val minutes = seconds / 60
+        val sec = seconds % 60
+        return String.format("%02d:%02d", minutes, sec)
+    }
+
+    private fun pauseTimer() {
+        isTimerRunning = false
+    }
+
+    private fun resumeTimer() {
+        if (!isTimerRunning && (timerJob == null || timerJob!!.isCompleted))
+            startTimer()
+        else
+            isTimerRunning = true
+    }
+
+    private fun updateUIWithElapsedTime(seconds: Int) {
+        val progress = (seconds * 100 / 60) % 100
+        binding.progressBarTimer.progress = progress
+        binding.timerTextView.text = formatTime(seconds)
     }
 
     private fun setupFontSlider() {
@@ -77,17 +127,21 @@ class ExerciseFragment : Fragment(), HighlightCallback{
 
     private fun setupPlayPause() {
         binding.exercisePlayPause.setOnClickListener {
+            if (hasReachedEnd)
+                return@setOnClickListener
             if (isPlaying) {
                 //Pause Exercise
                 binding.exercisePlayPause.setImageResource(R.drawable.ic_play)
                 handler.removeCallbacksAndMessages(null)
                 isPlaying = false
-            } else
+                pauseTimer()
+            } else {
                 //Resume Exercise
                 startReadingMode()
+                resumeTimer()
+            }
         }
     }
-
 
     private fun setupSpeedButtons() {
         binding.speedMinus.setOnClickListener {
@@ -151,6 +205,7 @@ class ExerciseFragment : Fragment(), HighlightCallback{
                     viewModel.exerciseDataFlow.collectLatest {
                         binding.exerciseText.text = it.text
                         startReadingMode()
+                        startTimer()
                     }
                 }
             }
@@ -162,6 +217,10 @@ class ExerciseFragment : Fragment(), HighlightCallback{
         isPlaying = true
         handler.post(object : Runnable {
             override fun run() {
+                if (!isPlaying) {
+                    handler.removeCallbacksAndMessages(null)
+                    return
+                }
                 binding.exerciseText.highlightNextWord()
                 handler.postDelayed(this, delayMillis)
             }
@@ -187,9 +246,20 @@ class ExerciseFragment : Fragment(), HighlightCallback{
     }
 
     override fun onHighlightEnd() {
+        hasReachedEnd = true
         binding.exercisePlayPause.performClick()
-        Toast.makeText(binding.root.context, "Exercise finished!", Toast.LENGTH_SHORT).show()
+        //Cancel timer
+        timerJob?.cancel()
+        Toast.makeText(
+            binding.root.context,
+            "Exercise finished in $elapsedSeconds seconds",
+            Toast.LENGTH_SHORT
+        ).show()
         //Call API
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        timerScope.cancel()
+    }
 }

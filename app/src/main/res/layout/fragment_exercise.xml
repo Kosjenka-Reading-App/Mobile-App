@@ -69,7 +69,7 @@
             android:foreground="?android:attr/selectableItemBackground"
             android:src="@drawable/ic_play"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/timer_layout"
             app:layout_constraintStart_toStartOf="parent" />
 
         <ImageView
@@ -83,6 +83,41 @@
             app:layout_constraintBottom_toBottomOf="@id/exercise_play_pause"
             app:layout_constraintStart_toEndOf="@id/exercise_play_pause"
             app:layout_constraintTop_toTopOf="@id/exercise_play_pause" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/timer_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@id/exercise_play_pause"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/exercise_play_pause">
+
+            <ProgressBar
+                android:id="@+id/progressBarTimer"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:indeterminate="false"
+                android:progressDrawable="@drawable/timer_circle"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/timerTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="00:00"
+                android:textColor="@color/colorPrimary"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="@id/progressBarTimer"
+                app:layout_constraintEnd_toEndOf="@id/progressBarTimer"
+                app:layout_constraintStart_toStartOf="@id/progressBarTimer"
+                app:layout_constraintTop_toTopOf="@id/progressBarTimer" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
         <ProgressBar
             android:id="@+id/loading"

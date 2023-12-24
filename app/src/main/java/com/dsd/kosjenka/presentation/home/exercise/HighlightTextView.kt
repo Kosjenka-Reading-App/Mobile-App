@@ -16,7 +16,7 @@ class HighlightTextView(context: Context, attrs: AttributeSet?) :
     private var reachedEnd = false
     private var highlightCallback: HighlightCallback? = null
     private val highlightSpan = ForegroundColorSpan(Color.YELLOW)
-    private lateinit var wordList: List<String>
+    lateinit var wordList: List<String>
 
     fun highlightNextWord() {
         if(reachedEnd)
