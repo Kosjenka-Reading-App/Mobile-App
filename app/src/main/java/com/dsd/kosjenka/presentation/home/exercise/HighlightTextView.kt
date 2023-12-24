@@ -13,10 +13,15 @@ class HighlightTextView(context: Context, attrs: AttributeSet?) :
 
     private var currentIndex = -1
     private var resetCallback = false
+    private var reachedEnd = false
+    private var highlightCallback: HighlightCallback? = null
     private val highlightSpan = ForegroundColorSpan(Color.YELLOW)
     private lateinit var wordList: List<String>
 
     fun highlightNextWord() {
+        if(reachedEnd)
+            return
+
         if (!this::wordList.isInitialized) wordList = text.split(" ")
 
         if (!resetCallback) {
@@ -30,9 +35,16 @@ class HighlightTextView(context: Context, attrs: AttributeSet?) :
             } else {
                 // Reached the end, reset index
                 currentIndex = -1
-                scrollToWord(0)
+                reachedEnd = true
+                highlightCallback?.onHighlightEnd()
             }
-        } else resetCallback = false
+        } else {
+            resetCallback = false
+        }
+    }
+
+    fun setHighlightCallback(callback: HighlightCallback?) {
+        highlightCallback = callback
     }
 
     private fun clearPreviousHighlight() {
@@ -65,7 +77,6 @@ class HighlightTextView(context: Context, attrs: AttributeSet?) :
         val endIndex = startIndex + wordList[index].length
         val startY = layout.getLineTop(layout.getLineForOffset(startIndex.toInt()))
         val endY = layout.getLineBottom(layout.getLineForOffset(endIndex.toInt()))
-        val textHeight = endY - startY
         val viewHeight = height
 
         // Calculate the scroll position to center the text vertically
@@ -77,5 +88,7 @@ class HighlightTextView(context: Context, attrs: AttributeSet?) :
         // Scroll smoothly to the calculated position
         parentScrollView?.smoothScrollTo(0, scrollY)
     }
+
+
 
 }

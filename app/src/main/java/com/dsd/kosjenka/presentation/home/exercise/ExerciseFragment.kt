@@ -23,7 +23,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class ExerciseFragment : Fragment() {
+class ExerciseFragment : Fragment(), HighlightCallback{
 
     private lateinit var binding: FragmentExerciseBinding
     private val viewModel by viewModels<ExerciseViewModel>()
@@ -52,6 +52,7 @@ class ExerciseFragment : Fragment() {
 
         binding.exerciseToolbar.title = args.exerciseTitle
         handler = Handler(Looper.getMainLooper())
+        binding.exerciseText.setHighlightCallback(this)
 
         observeViewModel()
         viewModel.getExercise(args.exerciseId)
@@ -82,7 +83,7 @@ class ExerciseFragment : Fragment() {
                 handler.removeCallbacksAndMessages(null)
                 isPlaying = false
             } else
-            //Resume Exercise
+                //Resume Exercise
                 startReadingMode()
         }
     }
@@ -90,29 +91,30 @@ class ExerciseFragment : Fragment() {
 
     private fun setupSpeedButtons() {
         binding.speedMinus.setOnClickListener {
-            if (delayMillis > 200) {
-                delayMillis -= 100
+            if (delayMillis < 3000) {
+                delayMillis += 100
                 if (isPlaying) resetCallback()
             } else
-                Toast.makeText(context, "Minimum speed reached (0.2 seconds)", Toast.LENGTH_SHORT)
+                Toast.makeText(context, "Minimum speed reached (3 seconds)", Toast.LENGTH_SHORT)
                     .show()
 
             // Enable speedPlus if it was disabled
             binding.speedPlus.isEnabled = true
             // Disable speedMinus if the lower limit is reached
-            if (delayMillis <= 200) binding.speedMinus.isEnabled = false
+            if (delayMillis >= 3000) binding.speedMinus.isEnabled = false
         }
         binding.speedPlus.setOnClickListener {
-            if (delayMillis < 3000) {
-                delayMillis += 100
+            if (delayMillis > 200) {
+                delayMillis -= 100
                 if (isPlaying) resetCallback()
             } else
-                Toast.makeText(context, "Maximum speed reached (3 seconds)", Toast.LENGTH_SHORT)
+                Toast.makeText(context, "Maximum speed reached (0.2 seconds)", Toast.LENGTH_SHORT)
                     .show()
+
             // Enable speedMinus if it was disabled
             binding.speedMinus.isEnabled = true
             // Disable speedPlus if the upper limit is reached
-            if (delayMillis >= 3000) binding.speedPlus.isEnabled = false
+            if (delayMillis <= 200) binding.speedPlus.isEnabled = false
         }
     }
 
@@ -182,6 +184,12 @@ class ExerciseFragment : Fragment() {
             binding.loading.visibility = View.GONE
             binding.exerciseText.visibility = View.VISIBLE
         }
+    }
+
+    override fun onHighlightEnd() {
+        binding.exercisePlayPause.performClick()
+        Toast.makeText(binding.root.context, "Exercise finished!", Toast.LENGTH_SHORT).show()
+        //Call API
     }
 
 }
