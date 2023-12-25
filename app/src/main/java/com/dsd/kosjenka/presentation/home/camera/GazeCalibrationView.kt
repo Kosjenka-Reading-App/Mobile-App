@@ -26,8 +26,15 @@ class GazeCalibrationView(context: Context, wrapper: VisageWrapper) : GLSurfaceV
     private val context: Context
     private val visageWrapper: VisageWrapper
 
-    private var addPointCounter: Int = 0
+//    var dialogHandle: IAlertDialog? = null
+
+    private var calibrationPointCount: Int = 0
     private val MAX_CALIBRATION_POINTS = 20
+
+    enum class GazeTrackerMode {
+        Calibration, Estimation
+    }
+
 
     private val TAG = "CalibrateSurface"
     init {
@@ -48,7 +55,7 @@ class GazeCalibrationView(context: Context, wrapper: VisageWrapper) : GLSurfaceV
     }
 
     override fun onTouchEvent(e: MotionEvent): Boolean {
-        if (addPointCounter <= MAX_CALIBRATION_POINTS){
+        if (calibrationPointCount < MAX_CALIBRATION_POINTS){
             // MotionEvent reports input details from the touch screen
             // and other input controls. In this case, you are only
             // interested in events where the touch position changed.
@@ -65,22 +72,27 @@ class GazeCalibrationView(context: Context, wrapper: VisageWrapper) : GLSurfaceV
             when (e.action) {
                 MotionEvent.ACTION_UP -> {
                     Log.d(TAG, "$androidX,$androidY")
-                    queueEvent{
-                        if (renderer.isShapeTapped(glX, glY)) {
-                            visageWrapper.AddGazeCalibrationPoint(androidX, androidY)
-                            addPointCounter++
 
-                            if (addPointCounter >= MAX_CALIBRATION_POINTS) {
-                                renderer.calibrateMode = false
+                    if (renderer.isShapeTapped(glX, glY)) {
+                        Log.d(TAG, "calibration point added")
+                        visageWrapper.AddGazeCalibrationPoint(androidX, androidY)
+                        calibrationPointCount++
+
+                        if (calibrationPointCount >= MAX_CALIBRATION_POINTS) {
+                            Handler(context.mainLooper).post{
                                 visageWrapper.FinalizeOnlineGazeCalibration()
-                                Handler(context.mainLooper).post{ showCalibrateCompeteDialog() }
+                                showCalibrateCompeteDialog()
                             }
 
-                            Log.d(TAG, "calibration point added")
-                            renderer.translateBy = getRandomPosition()
-                            requestRender()
+                            setGazeEstimatingMode()
+                        } else {
+                            queueEvent{
+                                renderer.translateBy = getRandomPosition()
+                                requestRender()
+                            }
                         }
                     }
+
                 }
             }
 
@@ -100,16 +112,41 @@ class GazeCalibrationView(context: Context, wrapper: VisageWrapper) : GLSurfaceV
     }
 
     private fun showCalibrateCompeteDialog(){
+//        dialogHandle?.showDialog("Calibration is completed and Gaze Tracking configured.",
+//            "Calibration Finished", setGazeEstimatingMode)
         val builder: AlertDialog.Builder = AlertDialog.Builder(context)
         builder
             .setMessage("Calibration is completed and Gaze Tracking configured.")
             .setTitle("Calibration Finished")
             .setPositiveButton("Continue") { dialog, which ->
-                // Do something.
+//                setGazeEstimatingMode()
+                dialog.dismiss()
             }
 
         val dialog: AlertDialog = builder.create()
         dialog.show()
+    }
+
+    val setGazeCalibratingMode = {
+        queueEvent {
+            renderer.currentGazeMode = GazeTrackerMode.Calibration
+        }
+    }
+
+
+    val setGazeEstimatingMode = {
+        queueEvent {
+//            visageWrapper.onResume()
+            renderer.currentGazeMode = GazeTrackerMode.Estimation
+        }
+    }
+
+    fun resetCalibrationPointCount(){
+        calibrationPointCount = 0
+    }
+
+    fun isEstimationMode() : Boolean {
+        return renderer.currentGazeMode == GazeTrackerMode.Estimation
     }
 
     inner class MyGLRenderer(context: Context, view: GazeCalibrationView) : Renderer {
@@ -131,7 +168,7 @@ class GazeCalibrationView(context: Context, wrapper: VisageWrapper) : GLSurfaceV
         @Volatile
         var translateBy: List<Float> = listOf(0f,0f,0f)
         @Volatile
-        var calibrateMode: Boolean = true
+        var currentGazeMode: GazeTrackerMode = GazeTrackerMode.Calibration
 
         init {
             this.context = context
@@ -149,16 +186,15 @@ class GazeCalibrationView(context: Context, wrapper: VisageWrapper) : GLSurfaceV
         override fun onDrawFrame(gl: GL10) {
             // Redraw background color
             GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
-
             Matrix.setIdentityM(translateMatrix, 0)
-            if (calibrateMode){
+            if (currentGazeMode == GazeTrackerMode.Calibration){
                 Matrix.translateM(translateMatrix, 0, translateBy[0],translateBy[1],translateBy[2])
-            } else {
+            } else if (currentGazeMode == GazeTrackerMode.Estimation) {
                 val gazeData: ScreenSpaceGazeData? = visageWrapper.GetScreenSpaceGazeData()
                 gazeData?.let {
                     val glx = (it.x * 2 - 1) * screenRatio
                     val gly = -(it.y * 2 - 1)
-//                    Log.d(TAG, "${it.index},${glx},${gly},${gazeData.inState},${gazeData.quality}")
+//                    Log.d(TAG, "${glx},${gly},${gazeData.inState},${gazeData.quality}")
                     Matrix.translateM(translateMatrix, 0, glx, gly, 0f)
                 }
             }

@@ -158,6 +158,7 @@ class Camera2Fragment : Fragment(), ActivityCompat.OnRequestPermissionsResultCal
         super.onCreate(savedInstanceState)
 
         visageWrapper = VisageWrapper.get(context)
+        visageWrapper!!.switchToCameraScreen()
         visageWrapper!!.onCreate()
     }
 
@@ -216,10 +217,9 @@ class Camera2Fragment : Fragment(), ActivityCompat.OnRequestPermissionsResultCal
             binding.cameraRoot.addView(trackerView, 0)
         }
 
-        binding.calibrateBtn.setOnClickListener{
-            Common.showToast(requireContext(), "Calibrate button")
-            findNavController().navigate(Camera2FragmentDirections.actionCameraFragmentToCalibrateFragment())
-        }
+//        binding.calibrateBtn.setOnClickListener{
+//            findNavController().navigate(Camera2FragmentDirections.actionCameraFragmentToCalibrateFragment())
+//        }
 
 //        setTrackerDisplayOptions()
     }

@@ -415,6 +415,7 @@ void Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_InitOnlineGaze
         return;
 
     m_Tracker->InitOnlineGazeCalibration();
+    LOGI("InitOnlineGazeCalibration");
 }
 
 void Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_AddGazeCalibrationPoint(JNIEnv *env,
@@ -423,6 +424,7 @@ void Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_AddGazeCalibra
         return;
 
     m_Tracker->AddGazeCalibrationPoint(x, y);
+    LOGI("AddGazeCalibrationPoint");
 }
 
 void Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_FinalizeOnlineGazeCalibration(JNIEnv *env,
@@ -431,6 +433,7 @@ void Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_FinalizeOnline
         return;
 
     m_Tracker->FinalizeOnlineGazeCalibration();
+    LOGI("FinalizeOnlineGazeCalibration");
 }
 
 jobject
@@ -438,8 +441,9 @@ Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_GetScreenSpaceGazeD
                                                                                     jobject obj) {
     if (m_Tracker && !trackerStopped && !trackerPaused){
 
-        pthread_mutex_lock(&guardFrame_mutex);
-        ScreenSpaceGazeData data = trackingData->gazeData;
+        pthread_mutex_lock(&displayRes_mutex);
+
+        ScreenSpaceGazeData data = trackingDataBuffer->gazeData;
 
         // get a reference to your class if you don't have it already
         jclass cls = env->FindClass("com/dsd/kosjenka/presentation/home/camera/VisageWrapper$ScreenSpaceGazeData");
@@ -449,9 +453,10 @@ Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_GetScreenSpaceGazeD
         jvalue args[5];
 
         for (int i = 0; i < MAX_FACES; i++) {
-            if (trackingStatus[i] == TRACK_STAT_OFF){
+            if (trackingStatusBuffer[i] == TRACK_STAT_OFF){
                 continue;
             }
+//            LOGI("found face data");
             // set up the arguments
             args[0].i = data.index;
             args[1].f = data.x;
@@ -462,7 +467,7 @@ Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_GetScreenSpaceGazeD
 
         jobject gazeObject = env->NewObjectA(cls, constructor, args);
 
-        pthread_mutex_unlock(&guardFrame_mutex);
+        pthread_mutex_unlock(&displayRes_mutex);
 
         return gazeObject;
     }

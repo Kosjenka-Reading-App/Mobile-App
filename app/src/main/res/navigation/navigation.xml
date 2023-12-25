@@ -29,6 +29,9 @@
         <action
             android:id="@+id/action_mainFragment_to_cameraFragment"
             app:destination="@id/cameraFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_calibrateFragment"
+            app:destination="@id/calibrateFragment" />
 
     </fragment>
     <fragment
@@ -123,11 +126,7 @@
         android:id="@+id/cameraFragment"
         android:name="com.dsd.kosjenka.presentation.home.camera.Camera2Fragment"
         android:label="fragment_camera"
-        tools:layout="@layout/fragment_camera" >
-        <action
-            android:id="@+id/action_cameraFragment_to_calibrateFragment"
-            app:destination="@id/calibrateFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_camera" />
     <fragment
         android:id="@+id/calibrateFragment"
         android:name="com.dsd.kosjenka.presentation.home.camera.CalibrateFragment"

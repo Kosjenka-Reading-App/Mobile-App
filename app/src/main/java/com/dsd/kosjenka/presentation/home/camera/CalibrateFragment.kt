@@ -39,6 +39,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.lifecycleScope
 import com.dsd.kosjenka.R
 import com.dsd.kosjenka.databinding.FragmentCalibrateBinding
 import com.dsd.kosjenka.presentation.MainActivity
@@ -65,7 +66,7 @@ class CalibrateFragment: Fragment() {
     /**
      * A reference to the opened [CameraDevice].
      */
-    private lateinit var mCameraDevice: CameraDevice
+    private var mCameraDevice: CameraDevice? = null
     /**
      * A reference to the current [CameraCaptureSession] for
      * preview.
@@ -91,7 +92,8 @@ class CalibrateFragment: Fragment() {
     private var mOrientation by Delegates.notNull<Int>()
 
     private lateinit var mPreviewBuilder: CaptureRequest.Builder
-    private lateinit var mImageReader: ImageReader
+    private var mImageReader: ImageReader? = null
+
     private val onImageAvailableListener = ImageReader.OnImageAvailableListener { reader ->
         var image: Image? = null
         try {
@@ -111,6 +113,7 @@ class CalibrateFragment: Fragment() {
                 frameID++.toLong(),
                 planes[1].pixelStride
             )
+//            Log.d(TAG, "On image available")
         } catch (e: Exception) {
             e.printStackTrace()
             throw e
@@ -138,6 +141,7 @@ class CalibrateFragment: Fragment() {
         override fun onDisconnected(cameraDevice: CameraDevice) {
             mCameraOpenCloseLock.release()
             cameraDevice.close()
+            Log.d(TAG, "Camera disconnected")
 //            mCameraDevice = null
         }
 
@@ -163,31 +167,48 @@ class CalibrateFragment: Fragment() {
         super.onCreate(savedInstanceState)
 
         visageWrapper = VisageWrapper.get(context)
+        visageWrapper.switchToCalibrateScreen()
         visageWrapper.onCreate()
-        visageWrapper.initGaze()
 //        Common.showToast(requireContext(), "ready for calibration")
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        visageWrapper.initGaze()
 
         surfaceView = visageWrapper.calibrateView as GazeCalibrationView
+//        surfaceView.dialogHandle = this
 
         if (surfaceView.parent != null){
             (surfaceView.parent as ViewGroup).removeView(surfaceView)
         }
         binding.calibrateContainer.addView(surfaceView)
 
-        val builder: AlertDialog.Builder = AlertDialog.Builder(context)
-        builder
-            .setMessage("Please look at the object and tap on it as it spawns on the screen.")
-            .setTitle("Gaze Tracking Calibration")
-            .setPositiveButton("Continue") { dialog, which ->
-                // Do something.
-            }
+        if (!surfaceView.isEstimationMode()){
+            surfaceView.setGazeCalibratingMode()
+            surfaceView.resetCalibrationPointCount()
 
-        val dialog: AlertDialog = builder.create()
-        dialog.show()
+            showAlertDialog(
+                "Please look at the object and tap on it as it spawns on the screen.",
+                "Gaze Tracking Calibration",
+                surfaceView.setGazeCalibratingMode
+            )
+        } else {
+            val builder: AlertDialog.Builder = AlertDialog.Builder(context)
+            builder
+                .setMessage("Looks like tracker was already calibrated. Do you want to calibrate again?")
+                .setTitle("Gaze Tracking Calibration")
+                .setPositiveButton("Recalibrate") { dialog, which ->
+                    surfaceView.setGazeCalibratingMode()
+                    surfaceView.resetCalibrationPointCount()
+                }
+                .setNegativeButton("Continue") {dialog, which ->
+                    surfaceView.setGazeEstimatingMode()
+                }
+
+            val dialog: AlertDialog = builder.create()
+            dialog.show()
+        }
     }
 
     override fun onResume() {
@@ -206,18 +227,17 @@ class CalibrateFragment: Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-//        visageWrapper.FinalizeOnlineGazeCalibration()
+
+//        visageWrapper.onDestroy()
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
 
         visageWrapper.PauseTracker()
-        val manager: CameraManager =
-            requireActivity().getSystemService(Context.CAMERA_SERVICE) as CameraManager
         try {
             val characteristics: CameraCharacteristics =
-                manager.getCameraCharacteristics(mCameraDevice.id)
+                cameraManager.getCameraCharacteristics(mCameraDevice!!.id)
             mOrientation = getCorrectCameraOrientation(characteristics)
             VisageWrapper.SetParameters(
                 mPreviewSize.width,
@@ -355,7 +375,7 @@ class CalibrateFragment: Fragment() {
                 ImageFormat.YUV_420_888,
                 2
             )
-            mImageReader.setOnImageAvailableListener(
+            mImageReader!!.setOnImageAvailableListener(
                 onImageAvailableListener,
                 cameraBackgroundHandler
             )
@@ -366,7 +386,7 @@ class CalibrateFragment: Fragment() {
             // Currently an NPE is thrown when the Camera2API is used but not supported on the
             // device this code runs.
             ErrorDialog.newInstance("Camera error")
-                .show(childFragmentManager, FRAGMENT_DIALOG)
+                .show(parentFragmentManager, FRAGMENT_DIALOG)
         } catch (e: InterruptedException) {
             throw RuntimeException("Interrupted while trying to lock camera opening.")
         }
@@ -376,8 +396,8 @@ class CalibrateFragment: Fragment() {
         try {
             mCameraOpenCloseLock.acquire()
             closePreviewSession()
-            mCameraDevice.close()
-            mImageReader.close()
+            mCameraDevice?.close()
+            mImageReader?.close()
         } catch (e: InterruptedException) {
             throw RuntimeException("Interrupted while trying to lock camera closing.")
         } finally {
@@ -393,10 +413,10 @@ class CalibrateFragment: Fragment() {
             closePreviewSession()
             val surfaces: MutableList<Surface> = ArrayList()
             mPreviewBuilder =
-                mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW)
+                mCameraDevice!!.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW)
 
             //Set up Surface for ImageReader
-            val imageSurface = mImageReader.surface
+            val imageSurface = mImageReader!!.surface
             surfaces.add(imageSurface)
             mPreviewBuilder.addTarget(imageSurface)
 
@@ -415,9 +435,9 @@ class CalibrateFragment: Fragment() {
             }
 
             if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
-                mCameraDevice.createCaptureSession(surfaces, sessionCallback, cameraBackgroundHandler)
+                mCameraDevice!!.createCaptureSession(surfaces, sessionCallback, cameraBackgroundHandler)
             } else {
-                mCameraDevice.createCaptureSession(
+                mCameraDevice!!.createCaptureSession(
                     SessionConfiguration(
                         SessionConfiguration.SESSION_REGULAR,
                         listOf(OutputConfiguration(imageSurface)),
@@ -530,6 +550,20 @@ class CalibrateFragment: Fragment() {
                 choices[choices.size / 2]
             }
         }
+    }
+
+    private fun showAlertDialog(message: String, title: String, callback: () -> Unit){
+        val builder: AlertDialog.Builder = AlertDialog.Builder(context)
+        builder
+            .setMessage(message)
+            .setTitle(title)
+            .setPositiveButton("Continue") { dialog, which ->
+                callback()
+                dialog.dismiss()
+            }
+
+        val dialog: AlertDialog = builder.create()
+        dialog.show()
     }
 
     class ErrorDialog : DialogFragment() {

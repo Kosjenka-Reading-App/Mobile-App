@@ -70,7 +70,7 @@ public class VisageWrapper {
         trackerView = new TrackerView(context, this);
 
         calibrateView = new GazeCalibrationView(context, this);
-        SetDisplayOptions(DISPLAY_GAZE+DISPLAY_IRIS);
+        SetDisplayOptions(DISPLAY_DEFAULT);
 
 //        logo = ResourcesCompat.getDrawable(context.getResources(), R.drawable.logo, null);
     }
@@ -121,17 +121,13 @@ public class VisageWrapper {
             @Override
             public void handleMessage(Message msg) {
                 switch (msg.what) {
-                    case VisageWorkerThread.MSG_START_TRACKER:
-                        visageWorkerThread.startTracker();
-                        break;
-                    case VisageWorkerThread.MSG_INIT:
-                        visageWorkerThread.initialize();
-                        break;
-                    case VisageWorkerThread.MSG_RELEASE:
-                        visageWorkerThread.release();
-                        break;
-                    default:
-                        throw new RuntimeException("Not known msg.what");
+                    case VisageWorkerThread.MSG_START_TRACKER -> visageWorkerThread.startTracker();
+                    case VisageWorkerThread.MSG_INIT -> visageWorkerThread.initialize();
+                    case VisageWorkerThread.MSG_RELEASE -> visageWorkerThread.release();
+                    case VisageWorkerThread.MSG_INIT_GAZE -> visageWorkerThread.initializeGaze();
+                    case VisageWorkerThread.MSG_FINALIZE_CALIBRATION ->
+                            visageWorkerThread.finalizeGazeCalibration();
+                    default -> throw new RuntimeException("Not known msg.what");
                 }
             }
         };
@@ -170,7 +166,7 @@ public class VisageWrapper {
     }
     void initAnalyser() { InitAnalyser();}
 
-    void initGaze() { InitOnlineGazeCalibration();}
+    void initGaze() { visageWorkerHandler.sendMessage(visageWorkerHandler.obtainMessage(VisageWorkerThread.MSG_INIT_GAZE)); }
 
     boolean isTrackingCameraScreen() {
         return trackScreen == TrackScreen.CAMERA;
@@ -182,12 +178,16 @@ public class VisageWrapper {
 
     View getCalibrateView() { return calibrateView; }
 
+    void finalizeGazeCalibration() { visageWorkerHandler.sendMessage(visageWorkerHandler.obtainMessage(VisageWorkerThread.MSG_FINALIZE_CALIBRATION)); }
+
 
     private class VisageWorkerThread extends HandlerThread {
 
         private static final int MSG_START_TRACKER = 1;
         private static final int MSG_INIT = 2;
         private static final int MSG_RELEASE = 3;
+        private static final int MSG_INIT_GAZE = 4;
+        private static final int MSG_FINALIZE_CALIBRATION = 5;
         private Bitmap bitmapLogo;
 
         private VisageWorkerThread() {
@@ -216,6 +216,14 @@ public class VisageWrapper {
         public void release() {
             TrackerStop();
             trackerStarted = false;
+        }
+
+        void initializeGaze() {
+            InitOnlineGazeCalibration();
+        }
+
+        void finalizeGazeCalibration(){
+            FinalizeOnlineGazeCalibration();
         }
     }
 
