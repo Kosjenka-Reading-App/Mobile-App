@@ -43,8 +43,6 @@ android {
         viewBinding = true
     }
 
-
-
     defaultConfig {
         applicationId = "com.dsd.kosjenka"
         minSdk = 24
