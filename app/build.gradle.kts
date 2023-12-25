@@ -50,7 +50,7 @@ android {
         minSdk = 24
         targetSdk = 34
         versionCode = getVersionCode()
-        versionName = "3.0"
+        versionName = "4.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         externalNativeBuild {
