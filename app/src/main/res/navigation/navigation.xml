@@ -123,6 +123,15 @@
         android:id="@+id/cameraFragment"
         android:name="com.dsd.kosjenka.presentation.home.camera.Camera2Fragment"
         android:label="fragment_camera"
-        tools:layout="@layout/fragment_camera" />
+        tools:layout="@layout/fragment_camera" >
+        <action
+            android:id="@+id/action_cameraFragment_to_calibrateFragment"
+            app:destination="@id/calibrateFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/calibrateFragment"
+        android:name="com.dsd.kosjenka.presentation.home.camera.CalibrateFragment"
+        android:label="fragment_calibrate"
+        tools:layout="@layout/fragment_calibrate" />
 
 </navigation>

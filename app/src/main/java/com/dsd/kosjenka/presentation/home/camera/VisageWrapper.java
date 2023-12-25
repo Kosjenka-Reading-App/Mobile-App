@@ -30,10 +30,10 @@ public class VisageWrapper {
     static final int DISPLAY_DEFAULT = DISPLAY_FEATURE_POINTS + DISPLAY_SPLINES + DISPLAY_GAZE + DISPLAY_IRIS + DISPLAY_AXES + DISPLAY_TRACKING_QUALITY + DISPLAY_POINT_QUALITY;
     public static final int NUM_EMOTIONS = 6; //should be 6 because neutral emotion won't be displayed
 
-    public enum TrackMode {
+    public enum TrackScreen {
         CAMERA,
         CALIBRATION
-    };
+    }
 
     private static volatile VisageWrapper instance = null;
     private Context ctx;
@@ -43,11 +43,11 @@ public class VisageWrapper {
     private Handler visageWorkerHandler = null;
 
     private String path;
-    TrackMode trackMode;
+    TrackScreen trackScreen;
     private boolean trackerStarted = false;
 
     private TrackerView trackerView = null;
-    private GazeCalibrationView gazeCalibrationView = null;
+    private GazeCalibrationView calibrateView = null;
 
 //    private Drawable logo;
 
@@ -66,11 +66,11 @@ public class VisageWrapper {
         ctx = context;
         path = ctx.getFilesDir().getAbsolutePath();
 
-        trackMode = TrackMode.CAMERA;
+        trackScreen = TrackScreen.CAMERA;
         trackerView = new TrackerView(context, this);
-        gazeCalibrationView = new GazeCalibrationView(context, this);
-        SetDisplayOptions(DISPLAY_DEFAULT);
 
+        calibrateView = new GazeCalibrationView(context, this);
+        SetDisplayOptions(DISPLAY_GAZE+DISPLAY_IRIS);
 
 //        logo = ResourcesCompat.getDrawable(context.getResources(), R.drawable.logo, null);
     }
@@ -82,24 +82,25 @@ public class VisageWrapper {
         }
 
         visageWorkerHandler.sendMessage(visageWorkerHandler.obtainMessage(VisageWorkerThread.MSG_INIT));
+
     }
 
     void onResume() {
 
-        if (trackMode == TrackMode.CAMERA)
+        if (trackScreen == TrackScreen.CAMERA)
             trackerView.onResume();
         else
-            gazeCalibrationView.onResume();
+            calibrateView.onResume();
 
         Log.d(TAG, "backgroundHandler");
         visageWorkerHandler.sendMessage(visageWorkerHandler.obtainMessage(VisageWorkerThread.MSG_START_TRACKER));
     }
 
     void onPause() {
-        if (trackMode == TrackMode.CAMERA)
+        if (trackScreen == TrackScreen.CAMERA)
             trackerView.onPause();
         else
-            gazeCalibrationView.onPause();
+            calibrateView.onPause();
 
         PauseTracker();
     }
@@ -110,7 +111,6 @@ public class VisageWrapper {
             return;
 
         stopVisageWorker();
-
     }
 
     private void startVisageWorker() {
@@ -148,14 +148,14 @@ public class VisageWrapper {
         }
     }
 
-    void switchToCamera() {
+    void switchToCameraScreen() {
         PauseTracker();
-        trackMode = TrackMode.CAMERA;
+        trackScreen = TrackScreen.CAMERA;
     }
 
-    void switchToCalibration() {
+    void switchToCalibrateScreen() {
         PauseTracker();
-        trackMode = TrackMode.CALIBRATION;
+        trackScreen = TrackScreen.CALIBRATION;
     }
 
     void toggleEars() {
@@ -168,17 +168,20 @@ public class VisageWrapper {
     void toggleRefineLandmarks(boolean enableOrDisable) {
         ToggleRefineLandmarks(enableOrDisable);
     }
-    void initAnalyser() { InitAnalyser();};
+    void initAnalyser() { InitAnalyser();}
 
-    boolean isTrackingFromCamera() {
-        return trackMode == TrackMode.CAMERA;
+    void initGaze() { InitOnlineGazeCalibration();}
+
+    boolean isTrackingCameraScreen() {
+        return trackScreen == TrackScreen.CAMERA;
     }
 
     View getTrackerView() {
         return trackerView;
     }
 
-    View getGazeCalibrationView() { return gazeCalibrationView; }
+    View getCalibrateView() { return calibrateView; }
+
 
     private class VisageWorkerThread extends HandlerThread {
 
@@ -263,4 +266,28 @@ public class VisageWrapper {
     public static native void WriteLogoImage(byte[] logo, int width, int height);
 
     public native void InitAnalyser();
+
+    public native void InitOnlineGazeCalibration();
+
+    public native void AddGazeCalibrationPoint(float x, float y);
+
+    public native void FinalizeOnlineGazeCalibration();
+
+    public native ScreenSpaceGazeData GetScreenSpaceGazeData();
+
+    public static class ScreenSpaceGazeData {
+        public int index;
+        public float x;
+        public float y;
+        public int inState;
+        public float quality;
+
+        public ScreenSpaceGazeData(int index, float x, float y, int inState, float quality) {
+            this.index = index;
+            this.x = x;
+            this.y = y;
+            this.inState = inState;
+            this.quality = quality;
+        }
+    }
 }

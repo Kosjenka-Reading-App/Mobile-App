@@ -409,7 +409,7 @@ int Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_SetParameters(J
     return 0;
 }
 
-void Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_InitGazeCalibration(JNIEnv *env,
+void Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_InitOnlineGazeCalibration(JNIEnv *env,
                                                                             jobject obj) {
     if (!m_Tracker)
         return;
@@ -417,20 +417,56 @@ void Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_InitGazeCalibr
     m_Tracker->InitOnlineGazeCalibration();
 }
 
-void Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_AddGazePoint(JNIEnv *env,
-                                                                                       jobject obj) {
+void Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_AddGazeCalibrationPoint(JNIEnv *env,
+                                                                                       jobject obj, jfloat x, jfloat y) {
     if (!m_Tracker)
         return;
 
-    m_Tracker->AddGazeCalibrationPoint(tapPositionXfloat, tapPositionYfloat);
+    m_Tracker->AddGazeCalibrationPoint(x, y);
 }
 
-void Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_FinishGazeCalibration(JNIEnv *env,
+void Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_FinalizeOnlineGazeCalibration(JNIEnv *env,
                                                                                jobject obj) {
     if (!m_Tracker)
         return;
 
     m_Tracker->FinalizeOnlineGazeCalibration();
+}
+
+jobject
+Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_GetScreenSpaceGazeData(JNIEnv *env,
+                                                                                    jobject obj) {
+    if (m_Tracker && !trackerStopped && !trackerPaused){
+
+        pthread_mutex_lock(&guardFrame_mutex);
+        ScreenSpaceGazeData data = trackingData->gazeData;
+
+        // get a reference to your class if you don't have it already
+        jclass cls = env->FindClass("com/dsd/kosjenka/presentation/home/camera/VisageWrapper$ScreenSpaceGazeData");
+        // get a reference to the constructor; the name is <init>
+        jmethodID constructor = env->GetMethodID(cls, "<init>", "(IFFIF)V");
+
+        jvalue args[5];
+
+        for (int i = 0; i < MAX_FACES; i++) {
+            if (trackingStatus[i] == TRACK_STAT_OFF){
+                continue;
+            }
+            // set up the arguments
+            args[0].i = data.index;
+            args[1].f = data.x;
+            args[2].f = data.y;
+            args[3].i = data.inState;
+            args[4].f = data.quality;
+        }
+
+        jobject gazeObject = env->NewObjectA(cls, constructor, args);
+
+        pthread_mutex_unlock(&guardFrame_mutex);
+
+        return gazeObject;
+    }
+    return nullptr;
 }
 
 /**
@@ -882,9 +918,6 @@ Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_SendCoordinates(JNI
 
     tapPositionX = vsRound(x);
     tapPositionY = vsRound(y);
-
-    tapPositionXfloat = x;
-    tapPositionYfloat = y;
 
     pthread_mutex_unlock(&displayRes_mutex);
 }

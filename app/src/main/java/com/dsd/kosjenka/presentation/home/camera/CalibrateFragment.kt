@@ -39,94 +39,59 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.lifecycleScope
-import androidx.navigation.Navigation
-import androidx.navigation.fragment.findNavController
 import com.dsd.kosjenka.R
-import com.dsd.kosjenka.databinding.FragmentCameraBinding
+import com.dsd.kosjenka.databinding.FragmentCalibrateBinding
 import com.dsd.kosjenka.presentation.MainActivity
 import com.dsd.kosjenka.utils.Common
 import com.google.android.gms.common.util.concurrent.HandlerExecutor
-import kotlinx.coroutines.launch
 import java.nio.ByteBuffer
 import java.util.Collections
 import java.util.concurrent.Semaphore
 import java.util.concurrent.TimeUnit
+import kotlin.properties.Delegates
 
-class Camera2Fragment : Fragment(), ActivityCompat.OnRequestPermissionsResultCallback, LifecycleObserver {
+class CalibrateFragment: Fragment() {
 
-    private lateinit var binding: FragmentCameraBinding
+    private lateinit var binding: FragmentCalibrateBinding
+    private lateinit var surfaceView: GazeCalibrationView
+    private lateinit var visageWrapper: VisageWrapper
 
-    private var visageWrapper: VisageWrapper? = null
+    /** Detects, characterizes, and connects to a CameraDevice (used for all camera operations) */
+    private val cameraManager: CameraManager by lazy {
+        val context = requireContext().applicationContext
+        context.getSystemService(Context.CAMERA_SERVICE) as CameraManager
+    }
 
     /**
      * A reference to the opened [CameraDevice].
      */
-    private var mCameraDevice: CameraDevice? = null
-    private var frontCameraActive = true
-
+    private lateinit var mCameraDevice: CameraDevice
     /**
      * A reference to the current [CameraCaptureSession] for
      * preview.
      */
     private var mPreviewSession: CameraCaptureSession? = null
-
     /**
      * The [Size] of camera preview.
      */
-    private var mPreviewSize: Size? = null
-
+    private lateinit var mPreviewSize: Size
     /**
      * An additional thread for running tasks that shouldn't block the UI.
      */
     private lateinit var cameraBackgroundThread: HandlerThread
-
     /**
      * A [Handler] for running tasks in the background.
      */
     private lateinit var cameraBackgroundHandler: Handler
-
     /**
      * A [Semaphore] to prevent the app from exiting before closing the camera.
      */
     private val mCameraOpenCloseLock = Semaphore(1)
 
-    /**
-     * [CameraDevice.StateCallback] is called when [CameraDevice] changes its status.
-     */
-    private val mStateCallback: CameraDevice.StateCallback = object : CameraDevice.StateCallback() {
-        override fun onOpened(cameraDevice: CameraDevice) {
-            mCameraDevice = cameraDevice
-            startPreview()
-            mCameraOpenCloseLock.release()
-            VisageWrapper.SetParameters(
-                mPreviewSize!!.width,
-                mPreviewSize!!.height,
-                mOrientation!!,
-                if (frontCameraActive) 1 else 0
-            )
-        }
+    private var mOrientation by Delegates.notNull<Int>()
 
-        override fun onDisconnected(cameraDevice: CameraDevice) {
-            mCameraOpenCloseLock.release()
-            cameraDevice.close()
-            mCameraDevice = null
-        }
-
-        override fun onError(cameraDevice: CameraDevice, error: Int) {
-            mCameraOpenCloseLock.release()
-            cameraDevice.close()
-            mCameraDevice = null
-            this@Camera2Fragment.activity?.finish()
-        }
-    }
-
-    private var mOrientation: Int? = null
-    private var mPreviewBuilder: CaptureRequest.Builder? = null
-    private var mImageReader: ImageReader? = null
+    private lateinit var mPreviewBuilder: CaptureRequest.Builder
+    private lateinit var mImageReader: ImageReader
     private val onImageAvailableListener = ImageReader.OnImageAvailableListener { reader ->
         var image: Image? = null
         try {
@@ -154,90 +119,111 @@ class Camera2Fragment : Fragment(), ActivityCompat.OnRequestPermissionsResultCal
         }
     }
 
+    /**
+     * [CameraDevice.StateCallback] is called when [CameraDevice] changes its status.
+     */
+    private val mStateCallback: CameraDevice.StateCallback = object : CameraDevice.StateCallback() {
+        override fun onOpened(cameraDevice: CameraDevice) {
+            mCameraDevice = cameraDevice
+            startPreview()
+            mCameraOpenCloseLock.release()
+            VisageWrapper.SetParameters(
+                mPreviewSize.width,
+                mPreviewSize.height,
+                mOrientation,
+                1
+            )
+        }
+
+        override fun onDisconnected(cameraDevice: CameraDevice) {
+            mCameraOpenCloseLock.release()
+            cameraDevice.close()
+//            mCameraDevice = null
+        }
+
+        override fun onError(cameraDevice: CameraDevice, error: Int) {
+            mCameraOpenCloseLock.release()
+            cameraDevice.close()
+            ErrorDialog.newInstance("Camera error")
+                .show(childFragmentManager, FRAGMENT_DIALOG)
+//            this@CalibrateFragment.activity?.finish()
+        }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_calibrate, container, false)
+        return binding.root
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         visageWrapper = VisageWrapper.get(context)
-        visageWrapper!!.onCreate()
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        //inflater.inflate(R.layout.fragment_camera, container, false)
-        binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_camera, container, false)
-        return binding.root
-    }
-
-//    override fun onAttach(context: Context) {
-//        super.onAttach(context)
-//
-//        requireActivity().lifecycle.addObserver(object: DefaultLifecycleObserver {
-//            override fun onCreate(owner: LifecycleOwner) {
-//                super.onCreate(owner)
-//                owner.lifecycle.removeObserver(this)
-//
-//                visageWrapper = VisageWrapper.get(context)
-//                visageWrapper!!.switchToCamera()
-//                visageWrapper!!.onCreate()
-//            }
-//        })
-//    }
-
-    override fun onResume() {
-        super.onResume()
-        visageWrapper!!.onResume()
-        startCameraBackgroundThread()
-        openCamera(640, 480, frontCameraActive)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        visageWrapper!!.onPause()
-        closeCamera()
-        stopCameraBackgroundThread()
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-//                visageWrapper.onStop();
+        visageWrapper.onCreate()
+        visageWrapper.initGaze()
+//        Common.showToast(requireContext(), "ready for calibration")
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (savedInstanceState == null){
-            val trackerView : View = visageWrapper!!.trackerView
+        surfaceView = visageWrapper.calibrateView as GazeCalibrationView
 
-            if (trackerView.parent != null){
-                (trackerView.parent as ViewGroup).removeView(trackerView)
+        if (surfaceView.parent != null){
+            (surfaceView.parent as ViewGroup).removeView(surfaceView)
+        }
+        binding.calibrateContainer.addView(surfaceView)
+
+        val builder: AlertDialog.Builder = AlertDialog.Builder(context)
+        builder
+            .setMessage("Please look at the object and tap on it as it spawns on the screen.")
+            .setTitle("Gaze Tracking Calibration")
+            .setPositiveButton("Continue") { dialog, which ->
+                // Do something.
             }
-            binding.cameraRoot.addView(trackerView, 0)
-        }
 
-        binding.calibrateBtn.setOnClickListener{
-            Common.showToast(requireContext(), "Calibrate button")
-            findNavController().navigate(Camera2FragmentDirections.actionCameraFragmentToCalibrateFragment())
-        }
-
-//        setTrackerDisplayOptions()
+        val dialog: AlertDialog = builder.create()
+        dialog.show()
     }
 
-    override fun onConfigurationChanged(newConfiguration: Configuration) {
-        super.onConfigurationChanged(newConfiguration)
-        visageWrapper!!.PauseTracker()
+    override fun onResume() {
+        super.onResume()
+        visageWrapper.onResume()
+        startCameraBackgroundThread()
+        openCamera(640, 480, true)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        visageWrapper.onPause()
+        closeCamera()
+        stopCameraBackgroundThread()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+//        visageWrapper.FinalizeOnlineGazeCalibration()
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+
+        visageWrapper.PauseTracker()
         val manager: CameraManager =
             requireActivity().getSystemService(Context.CAMERA_SERVICE) as CameraManager
         try {
             val characteristics: CameraCharacteristics =
-                manager.getCameraCharacteristics(mCameraDevice!!.id)
+                manager.getCameraCharacteristics(mCameraDevice.id)
             mOrientation = getCorrectCameraOrientation(characteristics)
             VisageWrapper.SetParameters(
-                mPreviewSize!!.width,
-                mPreviewSize!!.height,
-                mOrientation!!,
-                if (frontCameraActive) 1 else 0
+                mPreviewSize.width,
+                mPreviewSize.height,
+                mOrientation,
+                1
             )
         } catch (e: CameraAccessException) {
             e.printStackTrace()
@@ -259,8 +245,6 @@ class Camera2Fragment : Fragment(), ActivityCompat.OnRequestPermissionsResultCal
         cameraBackgroundThread.quitSafely()
         try {
             cameraBackgroundThread.join()
-//            cameraBackgroundThread = null
-//            cameraBackgroundHandler = null
         } catch (e: InterruptedException) {
             e.printStackTrace()
         }
@@ -286,7 +270,8 @@ class Camera2Fragment : Fragment(), ActivityCompat.OnRequestPermissionsResultCal
      */
     private fun requestVideoPermissions() {
         if (shouldShowRequestPermissionRationale(VIDEO_PERMISSIONS)) {
-            ConfirmationDialog().show(childFragmentManager, FRAGMENT_DIALOG)
+            Camera2Fragment.ConfirmationDialog()
+                .show(childFragmentManager, FRAGMENT_DIALOG)
         } else {
             ActivityCompat.requestPermissions(
                 requireActivity() as MainActivity,
@@ -309,126 +294,74 @@ class Camera2Fragment : Fragment(), ActivityCompat.OnRequestPermissionsResultCal
             ErrorDialog.newInstance("Permission request")
                 .show(childFragmentManager, FRAGMENT_DIALOG)
         }
-//        else {
-//        }
     }
-
-//    override fun onRequestPermissionsResult(
-//        requestCode: Int, permissions: Array<String>,
-//        grantResults: IntArray
-//    ) {
-//        Log.d(TAG, "onRequestPermissionsResult")
-//        if (requestCode == REQUEST_VIDEO_PERMISSIONS) {
-//            if (grantResults.size == VIDEO_PERMISSIONS.size) {
-//                for (result in grantResults) {
-//                    if (result != PackageManager.PERMISSION_GRANTED) {
-//                        ErrorDialog.newInstance("Permission request")
-//                            .show(childFragmentManager, FRAGMENT_DIALOG)
-//                        break
-//                    }
-//                }
-//            } else {
-//                ErrorDialog.newInstance("Permission request")
-//                    .show(childFragmentManager, FRAGMENT_DIALOG)
-//            }
-//        } else {
-//            super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-//        }
-//    }
-
-//    private fun hasPermissionsGranted(permissions: Array<String>): Boolean {
-//        for (permission in permissions) {
-//            if (ActivityCompat.checkSelfPermission(requireActivity() as MainActivity, permission)
-//                != PackageManager.PERMISSION_GRANTED
-//            ) {
-//                return false
-//            }
-//        }
-//        return true
-//    }
 
     private fun allPermissionsGranted() = VIDEO_PERMISSIONS.all {
         ContextCompat.checkSelfPermission(
             requireContext(), it) == PackageManager.PERMISSION_GRANTED
     }
 
-
     /**
      * Tries to open a [CameraDevice]. The result is listened by `mStateCallback`.
      */
-    @SuppressLint("MissingPermission")
     private fun openCamera(width: Int, height: Int, frontCamera: Boolean) {
         if (!allPermissionsGranted()) {
             requestVideoPermissions()
             return
         }
-        val activity: FragmentActivity? = activity
-        if (null == activity || activity.isFinishing) {
-            return
-        }
-        val manager: CameraManager =
-            activity.getSystemService(Context.CAMERA_SERVICE) as CameraManager
+
         try {
             Log.d(TAG, "tryAcquire")
             if (!mCameraOpenCloseLock.tryAcquire(2500, TimeUnit.MILLISECONDS)) {
                 throw RuntimeException("Time out waiting to lock camera opening.")
             }
-            val cameraList: Array<String> = manager.cameraIdList
-            var cameraId: String? = null
-            for (cam in cameraList) {
-                if (frontCamera) {
-                    if (CameraCharacteristics.LENS_FACING_FRONT == manager.getCameraCharacteristics(
-                            cam
-                        ).get(CameraCharacteristics.LENS_FACING)
-                    ) {
-                        cameraId = cam
-                        break
-                    }
-                } else {
-                    if (CameraCharacteristics.LENS_FACING_FRONT != manager.getCameraCharacteristics(
-                            cam
-                        ).get(CameraCharacteristics.LENS_FACING)
-                    ) {
-                        cameraId = cam
-                        break
-                    }
-                }
-            }
-            if (cameraId == null && cameraList.isNotEmpty()) {
-                cameraId =
-                    cameraList[0] //camera facing front not found, use first camera from the list
+            var cameraId = cameraManager.cameraIdList.find {
+                cameraManager.getCameraCharacteristics(it)
+                    .get(CameraCharacteristics.LENS_FACING) ==
+                        CameraCharacteristics.LENS_FACING_FRONT
             }
 
+            if (cameraId == null) {
+                cameraId =
+                    cameraManager.cameraIdList[0] //camera facing front not found, use first camera from the list
+            }
+
+
+
             // Choose the sizes for camera preview
-            val characteristics: CameraCharacteristics = manager.getCameraCharacteristics(cameraId!!)
-            val map: StreamConfigurationMap? = characteristics
-                .get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)
+            val characteristics: CameraCharacteristics = cameraManager.getCameraCharacteristics(cameraId!!)
+            val sizes = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)!!.getOutputSizes(SurfaceTexture::class.java)
             mPreviewSize = chooseOptimalSize(
-                map!!.getOutputSizes(
-                    SurfaceTexture::class.java
-                ),
-                width, height, Size(width, height)
+                sizes, width, height, Size(width, height)
             )
             Log.i(
                 TAG,
-                "Current preview size is " + mPreviewSize!!.width + " " + mPreviewSize!!.height
+                "Current preview size is " + mPreviewSize.width + " " + mPreviewSize.height
             )
             mOrientation = getCorrectCameraOrientation(characteristics)
 
-            manager.openCamera(cameraId!!, mStateCallback, null)
+            if (ActivityCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.CAMERA
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                requestVideoPermissions()
+                return
+            }
+            cameraManager.openCamera(cameraId, mStateCallback, null)
             mImageReader = ImageReader.newInstance(
-                mPreviewSize!!.width,
-                mPreviewSize!!.height,
+                mPreviewSize.width,
+                mPreviewSize.height,
                 ImageFormat.YUV_420_888,
                 2
             )
-            mImageReader!!.setOnImageAvailableListener(
+            mImageReader.setOnImageAvailableListener(
                 onImageAvailableListener,
                 cameraBackgroundHandler
             )
         } catch (e: CameraAccessException) {
             Toast.makeText(activity, "Cannot access the camera.", Toast.LENGTH_SHORT).show()
-            activity.finish()
+            activity?.finish()
         } catch (e: NullPointerException) {
             // Currently an NPE is thrown when the Camera2API is used but not supported on the
             // device this code runs.
@@ -443,14 +376,8 @@ class Camera2Fragment : Fragment(), ActivityCompat.OnRequestPermissionsResultCal
         try {
             mCameraOpenCloseLock.acquire()
             closePreviewSession()
-            if (null != mCameraDevice) {
-                mCameraDevice!!.close()
-//                mCameraDevice = null
-            }
-            if (null != mImageReader) {
-                mImageReader!!.close()
-                mImageReader = null
-            }
+            mCameraDevice.close()
+            mImageReader.close()
         } catch (e: InterruptedException) {
             throw RuntimeException("Interrupted while trying to lock camera closing.")
         } finally {
@@ -462,19 +389,16 @@ class Camera2Fragment : Fragment(), ActivityCompat.OnRequestPermissionsResultCal
      * Start the camera preview.
      */
     private fun startPreview() {
-        if (null == mCameraDevice || null == mPreviewSize) {
-            return
-        }
         try {
             closePreviewSession()
             val surfaces: MutableList<Surface> = ArrayList()
             mPreviewBuilder =
-                mCameraDevice!!.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW)
+                mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW)
 
             //Set up Surface for ImageReader
-            val imageSurface = mImageReader!!.surface
+            val imageSurface = mImageReader.surface
             surfaces.add(imageSurface)
-            mPreviewBuilder!!.addTarget(imageSurface)
+            mPreviewBuilder.addTarget(imageSurface)
 
             val sessionCallback = object : CameraCaptureSession.StateCallback() {
                 override fun onConfigured(session: CameraCaptureSession) {
@@ -491,9 +415,9 @@ class Camera2Fragment : Fragment(), ActivityCompat.OnRequestPermissionsResultCal
             }
 
             if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
-                mCameraDevice!!.createCaptureSession(surfaces, sessionCallback, cameraBackgroundHandler)
+                mCameraDevice.createCaptureSession(surfaces, sessionCallback, cameraBackgroundHandler)
             } else {
-                mCameraDevice!!.createCaptureSession(
+                mCameraDevice.createCaptureSession(
                     SessionConfiguration(
                         SessionConfiguration.SESSION_REGULAR,
                         listOf(OutputConfiguration(imageSurface)),
@@ -511,13 +435,10 @@ class Camera2Fragment : Fragment(), ActivityCompat.OnRequestPermissionsResultCal
      * Update the camera preview. [.startPreview] needs to be called in advance.
      */
     private fun updatePreview() {
-        if (null == mCameraDevice) {
-            return
-        }
         try {
-            setUpCaptureRequestBuilder(mPreviewBuilder!!)
-            mPreviewSession!!.setRepeatingRequest(
-                mPreviewBuilder!!.build(),
+            setUpCaptureRequestBuilder(mPreviewBuilder)
+            mPreviewSession?.setRepeatingRequest(
+                mPreviewBuilder.build(),
                 null,
                 cameraBackgroundHandler
             )
@@ -531,11 +452,9 @@ class Camera2Fragment : Fragment(), ActivityCompat.OnRequestPermissionsResultCal
     }
 
     private fun closePreviewSession() {
-        if (mPreviewSession != null) {
-            mPreviewSession!!.close()
-            mPreviewSession = null
-        }
+        mPreviewSession?.close()
     }
+
 
     private fun getCorrectCameraOrientation(info: CameraCharacteristics): Int {
         val rotation = (requireActivity() as MainActivity).windowManager.defaultDisplay.rotation
@@ -557,110 +476,19 @@ class Camera2Fragment : Fragment(), ActivityCompat.OnRequestPermissionsResultCal
         return result
     }
 
-//    private fun setTrackerDisplayOptions() {
-//        var activeDisplay : Int = VisageWrapper.DISPLAY_POINT_QUALITY
-//        val options = listOf(VisageWrapper.DISPLAY_IRIS,VisageWrapper.DISPLAY_GAZE)
-//        for (op in options) {
-//            activeDisplay += op
-//        }
-//        visageWrapper!!.SetDisplayOptions(activeDisplay)
-//    }
+    companion object{
+        private var frameID = 0
 
-    fun switchCamera() {
-        visageWrapper!!.PauseTracker()
-        frontCameraActive = !frontCameraActive
-        closeCamera()
-        openCamera(640, 480, frontCameraActive)
-    }
-
-    private enum class TrackingMode {
-        Calibration, Camera2
-    }
-
-    /**
-     * Compares two `Size`s based on their areas.
-     */
-    internal class CompareSizesByArea : Comparator<Size> {
-        override fun compare(lhs: Size, rhs: Size): Int {
-            // We cast here to ensure the multiplications won't overflow
-            return java.lang.Long.signum(
-                lhs.width.toLong() * lhs.height -
-                        rhs.width.toLong() * rhs.height
-            )
-        }
-    }
-
-    class ErrorDialog : DialogFragment() {
-        override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-            val activity: FragmentActivity? = activity
-            return AlertDialog.Builder(activity)
-                .setMessage(requireArguments().getString(ARG_MESSAGE))
-                .setPositiveButton("OK"
-                ) { _, _ ->
-                    activity?.finish()
-                }
-                .create()
-        }
-
-        companion object {
-            private const val ARG_MESSAGE = "message"
-            fun newInstance(message: String?): ErrorDialog {
-                val dialog = ErrorDialog()
-                val args = Bundle()
-                args.putString(ARG_MESSAGE, message)
-                dialog.arguments = args
-                return dialog
-            }
-        }
-    }
-
-    class ConfirmationDialog : DialogFragment() {
-        override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-            return AlertDialog.Builder(context)
-                .setMessage("Permission request")
-                .setPositiveButton("OK"
-                ) { _, _ ->
-                    ActivityCompat.requestPermissions(
-                        (requireActivity() as MainActivity), VIDEO_PERMISSIONS,
-                        REQUEST_VIDEO_PERMISSIONS
-                    )
-                }
-                .setNegativeButton(
-                    "Cancel"
-                ) { _, _ -> requireActivity().finish() }
-                .create()
-        }
-    }
-
-    companion object {
-        private var instance: Camera2Fragment? = null
-        private const val TAG = "Camera2Fragment"
-        private const val REQUEST_VIDEO_PERMISSIONS = 1
+        private const val TAG = "CalibrateFragment"
         private const val FRAGMENT_DIALOG = "dialog"
+        private const val REQUEST_VIDEO_PERMISSIONS = 1
         private val VIDEO_PERMISSIONS = mutableListOf(
-            Manifest.permission.CAMERA,
-//            Manifest.permission.RECORD_AUDIO
+            Manifest.permission.CAMERA
         ).apply {
             if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
                 add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
             }
         }.toTypedArray()
-
-        private var frameID = 0
-        fun newInstance(): Camera2Fragment {
-            return Camera2Fragment()
-        }
-
-        fun get(): Camera2Fragment {
-            if (instance == null) {
-                synchronized(Camera2Fragment::class.java) {
-                    if (instance == null) {
-                        instance = newInstance()
-                    }
-                }
-            }
-            return instance!!
-        }
 
         /**
          * Given `choices` of `Size`s supported by a camera, chooses the smallest one whose
@@ -692,10 +520,37 @@ class Camera2Fragment : Fragment(), ActivityCompat.OnRequestPermissionsResultCal
 
             // Pick the smallest of those, assuming we found any
             return if (bigEnough.size > 0) {
-                Collections.min(bigEnough, CompareSizesByArea())
+                Collections.min(bigEnough) { lhs, rhs ->
+                    java.lang.Long.signum(
+                        lhs.width.toLong() * lhs.height -
+                                rhs.width.toLong() * rhs.height)
+                }
             } else {
                 Log.e(TAG, "Couldn't find any suitable preview size")
                 choices[choices.size / 2]
+            }
+        }
+    }
+
+    class ErrorDialog : DialogFragment() {
+        override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+            val activity: FragmentActivity? = activity
+            return AlertDialog.Builder(activity)
+                .setMessage(requireArguments().getString(ARG_MESSAGE))
+                .setPositiveButton("OK"
+                ) { _, _ ->
+                    activity?.finish()
+                }
+                .create()
+        }
+        companion object {
+            private const val ARG_MESSAGE = "message"
+            fun newInstance(message: String?): ErrorDialog {
+                val dialog = ErrorDialog()
+                val args = Bundle()
+                args.putString(ARG_MESSAGE, message)
+                dialog.arguments = args
+                return dialog
             }
         }
     }
