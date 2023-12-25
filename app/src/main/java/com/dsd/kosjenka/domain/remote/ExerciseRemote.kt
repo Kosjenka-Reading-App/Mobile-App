@@ -5,6 +5,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.liveData
 import com.dsd.kosjenka.data.remote.ApiService
 import com.dsd.kosjenka.data.remote.BaseRemote
+import com.dsd.kosjenka.domain.models.Completion
 import com.dsd.kosjenka.presentation.home.ExercisePagingSource
 import com.dsd.kosjenka.utils.SharedPreferences
 import com.dsd.kosjenka.utils.error.ErrorManager
@@ -39,8 +40,12 @@ class ExerciseRemote @Inject constructor(
         apiService.getCategories()
     }
 
-    suspend fun getExercise(exerciseId: Int) = parseResult {
-        apiService.getExercise(exerciseId)
+    suspend fun getExercise(exerciseId: Int, userId: String) = parseResult {
+        apiService.getExercise(exerciseId, userId)
+    }
+
+    suspend fun updateCompletion(exerciseId: Int, completion: Completion) = parseResult {
+        apiService.updateCompletion(exerciseId = exerciseId, completion = completion)
     }
 
 

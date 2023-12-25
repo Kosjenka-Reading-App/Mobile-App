@@ -2,6 +2,7 @@ package com.dsd.kosjenka.presentation.home.exercise
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dsd.kosjenka.domain.models.Completion
 import com.dsd.kosjenka.domain.models.Exercise
 import com.dsd.kosjenka.domain.repository.ExerciseRepository
 import com.dsd.kosjenka.utils.UiStates
@@ -39,14 +40,27 @@ class ExerciseViewModel @Inject constructor(
         }
     }
 
-    fun getExercise(exerciseId: Int) {
+    fun getExercise(exerciseId: Int, userId: String) {
         viewModelScope.launch(handler) {
             _eventFlow.emit(UiStates.LOADING)
             repository.getExercise(
-                exerciseId = exerciseId
+                exerciseId = exerciseId,
+                userId = userId
             ).collect {
+                Timber.d("Test123: $it")
                 if (it != null) _exerciseDataFlow.emit(it)
                 _eventFlow.emit(UiStates.SUCCESS)
+            }
+        }
+    }
+
+    fun updateCompletion(exerciseId: Int, completion: Completion) {
+        viewModelScope.launch(handler) {
+            repository.updateCompletion(
+                exerciseId = exerciseId,
+                completion = completion
+            ).collect {
+                _eventFlow.emit(UiStates.UPDATE)
             }
         }
     }
