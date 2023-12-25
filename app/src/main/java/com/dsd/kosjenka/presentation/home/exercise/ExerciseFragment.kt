@@ -14,6 +14,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.Navigation
+import com.dsd.kosjenka.BuildConfig
 import com.dsd.kosjenka.R
 import com.dsd.kosjenka.databinding.FragmentExerciseBinding
 import com.dsd.kosjenka.domain.models.Completion
@@ -299,3 +301,4 @@ class ExerciseFragment : Fragment(), HighlightCallback {
         timerScope.cancel()
     }
 }
+

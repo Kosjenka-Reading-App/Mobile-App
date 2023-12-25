@@ -26,6 +26,13 @@
             app:destination="@id/homeFragment"
             app:popUpTo="@id/mainFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_mainFragment_to_cameraFragment"
+            app:destination="@id/cameraFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_calibrateFragment"
+            app:destination="@id/calibrateFragment" />
+
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
@@ -60,7 +67,6 @@
         <argument
             android:name="exerciseTitle"
             app:argType="string" />
-
     </fragment>
     <fragment
         android:id="@+id/homeFragment"
@@ -109,11 +115,22 @@
     </fragment>
     <fragment
         android:id="@+id/resetPasswordFragment"
-        android:name=".presentation.auth.ForgotPassword.ForgotPasswordFragment"
+        android:name="com.dsd.kosjenka.presentation.auth.ForgotPassword.ForgotPasswordFragment"
         android:label="fragment_reset_password"
         tools:layout="@layout/fragment_reset_password">
         <action
             android:id="@+id/action_resetPasswordFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/cameraFragment"
+        android:name="com.dsd.kosjenka.presentation.home.camera.Camera2Fragment"
+        android:label="fragment_camera"
+        tools:layout="@layout/fragment_camera" />
+    <fragment
+        android:id="@+id/calibrateFragment"
+        android:name="com.dsd.kosjenka.presentation.home.camera.CalibrateFragment"
+        android:label="fragment_calibrate"
+        tools:layout="@layout/fragment_calibrate" />
+
 </navigation>

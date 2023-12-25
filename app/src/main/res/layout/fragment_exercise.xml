@@ -36,6 +36,7 @@
                 android:padding="16dp"
                 tools:text="Hello World!" />
 
+
         </androidx.core.widget.NestedScrollView>
 
         <SeekBar
@@ -132,6 +133,5 @@
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 </layout>
