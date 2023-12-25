@@ -8,6 +8,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
+import com.dsd.kosjenka.BuildConfig
 import com.dsd.kosjenka.R
 import com.dsd.kosjenka.databinding.FragmentMainBinding
 import com.dsd.kosjenka.utils.SharedPreferences
@@ -48,5 +49,11 @@ class MainFragment : Fragment() {
         binding.loginBtn.setOnClickListener(
             Navigation.createNavigateOnClickListener(R.id.action_mainFragment_to_loginFragment)
         )
+
+//        if (BuildConfig.DEBUG) {
+        binding.startCameraBtn.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.action_mainFragment_to_cameraFragment))
+        binding.startCalibrateBtn.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.action_mainFragment_to_calibrateFragment))
+//        }
+
     }
 }
