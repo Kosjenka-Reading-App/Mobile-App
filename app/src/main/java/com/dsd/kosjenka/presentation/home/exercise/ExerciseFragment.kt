@@ -16,7 +16,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.dsd.kosjenka.R
 import com.dsd.kosjenka.databinding.FragmentExerciseBinding
+import com.dsd.kosjenka.domain.models.Completion
+import com.dsd.kosjenka.domain.models.Exercise
 import com.dsd.kosjenka.presentation.MainActivity
+import com.dsd.kosjenka.utils.SharedPreferences
 import com.dsd.kosjenka.utils.UiStates
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -28,6 +31,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import timber.log.Timber
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class ExerciseFragment : Fragment(), HighlightCallback {
@@ -44,6 +49,11 @@ class ExerciseFragment : Fragment(), HighlightCallback {
     private var elapsedSeconds = 0
     private var isTimerRunning = false
     private var timerJob: Job? = null
+
+    private lateinit var thisExercise: Exercise
+
+    @Inject
+    lateinit var preferences: SharedPreferences
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -68,7 +78,7 @@ class ExerciseFragment : Fragment(), HighlightCallback {
         binding.exerciseText.setHighlightCallback(this)
 
         observeViewModel()
-        viewModel.getExercise(args.exerciseId)
+        viewModel.getExercise(args.exerciseId, preferences.userId)
         setupSpeedButtons()
         setupPlayPause()
         setupFontSlider()
@@ -135,12 +145,29 @@ class ExerciseFragment : Fragment(), HighlightCallback {
                 handler.removeCallbacksAndMessages(null)
                 isPlaying = false
                 pauseTimer()
+                //Track completion
+                updateCompletion()
+
             } else {
                 //Resume Exercise
                 startReadingMode()
                 resumeTimer()
             }
         }
+    }
+
+    private fun updateCompletion() {
+        val completionObject = Completion(
+            completion = binding.exerciseText.getCompletion(),
+            position = binding.exerciseText.currentIndex,
+            time_spent = elapsedSeconds,
+            user_id = preferences.userId.toInt(),
+        )
+        Timber.d("test123: $completionObject")
+        viewModel.updateCompletion(
+            exerciseId = thisExercise.id,
+            completion = completionObject
+        )
     }
 
     private fun setupSpeedButtons() {
@@ -180,6 +207,11 @@ class ExerciseFragment : Fragment(), HighlightCallback {
                         when (it) {
                             UiStates.LOADING -> toggleProgressBar(true)
                             UiStates.SUCCESS -> toggleProgressBar(false)
+                            UiStates.UPDATE -> {
+                                //User Exercise completion updated.
+                                Timber.d("Exercise ${thisExercise.title} completion updated.")
+                            }
+
                             UiStates.NO_INTERNET_CONNECTION -> {
                                 binding.loading.visibility = View.GONE
                                 Toast.makeText(
@@ -203,6 +235,7 @@ class ExerciseFragment : Fragment(), HighlightCallback {
 
                 launch {
                     viewModel.exerciseDataFlow.collectLatest {
+                        thisExercise = it
                         binding.exerciseText.text = it.text
                         startReadingMode()
                         startTimer()
@@ -247,7 +280,9 @@ class ExerciseFragment : Fragment(), HighlightCallback {
 
     override fun onHighlightEnd() {
         hasReachedEnd = true
-        binding.exercisePlayPause.performClick()
+        binding.exercisePlayPause.setImageResource(R.drawable.ic_play)
+        handler.removeCallbacksAndMessages(null)
+        isPlaying = false
         //Cancel timer
         timerJob?.cancel()
         Toast.makeText(
@@ -255,7 +290,8 @@ class ExerciseFragment : Fragment(), HighlightCallback {
             "Exercise finished in $elapsedSeconds seconds",
             Toast.LENGTH_SHORT
         ).show()
-        //Call API
+        //Track completion
+        updateCompletion()
     }
 
     override fun onDestroy() {

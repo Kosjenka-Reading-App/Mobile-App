@@ -7,11 +7,12 @@ import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.widget.NestedScrollView
+import timber.log.Timber
 
 class HighlightTextView(context: Context, attrs: AttributeSet?) :
     AppCompatTextView(context, attrs) {
 
-    private var currentIndex = -1
+    var currentIndex = -1
     private var resetCallback = false
     private var reachedEnd = false
     private var highlightCallback: HighlightCallback? = null
@@ -19,8 +20,7 @@ class HighlightTextView(context: Context, attrs: AttributeSet?) :
     lateinit var wordList: List<String>
 
     fun highlightNextWord() {
-        if(reachedEnd)
-            return
+        if (reachedEnd) return
 
         if (!this::wordList.isInitialized) wordList = text.split(" ")
 
@@ -33,14 +33,11 @@ class HighlightTextView(context: Context, attrs: AttributeSet?) :
 
                 scrollToWord(currentIndex)
             } else {
-                // Reached the end, reset index
-                currentIndex = -1
+                // Reached the end
                 reachedEnd = true
                 highlightCallback?.onHighlightEnd()
             }
-        } else {
-            resetCallback = false
-        }
+        } else resetCallback = false
     }
 
     fun setHighlightCallback(callback: HighlightCallback?) {
@@ -75,8 +72,8 @@ class HighlightTextView(context: Context, attrs: AttributeSet?) :
         val layout = layout ?: return
         val startIndex = wordList.take(index).sumOf { it.length + 1 } // +1 for the space
         val endIndex = startIndex + wordList[index].length
-        val startY = layout.getLineTop(layout.getLineForOffset(startIndex.toInt()))
-        val endY = layout.getLineBottom(layout.getLineForOffset(endIndex.toInt()))
+        val startY = layout.getLineTop(layout.getLineForOffset(startIndex))
+        val endY = layout.getLineBottom(layout.getLineForOffset(endIndex))
         val viewHeight = height
 
         // Calculate the scroll position to center the text vertically
@@ -89,6 +86,8 @@ class HighlightTextView(context: Context, attrs: AttributeSet?) :
         parentScrollView?.smoothScrollTo(0, scrollY)
     }
 
-
-
+    fun getCompletion(): Int {
+        val completion = ((currentIndex + 1).toFloat() / (wordList.size + 1)) * 100
+        return completion.toInt()
+    }
 }
