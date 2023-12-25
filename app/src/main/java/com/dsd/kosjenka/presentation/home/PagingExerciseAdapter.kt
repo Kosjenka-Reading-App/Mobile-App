@@ -64,8 +64,13 @@ class PagingExerciseAdapter :
                 }
                 exerciseComplexity.text = exercise.complexity
 
-                val completionString = if (exercise.completion == null) "0%"
-                else "${exercise.completion.completion}%"
+                val completionString = if (exercise.completion == null) {
+                    exerciseCompletion.visibility = View.GONE
+                    "0%"
+                } else {
+                    exerciseCompletion.visibility = View.VISIBLE
+                    "${exercise.completion.completion}%"
+                }
 
                 exerciseCompletion.text = completionString
 

@@ -1,6 +1,7 @@
 package com.dsd.kosjenka.domain.repository
 
 import com.dsd.kosjenka.data.remote.BaseRepository
+import com.dsd.kosjenka.domain.models.Completion
 import com.dsd.kosjenka.domain.remote.ExerciseRemote
 import com.dsd.kosjenka.utils.NetManager
 import com.dsd.kosjenka.utils.SharedPreferences
@@ -32,12 +33,18 @@ class  ExerciseRepository @Inject constructor(
             throw NoInternetException()
     }
 
-    fun getExercise(exerciseId: Int) = retrieveResourceAsFlow {
+    fun getExercise(exerciseId: Int, userId: String) = retrieveResourceAsFlow {
         if (netManager.isConnectedToInternet())
-            remote.getExercise(exerciseId)
+            remote.getExercise(exerciseId, userId)
          else
             throw NoInternetException()
     }
 
+    fun updateCompletion(exerciseId: Int, completion: Completion) = retrieveResourceAsFlow {
+        if (netManager.isConnectedToInternet())
+            remote.updateCompletion(exerciseId = exerciseId, completion = completion)
+        else
+            throw NoInternetException()
+    }
 
 }
