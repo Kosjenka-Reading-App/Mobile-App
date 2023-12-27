@@ -51,8 +51,10 @@ class MainFragment : Fragment() {
         )
 
 //        if (BuildConfig.DEBUG) {
-        binding.startCameraBtn.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.action_mainFragment_to_cameraFragment))
-        binding.startCalibrateBtn.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.action_mainFragment_to_calibrateFragment))
+        binding.startCameraBtn.setOnClickListener(Navigation.createNavigateOnClickListener(
+            R.id.action_mainFragment_to_cameraFragment))
+        binding.startCalibrateBtn.setOnClickListener(Navigation.createNavigateOnClickListener(
+            R.id.action_mainFragment_to_calibrateFragment))
 //        }
 
     }
