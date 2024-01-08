@@ -1,21 +1,15 @@
 package com.dsd.kosjenka.presentation.home.camera;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
-import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
-import android.opengl.Matrix;
 import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.WindowManager;
 
-import com.dsd.kosjenka.utils.GLCircleSprite;
-import com.dsd.kosjenka.utils.GLTriangle;
-
-import java.util.Random;
+import com.dsd.kosjenka.presentation.home.VisageWrapper;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;

@@ -21,3 +21,5 @@ class UserAlreadyConnectedException : Exception()
 class UnknownErrorException : Exception()
 
 class UnknownException : Exception()
+
+class InvalidTokenExcepion: Exception()

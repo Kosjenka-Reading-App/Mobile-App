@@ -14,12 +14,12 @@ class SharedPreferences
 
     private val preferences = context.getSharedPreferences(PREF_FILENAME, Context.MODE_PRIVATE)
 
-    var accessToken: String
-        get() = preferences.getString(ACCESS_TOKEN, "").toString()
+    var accessToken: String?
+        get() = preferences.getString(ACCESS_TOKEN, null)
         set(newToken) = preferences.edit().putString(ACCESS_TOKEN, newToken).apply()
 
-    var refreshToken: String
-        get() = preferences.getString(REFRESH_TOKEN, "").toString()
+    var refreshToken: String?
+        get() = preferences.getString(REFRESH_TOKEN, null)
         set(newToken) = preferences.edit().putString(REFRESH_TOKEN, newToken).apply()
 
     var userId: String
@@ -29,6 +29,14 @@ class SharedPreferences
     var isLoggedIn: Boolean
         get() = preferences.getBoolean(IS_LOGGED_IN, false)
         set(newToken) = preferences.edit().putBoolean(IS_LOGGED_IN, newToken).apply()
+
+    var isCalibrated: Boolean
+        get() = preferences.getBoolean(IS_CALIBRATED, false)
+        set(newToken) = preferences.edit().putBoolean(IS_CALIBRATED, newToken).apply()
+
+    var isGazeReadingMode: Boolean
+        get() = preferences.getBoolean(IS_GAZE_READING_MODE, false)
+        set(newToken) = preferences.edit().putBoolean(IS_GAZE_READING_MODE, newToken).apply()
 
     var categories: List<Category>
         get() {
@@ -54,5 +62,7 @@ class SharedPreferences
         private const val USER_ID = " USER_ID"
         private const val IS_LOGGED_IN = " IS_LOGGED_IN"
         private const val CATEGORIES = "CATEGORIES"
+        private const val IS_GAZE_READING_MODE = "IS_GAZE_READING_MODE"
+        private const val IS_CALIBRATED = "IS_CALIBRATED"
     }
 }

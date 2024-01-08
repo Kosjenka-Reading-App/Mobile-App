@@ -1,18 +1,15 @@
 package com.dsd.kosjenka.presentation
 
-import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.dsd.kosjenka.R
 import com.dsd.kosjenka.databinding.ActivityMainBinding
-import com.dsd.kosjenka.presentation.home.camera.Camera2Fragment
-import com.dsd.kosjenka.presentation.home.camera.VisageWrapper
+import com.dsd.kosjenka.presentation.home.VisageWrapper
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
 import java.io.FileOutputStream

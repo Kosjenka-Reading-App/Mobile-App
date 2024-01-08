@@ -1,4 +1,4 @@
-package com.dsd.kosjenka.presentation.home.camera;
+package com.dsd.kosjenka.presentation.home;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -8,6 +8,9 @@ import android.os.Message;
 import android.os.Process;
 import android.util.Log;
 import android.view.View;
+
+import com.dsd.kosjenka.presentation.home.camera.GazeCalibrationView;
+import com.dsd.kosjenka.presentation.home.camera.TrackerView;
 
 import java.nio.ByteBuffer;
 
@@ -32,7 +35,8 @@ public class VisageWrapper {
 
     public enum TrackScreen {
         CAMERA,
-        CALIBRATION
+        CALIBRATION,
+        EXERCISE
     }
 
     private static volatile VisageWrapper instance = null;
@@ -48,6 +52,7 @@ public class VisageWrapper {
 
     private TrackerView trackerView = null;
     private GazeCalibrationView calibrateView = null;
+    private GazeCalibrationView readingModeGazeView = null;
 
 //    private Drawable logo;
 
@@ -70,13 +75,14 @@ public class VisageWrapper {
         trackerView = new TrackerView(context, this);
 
         calibrateView = new GazeCalibrationView(context, this);
+        readingModeGazeView = new GazeCalibrationView(context, this);
         SetDisplayOptions(DISPLAY_DEFAULT);
 
 //        logo = ResourcesCompat.getDrawable(context.getResources(), R.drawable.logo, null);
     }
 
 
-    void onCreate() {
+    public void onCreate() {
         if (visageWorkerThread == null) {
             startVisageWorker();
         }
@@ -85,27 +91,27 @@ public class VisageWrapper {
 
     }
 
-    void onResume() {
-
-        if (trackScreen == TrackScreen.CAMERA)
-            trackerView.onResume();
-        else
-            calibrateView.onResume();
+    public void onResume() {
+        switch (trackScreen){
+            case CAMERA -> trackerView.onResume();
+            case CALIBRATION -> calibrateView.onResume();
+            case EXERCISE -> readingModeGazeView.onResume();
+        }
 
         Log.d(TAG, "backgroundHandler");
         visageWorkerHandler.sendMessage(visageWorkerHandler.obtainMessage(VisageWorkerThread.MSG_START_TRACKER));
     }
 
-    void onPause() {
-        if (trackScreen == TrackScreen.CAMERA)
-            trackerView.onPause();
-        else
-            calibrateView.onPause();
-
+    public void onPause() {
+        switch (trackScreen){
+            case CAMERA -> trackerView.onPause();
+            case CALIBRATION -> calibrateView.onPause();
+            case EXERCISE -> readingModeGazeView.onPause();
+        }
         PauseTracker();
     }
 
-    void onDestroy() {
+    public void onDestroy() {
         TrackerStop();
         if (visageWorkerThread == null)
             return;
@@ -144,14 +150,19 @@ public class VisageWrapper {
         }
     }
 
-    void switchToCameraScreen() {
+    public void switchToCameraScreen() {
         PauseTracker();
         trackScreen = TrackScreen.CAMERA;
     }
 
-    void switchToCalibrateScreen() {
+    public void switchToCalibrateScreen() {
         PauseTracker();
         trackScreen = TrackScreen.CALIBRATION;
+    }
+
+    public void switchToExerciseScreen() {
+        PauseTracker();
+        trackScreen = TrackScreen.EXERCISE;
     }
 
     void toggleEars() {
@@ -166,19 +177,21 @@ public class VisageWrapper {
     }
     void initAnalyser() { InitAnalyser();}
 
-    void initGaze() { visageWorkerHandler.sendMessage(visageWorkerHandler.obtainMessage(VisageWorkerThread.MSG_INIT_GAZE)); }
+    public void initGaze() { visageWorkerHandler.sendMessage(visageWorkerHandler.obtainMessage(VisageWorkerThread.MSG_INIT_GAZE)); }
 
     boolean isTrackingCameraScreen() {
         return trackScreen == TrackScreen.CAMERA;
     }
 
-    View getTrackerView() {
+    public View getTrackerView() {
         return trackerView;
     }
 
-    View getCalibrateView() { return calibrateView; }
+    public View getCalibrateView() { return calibrateView; }
 
-    void finalizeGazeCalibration() { visageWorkerHandler.sendMessage(visageWorkerHandler.obtainMessage(VisageWorkerThread.MSG_FINALIZE_CALIBRATION)); }
+    public View getReadingModeGazeView() { return readingModeGazeView; }
+
+    public void finalizeGazeCalibration() { visageWorkerHandler.sendMessage(visageWorkerHandler.obtainMessage(VisageWorkerThread.MSG_FINALIZE_CALIBRATION)); }
 
 
     private class VisageWorkerThread extends HandlerThread {

@@ -154,7 +154,7 @@ class GLTriangle() {
         normalizedCoordinates[0] = x
         normalizedCoordinates[1] = y
         normalizedCoordinates[2] = 0.0f
-        normalizedCoordinates[3] = 1.0f
+        normalizedCoordinates[3] = 1.5f
 
         val scratch = FloatArray(4)
         Matrix.multiplyMV(scratch, 0, invertedMatrix, 0, normalizedCoordinates, 0)

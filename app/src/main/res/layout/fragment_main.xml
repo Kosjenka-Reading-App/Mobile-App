@@ -56,21 +56,21 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/app_illustration" />
 
-        <Button
-            android:id="@+id/startCalibrateBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Try Gaze Tracking"
-            app:layout_constraintBottom_toTopOf="@id/startCameraBtn" />
-<!--        android:visibility="@{buildConfig.DEBUG ? View.VISIBLE : View.GONE}"-->
+<!--        <Button-->
+<!--            android:id="@+id/startCalibrateBtn"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="Try Gaze Tracking"-->
+<!--            app:layout_constraintBottom_toTopOf="@id/startCameraBtn" />-->
 
         <Button
             android:id="@+id/startCameraBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Try Face Tracking"
+            android:visibility="@{buildConfig.DEBUG ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toTopOf="@id/login_btn" />
-        <!--            android:visibility="@{buildConfig.DEBUG ? View.VISIBLE : View.GONE}"-->
+
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/login_btn"

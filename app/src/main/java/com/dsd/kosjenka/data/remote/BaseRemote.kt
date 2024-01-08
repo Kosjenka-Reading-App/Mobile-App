@@ -7,10 +7,13 @@ open class BaseRemote(private val errorManager: ErrorManager) {
 
     protected suspend fun <T> parseResult(networkCall: suspend () -> Response<T>): T? {
         val response = networkCall.invoke()
+
         if (!response.isSuccessful) {
             val errorBody = response.errorBody()?.string()
-            errorManager.getAppError(errorBody)
+            val errorCode = response.code()
+            errorManager.getAppError(errorBody, errorCode)
         }
+
         return response.body()
     }
 

@@ -10,12 +10,20 @@ import androidx.paging.cachedIn
 import com.dsd.kosjenka.domain.models.Exercise
 import com.dsd.kosjenka.domain.repository.ExerciseRepository
 import com.dsd.kosjenka.utils.SharedPreferences
+import com.dsd.kosjenka.utils.UiStates
 import com.dsd.kosjenka.utils.defaultOrder
 import com.dsd.kosjenka.utils.defaultOrderBy
+import com.dsd.kosjenka.utils.error.InvalidTokenExcepion
+import com.dsd.kosjenka.utils.error.NoInternetException
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
+import kotlin.coroutines.coroutineContext
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -31,14 +39,38 @@ class HomeViewModel @Inject constructor(
     private var currentOrderBy = defaultOrderBy
     private var currentOrder = defaultOrder
 
-    fun getExercises(): LiveData<PagingData<Exercise>> = currentQuery.switchMap { queryString ->
-        repository.getExercises(
-            orderBy = currentOrderBy,
-            order = currentOrder,
-            category = currentCategory.value,
-            query = queryString,
-        ).cachedIn(viewModelScope)
+    private val _eventFlow = MutableSharedFlow<UiStates>()
+    val eventFlow = _eventFlow.asSharedFlow()
+    private val handler = CoroutineExceptionHandler { _, exception ->
+        viewModelScope.launch {
+            _eventFlow.emit(
+                when (exception) {
+                    is NoInternetException -> UiStates.NO_INTERNET_CONNECTION
+                    is InvalidTokenExcepion -> UiStates.INVALID_TOKEN
+                    else -> {
+                        Timber.e("Exception: ${exception.localizedMessage}")
+                        UiStates.UNKNOWN_ERROR
+                    }
+                }
+            )
+        }
     }
+
+    fun getExercises(): LiveData<PagingData<Exercise>> =
+        currentQuery.switchMap { queryString ->
+            try {
+                val data = repository.getExercises(
+                    orderBy = currentOrderBy,
+                    order = currentOrder,
+                    category = currentCategory.value,
+                    query = queryString,
+                )
+                return@switchMap data.cachedIn(viewModelScope)
+            } catch (ex : Exception) {
+                handler.handleException(viewModelScope.coroutineContext, ex)
+            }
+            null
+        }
 
     fun refresh() {
         currentQuery.value = currentQuery.value
@@ -50,8 +82,8 @@ class HomeViewModel @Inject constructor(
     }
 
     fun getCategories() {
-        viewModelScope.launch {
-            launch { repository.getCategories().collect() }
+        viewModelScope.launch(handler) {
+             launch { repository.getCategories().collect() }
         }
     }
 
