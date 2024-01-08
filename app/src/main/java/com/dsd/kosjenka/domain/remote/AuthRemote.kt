@@ -47,5 +47,11 @@ class AuthRemote @Inject constructor(
         )
     }
 
-
+    suspend fun refreshToken(
+        token: String
+    )=parseResult {
+        apiService.refreshToken(
+            token
+        )
+    }
 }

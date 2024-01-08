@@ -7,131 +7,162 @@
 
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/background">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/exercise_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/background"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.core.widget.NestedScrollView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginBottom="8dp"
-            android:fillViewport="true"
-            app:layout_constraintBottom_toTopOf="@id/font_seek_bar"
-            app:layout_constraintTop_toBottomOf="@id/exercise_toolbar">
-
-            <com.dsd.kosjenka.presentation.home.exercise.HighlightTextView
-                android:id="@+id/exercise_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/background"
-                android:gravity="top|center"
-                android:padding="16dp"
-                tools:text="Hello World!" />
-
-
-        </androidx.core.widget.NestedScrollView>
-
-        <SeekBar
-            android:id="@+id/font_seek_bar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginBottom="8dp"
-            android:max="30"
-            android:progress="0"
-            app:layout_constraintBottom_toTopOf="@id/exercise_play_pause" />
-
-        <ImageView
-            android:id="@+id/speed_minus"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginEnd="16dp"
-            android:contentDescription="@null"
-            android:foreground="?android:attr/selectableItemBackground"
-            android:src="@drawable/ic_minus"
-            app:layout_constraintBottom_toBottomOf="@id/exercise_play_pause"
-            app:layout_constraintEnd_toStartOf="@id/exercise_play_pause"
-            app:layout_constraintTop_toTopOf="@id/exercise_play_pause" />
-
-        <ImageView
-            android:id="@+id/exercise_play_pause"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_marginBottom="16dp"
-            android:contentDescription="@null"
-            android:foreground="?android:attr/selectableItemBackground"
-            android:src="@drawable/ic_play"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/timer_layout"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <ImageView
-            android:id="@+id/speed_plus"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="16dp"
-            android:contentDescription="@null"
-            android:foreground="?android:attr/selectableItemBackground"
-            android:src="@drawable/ic_plus"
-            app:layout_constraintBottom_toBottomOf="@id/exercise_play_pause"
-            app:layout_constraintStart_toEndOf="@id/exercise_play_pause"
-            app:layout_constraintTop_toTopOf="@id/exercise_play_pause" />
+        android:layout_height="match_parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/timer_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@id/exercise_play_pause"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/exercise_play_pause">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/background">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/exercise_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/background"
+                app:layout_constraintTop_toTopOf="parent" >
+
+                <ImageView
+                    android:id="@+id/enable_disable_gaze"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginEnd="16dp"
+                    android:src="@drawable/center_focus_weak" />
+            </androidx.appcompat.widget.Toolbar>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:fillViewport="true"
+                app:layout_constraintBottom_toTopOf="@id/font_seek_bar"
+                app:layout_constraintTop_toBottomOf="@id/exercise_toolbar">
+
+                <androidx.core.widget.NestedScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="8dp"
+                    android:fillViewport="true">
+
+                    <com.dsd.kosjenka.presentation.home.exercise.HighlightTextView
+                        android:id="@+id/exercise_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/background"
+                        android:gravity="top|center"
+                        android:padding="16dp"
+                        tools:text="Hello World!" />
+
+
+                </androidx.core.widget.NestedScrollView>
+
+                <FrameLayout
+                    android:id="@+id/gaze_track_frame"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"/>
+            </RelativeLayout>
+
+            <SeekBar
+                android:id="@+id/font_seek_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginBottom="8dp"
+                android:max="30"
+                android:progress="0"
+                app:layout_constraintBottom_toTopOf="@id/exercise_play_pause" />
+
+            <ImageView
+                android:id="@+id/speed_minus"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="16dp"
+                android:contentDescription="@null"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:src="@drawable/ic_minus"
+                app:layout_constraintBottom_toBottomOf="@id/exercise_play_pause"
+                app:layout_constraintEnd_toStartOf="@id/exercise_play_pause"
+                app:layout_constraintTop_toTopOf="@id/exercise_play_pause" />
+
+            <ImageView
+                android:id="@+id/exercise_play_pause"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginBottom="16dp"
+                android:contentDescription="@null"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:src="@drawable/ic_play"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/timer_layout"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <ImageView
+                android:id="@+id/speed_plus"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="16dp"
+                android:contentDescription="@null"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:src="@drawable/ic_plus"
+                app:layout_constraintBottom_toBottomOf="@id/exercise_play_pause"
+                app:layout_constraintStart_toEndOf="@id/exercise_play_pause"
+                app:layout_constraintTop_toTopOf="@id/exercise_play_pause" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/timer_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@id/exercise_play_pause"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/exercise_play_pause">
+
+                <ProgressBar
+                    android:id="@+id/progressBarTimer"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:indeterminate="false"
+                    android:progressDrawable="@drawable/timer_circle"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/timerTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="00:00"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="@id/progressBarTimer"
+                    app:layout_constraintEnd_toEndOf="@id/progressBarTimer"
+                    app:layout_constraintStart_toStartOf="@id/progressBarTimer"
+                    app:layout_constraintTop_toTopOf="@id/progressBarTimer" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
 
             <ProgressBar
-                android:id="@+id/progressBarTimer"
-                style="?android:attr/progressBarStyleHorizontal"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:indeterminate="false"
-                android:progressDrawable="@drawable/timer_circle"
+                android:id="@+id/loading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:indeterminateDrawable="@drawable/progress_bar_blue"
+                android:indeterminateDuration="@android:integer/config_longAnimTime"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/timerTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="00:00"
-                android:textColor="@color/colorPrimary"
-                android:textSize="12sp"
-                app:layout_constraintBottom_toBottomOf="@id/progressBarTimer"
-                app:layout_constraintEnd_toEndOf="@id/progressBarTimer"
-                app:layout_constraintStart_toStartOf="@id/progressBarTimer"
-                app:layout_constraintTop_toTopOf="@id/progressBarTimer" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-        <ProgressBar
-            android:id="@+id/loading"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:indeterminateDrawable="@drawable/progress_bar_blue"
-            android:indeterminateDuration="@android:integer/config_longAnimTime"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </RelativeLayout>
+
 
 </layout>

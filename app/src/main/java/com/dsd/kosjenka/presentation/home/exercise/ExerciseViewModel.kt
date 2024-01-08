@@ -6,6 +6,7 @@ import com.dsd.kosjenka.domain.models.Completion
 import com.dsd.kosjenka.domain.models.Exercise
 import com.dsd.kosjenka.domain.repository.ExerciseRepository
 import com.dsd.kosjenka.utils.UiStates
+import com.dsd.kosjenka.utils.error.InvalidTokenExcepion
 import com.dsd.kosjenka.utils.error.NoInternetException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -31,6 +32,7 @@ class ExerciseViewModel @Inject constructor(
             _eventFlow.emit(
                 when (exception) {
                     is NoInternetException -> UiStates.NO_INTERNET_CONNECTION
+                    is InvalidTokenExcepion -> UiStates.INVALID_TOKEN
                     else -> {
                         Timber.e("Exception: ${exception.localizedMessage}")
                         UiStates.UNKNOWN_ERROR

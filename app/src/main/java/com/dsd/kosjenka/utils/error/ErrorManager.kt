@@ -10,17 +10,18 @@ class ErrorManager @Inject constructor(private val gson: Gson) {
     private val emailUnavailable = "EmailUnavailable"
     private val loginFailed = "LoginFailed"
     private val authFailed = "AuthFailed"
+    private val invalidToken = "InvalidToken"
     private val candidateAlreadyAppliedForJob = "CandidateAlreadyAppliedForJob"
     private val userEmailNotVerified = "UserEmailNotVerified"
     private val userEmailAlreadyVerified = "UserEmailAlreadyVerified"
     private val userAlreadyConnected = "UserAlreadyConnected"
 
-    fun getAppError(errorJson: String?) {
+    fun getAppError(errorJson: String?, errorCode: Int) {
 
         val errorResponse = gson.fromJson(errorJson, ErrorResponse::class.java)
         errorResponse?.let {
-            it.errorCode?.let { errorCode ->
-                throw when (errorCode) {
+            it.errorCode?.let { errCode ->
+                throw when (errCode) {
                     emailUnavailable -> EmailUnavailableException()
                     loginFailed -> LoginFailedException()
                     authFailed -> AuthFailedException()
@@ -30,6 +31,9 @@ class ErrorManager @Inject constructor(private val gson: Gson) {
                     userAlreadyConnected -> UserAlreadyConnectedException()
                     else -> UnknownException()
                 }
+            } ?: throw when (errorCode) {
+                403 -> InvalidTokenExcepion()
+                else -> UnknownException()
             }
         } ?: throw UnknownErrorException()
 

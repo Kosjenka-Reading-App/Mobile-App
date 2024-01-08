@@ -25,6 +25,7 @@ import com.dsd.kosjenka.domain.models.UserProfile
 import com.dsd.kosjenka.presentation.MainActivity
 import com.dsd.kosjenka.utils.Common
 import com.dsd.kosjenka.utils.SharedPreferences
+import com.dsd.kosjenka.utils.TokenManager
 import com.dsd.kosjenka.utils.UiStates
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -42,6 +43,8 @@ class UserProfilesFragment : Fragment(),
 
     @Inject
     lateinit var sharedPreferences: SharedPreferences
+    @Inject
+    lateinit var tokenManager: TokenManager
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -102,6 +105,12 @@ class UserProfilesFragment : Fragment(),
                         Common.showToast(binding.root.context, getString(R.string.network_error))
                     }
 
+                    UiStates.INVALID_TOKEN -> {
+                        tokenManager.deleteToken()
+                        sharedPreferences.isLoggedIn = false
+                        executeLogoutAction()
+                    }
+
                     UiStates.SUCCESS -> {
                         getUsers()
                     }
@@ -155,6 +164,8 @@ class UserProfilesFragment : Fragment(),
                     if (isValidUsername(dialogBinding.addProfileEditText.text.toString())) {
                         //createNewProfile(dialogBinding.addProfileEditText.text.toString())
                         executeAddUserAction(dialogBinding.addProfileEditText.text.toString())
+                    } else {
+                        Common.showToast(context, "Invalid profile name!")
                     }
                 }
                 setNegativeButton("Cancel") { dialog: DialogInterface?, _: Int -> dialog?.cancel() }
@@ -177,6 +188,8 @@ class UserProfilesFragment : Fragment(),
                                 profile
                             )
                         )
+                    } else {
+                        Common.showToast(context, "Invalid profile name!")
                     }
                 }
                 setNegativeButton("Cancel") { dialog: DialogInterface?, _: Int -> dialog?.cancel() }
@@ -212,7 +225,7 @@ class UserProfilesFragment : Fragment(),
     }
 
     fun executeLogoutAction() {
-        sharedPreferences.clearPreferences()
+//        sharedPreferences.clearPreferences()
         findNavController().navigate(
             UserProfilesFragmentDirections.actionUserProfilesFragmentToMainFragment()
         )
@@ -246,6 +259,6 @@ class UserProfilesFragment : Fragment(),
 //    }
 
     private fun isValidUsername(username: String): Boolean {
-        return !TextUtils.isEmpty(username)
+        return !TextUtils.isEmpty(username) && userProfilesAdapter.differ.currentList.none { it.username == username }
     }
 }

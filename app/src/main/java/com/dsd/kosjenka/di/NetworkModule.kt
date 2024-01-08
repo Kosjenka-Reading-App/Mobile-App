@@ -3,6 +3,9 @@ package com.dsd.kosjenka.di
 import com.dsd.kosjenka.BuildConfig
 import com.dsd.kosjenka.data.remote.ApiService
 import com.dsd.kosjenka.data.remote.AuthInterceptor
+import com.dsd.kosjenka.utils.AuthAuthenticator
+import com.dsd.kosjenka.utils.SharedPreferences
+import com.dsd.kosjenka.utils.TokenManager
 import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
@@ -22,16 +25,22 @@ object NetworkModule {
 
     @Singleton
     @Provides
+    fun provideTokenManager(sharedPreferences: SharedPreferences): TokenManager = TokenManager(sharedPreferences)
+
+    @Singleton
+    @Provides
     fun provideOkHttpClient(
         authorizationInterceptor: AuthInterceptor,
+        authAuthenticator: AuthAuthenticator
     ): OkHttpClient {
         val dispatcher = Dispatcher()
         dispatcher.maxRequests = 1
         val builder = OkHttpClient.Builder()
-            .connectTimeout(30, TimeUnit.SECONDS)
-            .writeTimeout(30, TimeUnit.SECONDS).readTimeout(30, TimeUnit.SECONDS)
+            .connectTimeout(10, TimeUnit.SECONDS)
+            .writeTimeout(10, TimeUnit.SECONDS).readTimeout(10, TimeUnit.SECONDS)
             .dispatcher(dispatcher)
             .addInterceptor(authorizationInterceptor)
+            .authenticator(authAuthenticator)
         if (BuildConfig.DEBUG)
             builder.addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
         return builder.build()

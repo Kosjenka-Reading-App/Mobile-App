@@ -18,6 +18,7 @@ plugins {
     id("com.google.dagger.hilt.android")
     id("androidx.navigation.safeargs.kotlin")
     id("com.google.gms.google-services")
+    id("com.google.firebase.crashlytics")
 }
 
 val getVersionCode = {
@@ -48,7 +49,7 @@ android {
         minSdk = 24
         targetSdk = 34
         versionCode = getVersionCode()
-        versionName = "4.0"
+        versionName = "5.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         externalNativeBuild {
@@ -166,6 +167,7 @@ dependencies {
 
     implementation(platform("com.google.firebase:firebase-bom:32.5.0"))
     implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-crashlytics")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
