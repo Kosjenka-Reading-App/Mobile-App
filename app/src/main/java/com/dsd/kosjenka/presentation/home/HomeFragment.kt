@@ -10,6 +10,7 @@ import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,10 +19,15 @@ import com.dsd.kosjenka.databinding.FragmentHomeBinding
 import com.dsd.kosjenka.domain.models.Category
 import com.dsd.kosjenka.presentation.MyLoadStateAdapter
 import com.dsd.kosjenka.presentation.home.filter.FilterBottomSheet
+import com.dsd.kosjenka.presentation.user_profiles.UserProfilesFragmentDirections
 import com.dsd.kosjenka.utils.Common
 import com.dsd.kosjenka.utils.SharedPreferences
+import com.dsd.kosjenka.utils.TokenManager
+import com.dsd.kosjenka.utils.UiStates
 import com.dsd.kosjenka.utils.interfaces.CategoryFilterListener
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -37,6 +43,8 @@ class HomeFragment : Fragment(), CategoryFilterListener {
 
     @Inject
     lateinit var preferences: SharedPreferences
+    @Inject
+    lateinit var tokenManager: TokenManager
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -89,6 +97,29 @@ class HomeFragment : Fragment(), CategoryFilterListener {
     private fun observeViewModel() {
         viewModel.getExercises().observe(viewLifecycleOwner) { pagingData ->
             pagingAdapter.submitData(viewLifecycleOwner.lifecycle, pagingData)
+        }
+
+        lifecycleScope.launch {
+            viewModel.eventFlow.collectLatest {
+                when (it) {
+                    UiStates.NO_INTERNET_CONNECTION -> {
+                        Common.showToast(binding.root.context, getString(R.string.network_error))
+                    }
+
+                    UiStates.INVALID_TOKEN -> {
+                        tokenManager.deleteToken()
+                        preferences.isLoggedIn = false
+                        findNavController().navigate(
+                            HomeFragmentDirections.actionHomeFragmentToMainFragment()
+                        )
+                    }
+
+                    else -> {
+                        Common.showToast(binding.root.context, getString(R.string.default_error))
+                        return@collectLatest
+                    }
+                }
+            }
         }
     }
 

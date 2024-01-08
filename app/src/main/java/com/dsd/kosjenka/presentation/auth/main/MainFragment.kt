@@ -50,12 +50,10 @@ class MainFragment : Fragment() {
             Navigation.createNavigateOnClickListener(R.id.action_mainFragment_to_loginFragment)
         )
 
-//        if (BuildConfig.DEBUG) {
-        binding.startCameraBtn.setOnClickListener(Navigation.createNavigateOnClickListener(
-            R.id.action_mainFragment_to_cameraFragment))
-        binding.startCalibrateBtn.setOnClickListener(Navigation.createNavigateOnClickListener(
-            R.id.action_mainFragment_to_calibrateFragment))
-//        }
+        if (BuildConfig.DEBUG) {
+            binding.startCameraBtn.setOnClickListener(Navigation.createNavigateOnClickListener(
+                R.id.action_mainFragment_to_cameraFragment))
+        }
 
     }
 }

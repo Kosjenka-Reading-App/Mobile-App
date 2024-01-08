@@ -3,7 +3,9 @@ package com.dsd.kosjenka.domain.repository
 import com.dsd.kosjenka.data.remote.BaseRepository
 import com.dsd.kosjenka.domain.remote.AuthRemote
 import com.dsd.kosjenka.utils.NetManager
+import com.dsd.kosjenka.utils.SharedPreferences
 import com.dsd.kosjenka.utils.error.NoInternetException
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -11,6 +13,7 @@ import javax.inject.Singleton
 class AuthRepository @Inject constructor(
     private val remote: AuthRemote,
     private val netManager: NetManager,
+    private val preferences: SharedPreferences
 ) : BaseRepository() {
 
     fun register(email: String, password: String) = retrieveResourceAsFlow {
@@ -45,6 +48,12 @@ class AuthRepository @Inject constructor(
             remote.forgotPassword(
                 email=email
             )
+        }else throw NoInternetException()
+    }
+
+    fun refreshToken(token:String) = runBlocking {
+        if(netManager.isConnectedToInternet()){
+           remote.refreshToken(token)
         }else throw NoInternetException()
     }
 }

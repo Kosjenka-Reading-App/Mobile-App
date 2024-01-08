@@ -36,9 +36,11 @@ class ExerciseRemote @Inject constructor(
             }
         ).liveData
 
-    suspend fun getCategories() = parseResult {
-        apiService.getCategories()
-    }
+
+    suspend fun getCategories() =
+        parseResult {
+            apiService.getCategories()
+        }
 
     suspend fun getExercise(exerciseId: Int, userId: String) = parseResult {
         apiService.getExercise(exerciseId, userId)

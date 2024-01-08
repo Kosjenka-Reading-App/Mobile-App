@@ -287,7 +287,7 @@ static bool endsWith(const std::string &str, const std::string &suffix) {
  * This method creates a new VisageTracker objects and initializes the tracker.
  * @param configFilename - name of the configuration, along with the full path, to be used in tracking
  */
-void Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_TrackerInit(JNIEnv *env,
+void Java_com_dsd_kosjenka_presentation_home_VisageWrapper_TrackerInit(JNIEnv *env,
                                                                         jobject instance,
                                                                         jstring path,
                                                                         jstring configFilename) {
@@ -354,7 +354,7 @@ void Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_TrackerInit(JN
  * @param orientation - orientation of the frame derived from camera and screen orientation
  * @param flip - 1 if frame is mirrored, 0 if not
  */
-int Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_SetParameters(JNIEnv *env, jobject obj,
+int Java_com_dsd_kosjenka_presentation_home_VisageWrapper_SetParameters(JNIEnv *env, jobject obj,
                                                                          jint width, jint height,
                                                                          jint orientation = 0,
                                                                          jint flip = 0) {
@@ -409,7 +409,7 @@ int Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_SetParameters(J
     return 0;
 }
 
-void Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_InitOnlineGazeCalibration(JNIEnv *env,
+void Java_com_dsd_kosjenka_presentation_home_VisageWrapper_InitOnlineGazeCalibration(JNIEnv *env,
                                                                             jobject obj) {
     if (!m_Tracker)
         return;
@@ -418,7 +418,7 @@ void Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_InitOnlineGaze
     LOGI("InitOnlineGazeCalibration");
 }
 
-void Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_AddGazeCalibrationPoint(JNIEnv *env,
+void Java_com_dsd_kosjenka_presentation_home_VisageWrapper_AddGazeCalibrationPoint(JNIEnv *env,
                                                                                        jobject obj, jfloat x, jfloat y) {
     if (!m_Tracker)
         return;
@@ -427,7 +427,7 @@ void Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_AddGazeCalibra
     LOGI("AddGazeCalibrationPoint");
 }
 
-void Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_FinalizeOnlineGazeCalibration(JNIEnv *env,
+void Java_com_dsd_kosjenka_presentation_home_VisageWrapper_FinalizeOnlineGazeCalibration(JNIEnv *env,
                                                                                jobject obj) {
     if (!m_Tracker)
         return;
@@ -437,7 +437,7 @@ void Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_FinalizeOnline
 }
 
 jobject
-Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_GetScreenSpaceGazeData(JNIEnv *env,
+Java_com_dsd_kosjenka_presentation_home_VisageWrapper_GetScreenSpaceGazeData(JNIEnv *env,
                                                                                     jobject obj) {
     if (m_Tracker && !trackerStopped && !trackerPaused){
 
@@ -446,7 +446,7 @@ Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_GetScreenSpaceGazeD
         ScreenSpaceGazeData data = trackingDataBuffer->gazeData;
 
         // get a reference to your class if you don't have it already
-        jclass cls = env->FindClass("com/dsd/kosjenka/presentation/home/camera/VisageWrapper$ScreenSpaceGazeData");
+        jclass cls = env->FindClass("com/dsd/kosjenka/presentation/home/VisageWrapper$ScreenSpaceGazeData");
         // get a reference to the constructor; the name is <init>
         jmethodID constructor = env->GetMethodID(cls, "<init>", "(IFFIF)V");
 
@@ -480,7 +480,7 @@ Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_GetScreenSpaceGazeD
  * Initiates a while loop. Image is grabbed and track() function is called every iteration.
  * Copies data to the buffers for rendering.
  */
-void Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_TrackLoop(JNIEnv *env,
+void Java_com_dsd_kosjenka_presentation_home_VisageWrapper_TrackLoop(JNIEnv *env,
                                                                       jobject obj) {
     while (!trackerStopped) {
         if (m_Tracker && androidCapture && !trackerStopped && !trackerPaused) {
@@ -554,7 +554,7 @@ void Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_TrackLoop(JNIE
     return;
 }
 
-bool Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_DisplayTrackingStatus(JNIEnv *env,
+bool Java_com_dsd_kosjenka_presentation_home_VisageWrapper_DisplayTrackingStatus(JNIEnv *env,
                                                                                   jobject instance,
                                                                                   jint width,
                                                                                   jint height) {
@@ -638,7 +638,7 @@ bool Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_DisplayTrackin
 /**
  * Stops the tracker and cleans memory
  */
-void Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_TrackerStop(JNIEnv *env, jobject obj) {
+void Java_com_dsd_kosjenka_presentation_home_VisageWrapper_TrackerStop(JNIEnv *env, jobject obj) {
     if (m_Tracker) {
         trackerStopped = true;
         trackingOk = false;
@@ -681,7 +681,7 @@ void Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_TrackerStop(JN
 * tracking will be resumed, signaled by trackerPaused flag.
 * @param frame byte array with image data
 */
-void Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_WriteFrameStream(JNIEnv *env,
+void Java_com_dsd_kosjenka_presentation_home_VisageWrapper_WriteFrameStream(JNIEnv *env,
                                                                              jobject obj,
                                                                              jobject frameChannel0,
                                                                              jobject frameChannel1,
@@ -709,7 +709,7 @@ void Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_WriteFrameStre
 }
 
 
-void Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_SetDisplayOptions(JNIEnv *env,
+void Java_com_dsd_kosjenka_presentation_home_VisageWrapper_SetDisplayOptions(JNIEnv *env,
                                                                               jobject instance,
                                                                               jint displayO) {
 
@@ -732,7 +732,7 @@ void Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_SetDisplayOpti
 
 }
 
-void Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_ToggleEars(JNIEnv *env, jobject instance, jstring path)
+void Java_com_dsd_kosjenka_presentation_home_VisageWrapper_ToggleEars(JNIEnv *env, jobject instance, jstring path)
 {
     const char *_path;
     _path = env->GetStringUTFChars(path, 0);
@@ -767,7 +767,7 @@ void Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_ToggleEars(JNI
     env->ReleaseStringUTFChars(path, _path);
 }
 
-void Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_ToggleIris(JNIEnv *env, jobject instance)
+void Java_com_dsd_kosjenka_presentation_home_VisageWrapper_ToggleIris(JNIEnv *env, jobject instance)
 {
     VisageConfiguration temp = m_Tracker->getTrackerConfiguration();
     if (temp.getProcessEyes() == 0)
@@ -781,7 +781,7 @@ void Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_ToggleIris(JNI
     m_Tracker->setTrackerConfiguration(temp);
 }
 
-void Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_ToggleRefineLandmarks(JNIEnv *env, jobject instance,
+void Java_com_dsd_kosjenka_presentation_home_VisageWrapper_ToggleRefineLandmarks(JNIEnv *env, jobject instance,
                                                                       jboolean enableOrDisable)
 {
     VisageConfiguration temp = m_Tracker->getTrackerConfiguration();
@@ -793,7 +793,7 @@ void Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_ToggleRefineLa
  *
  * Causes the tracking thread to run without doing any work - blocks the calls to the track function
  */
-void Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_PauseTracker(JNIEnv *env, jobject obj) {
+void Java_com_dsd_kosjenka_presentation_home_VisageWrapper_PauseTracker(JNIEnv *env, jobject obj) {
 
     pthread_mutex_lock(&displayRes_mutex);
     pthread_mutex_lock(&guardFrame_mutex);
@@ -806,7 +806,7 @@ void Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_PauseTracker(J
 }
 
 void
-Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_ResumeTracker(JNIEnv *env,
+Java_com_dsd_kosjenka_presentation_home_VisageWrapper_ResumeTracker(JNIEnv *env,
                                                                      jobject instance) {
 
     pthread_mutex_lock(&displayRes_mutex);
@@ -826,7 +826,7 @@ Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_ResumeTracker(JNIEn
 * @param width image width
 * @param height image height
 */
-void Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_WriteFrameImage(JNIEnv *env,
+void Java_com_dsd_kosjenka_presentation_home_VisageWrapper_WriteFrameImage(JNIEnv *env,
                                                                             jobject obj,
                                                                             jbyteArray frame,
                                                                             jint width,
@@ -858,7 +858,7 @@ void Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_WriteFrameImag
 }
 
 jfloatArray
-Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_GetEmotions(JNIEnv *env, jclass type) {
+Java_com_dsd_kosjenka_presentation_home_VisageWrapper_GetEmotions(JNIEnv *env, jclass type) {
 
     std::vector<float> emoTemp(NUM_EMOTIONS);
 
@@ -889,7 +889,7 @@ Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_GetEmotions(JNIEnv 
 }
 
 jfloat
-Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_GetAge(JNIEnv *env, jclass type) {
+Java_com_dsd_kosjenka_presentation_home_VisageWrapper_GetAge(JNIEnv *env, jclass type) {
     if (age[currentFace] < 0 || currentFace == -1)
         return -1.0f;
 
@@ -897,7 +897,7 @@ Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_GetAge(JNIEnv *env,
 
 }
 
-jint Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_GetGender(JNIEnv *env, jclass type) {
+jint Java_com_dsd_kosjenka_presentation_home_VisageWrapper_GetGender(JNIEnv *env, jclass type) {
 
     if (gender[currentFace] < 0 || currentFace == -1)
         return -1;
@@ -906,17 +906,17 @@ jint Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_GetGender(JNIE
 }
 
 
-void Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_DeallocateResources(JNIEnv *env,
+void Java_com_dsd_kosjenka_presentation_home_VisageWrapper_DeallocateResources(JNIEnv *env,
                                                                                 jobject instance) {
 }
 
 void
-Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_AllocateResources(JNIEnv *env,
+Java_com_dsd_kosjenka_presentation_home_VisageWrapper_AllocateResources(JNIEnv *env,
                                                                          jobject instance) {
 }
 
 void
-Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_SendCoordinates(JNIEnv *env,
+Java_com_dsd_kosjenka_presentation_home_VisageWrapper_SendCoordinates(JNIEnv *env,
                                                                        jobject instance, jfloat x,
                                                                        jfloat y) {
     pthread_mutex_lock(&displayRes_mutex);
@@ -928,14 +928,14 @@ Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_SendCoordinates(JNI
 }
 
 
-void Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_ResetTextures(JNIEnv *env,
+void Java_com_dsd_kosjenka_presentation_home_VisageWrapper_ResetTextures(JNIEnv *env,
                                                                           jobject instance) {
 
     VisageRendering::Reset();
 
 }
 
-jboolean Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_ShowInstruction(JNIEnv *env,
+jboolean Java_com_dsd_kosjenka_presentation_home_VisageWrapper_ShowInstruction(JNIEnv *env,
                                                                                 jobject instance) {
     jboolean rtn_value = FALSE;
 
@@ -946,7 +946,7 @@ jboolean Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_ShowInstru
     return rtn_value;
 }
 
-void Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_InitAnalyser(JNIEnv *env, jobject instance)
+void Java_com_dsd_kosjenka_presentation_home_VisageWrapper_InitAnalyser(JNIEnv *env, jobject instance)
 {
     if(!m_Analyser)
     {
@@ -959,7 +959,7 @@ void Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_InitAnalyser(J
     }
 }
 
-void Java_com_dsd_kosjenka_presentation_home_camera_VisageWrapper_WriteLogoImage(JNIEnv *env, jclass type,
+void Java_com_dsd_kosjenka_presentation_home_VisageWrapper_WriteLogoImage(JNIEnv *env, jclass type,
                                                                       jbyteArray logo_, jint width,
                                                                       jint height) {
 

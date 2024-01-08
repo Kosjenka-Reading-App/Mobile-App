@@ -14,22 +14,41 @@ class UserProfileRemote @Inject constructor(
     errorManager: ErrorManager,
 ) : BaseRemote(errorManager) {
 
-    suspend fun getUserProfiles(token: String) = parseResult {
+    suspend fun getUserProfiles(
+//        token: String
+    ) = parseResult {
         val currentPage = 1
         val pageSize = 30
-        apiService.getUsers("Bearer $token", currentPage, pageSize)
+        apiService.getUsers(
+//            "Bearer $token",
+            currentPage, pageSize)
     }
 
-    suspend fun createUserProfile(token: String, userProfile: UserProfile) = parseResult {
+    suspend fun createUserProfile(
+//        token: String?,
+        userProfile: UserProfile
+    ) = parseResult {
         //Log.d("TOKEN", token)
-        apiService.addUser("Bearer $token", CreateUserRequestObject(userProfile.username, userProfile.proficiency.toInt()))
+        apiService.addUser(
+//            "Bearer $token",
+            CreateUserRequestObject(userProfile.username, userProfile.proficiency.toInt()))
     }
 
-    suspend fun editUserProfile(token: String, userProfile: UserProfile) = parseResult {
-        apiService.editUser("Bearer $token", userProfile.id_user, CreateUserRequestObject(userProfile.username, userProfile.proficiency.toInt()))
+    suspend fun editUserProfile(
+//        token: String,
+        userProfile: UserProfile
+    ) = parseResult {
+        apiService.editUser(
+//            "Bearer $token",
+            userProfile.id_user, CreateUserRequestObject(userProfile.username, userProfile.proficiency.toInt()))
     }
 
-    suspend fun deleteUserProfile(token: String, userProfile: UserProfile) = parseResult {
-        apiService.deleteUser("Bearer $token", userProfile.id_user)
+    suspend fun deleteUserProfile(
+//        token: String,
+        userProfile: UserProfile
+    ) = parseResult {
+        apiService.deleteUser(
+//            "Bearer $token",
+            userProfile.id_user)
     }
 }

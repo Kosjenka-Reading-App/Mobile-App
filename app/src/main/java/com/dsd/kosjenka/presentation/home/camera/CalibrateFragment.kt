@@ -1,7 +1,6 @@
 package com.dsd.kosjenka.presentation.home.camera
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
@@ -18,7 +17,6 @@ import android.hardware.camera2.CameraMetadata
 import android.hardware.camera2.CaptureRequest
 import android.hardware.camera2.params.OutputConfiguration
 import android.hardware.camera2.params.SessionConfiguration
-import android.hardware.camera2.params.StreamConfigurationMap
 import android.media.Image
 import android.media.ImageReader
 import android.os.Build
@@ -30,6 +28,8 @@ import android.util.Size
 import android.view.LayoutInflater
 import android.view.Surface
 import android.view.View
+import android.view.View.INVISIBLE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -39,23 +39,32 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.lifecycleScope
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.dsd.kosjenka.R
 import com.dsd.kosjenka.databinding.FragmentCalibrateBinding
 import com.dsd.kosjenka.presentation.MainActivity
-import com.dsd.kosjenka.utils.Common
+import com.dsd.kosjenka.presentation.home.VisageWrapper
+import com.dsd.kosjenka.utils.SharedPreferences
 import com.google.android.gms.common.util.concurrent.HandlerExecutor
+import dagger.hilt.android.AndroidEntryPoint
 import java.nio.ByteBuffer
 import java.util.Collections
 import java.util.concurrent.Semaphore
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 import kotlin.properties.Delegates
 
+@AndroidEntryPoint
 class CalibrateFragment: Fragment() {
 
     private lateinit var binding: FragmentCalibrateBinding
+    private val viewModel by viewModels<CalibrateViewModel>()
     private lateinit var surfaceView: GazeCalibrationView
     private lateinit var visageWrapper: VisageWrapper
+
+    @Inject
+    lateinit var preferences: SharedPreferences
 
     /** Detects, characterizes, and connects to a CameraDevice (used for all camera operations) */
     private val cameraManager: CameraManager by lazy {
@@ -175,40 +184,51 @@ class CalibrateFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         visageWrapper.initGaze()
-
         surfaceView = visageWrapper.calibrateView as GazeCalibrationView
-//        surfaceView.dialogHandle = this
+
+        observeViewModel()
 
         if (surfaceView.parent != null){
             (surfaceView.parent as ViewGroup).removeView(surfaceView)
         }
-        binding.calibrateContainer.addView(surfaceView)
+        binding.calibrateFrame.addView(surfaceView)
 
-        if (!surfaceView.isEstimationMode()){
-            surfaceView.setGazeCalibratingMode()
-            surfaceView.resetCalibrationPointCount()
+        surfaceView.pointCords = viewModel.calibScreenPointList.value?.removeFirst()
+        setGazeCalibrationMode()
 
-            showAlertDialog(
-                "Please look at the object and tap on it as it spawns on the screen.",
-                "Gaze Tracking Calibration",
-                surfaceView.setGazeCalibratingMode
-            )
-        } else {
-            val builder: AlertDialog.Builder = AlertDialog.Builder(context)
-            builder
-                .setMessage("Looks like tracker was already calibrated. Do you want to calibrate again?")
-                .setTitle("Gaze Tracking Calibration")
-                .setPositiveButton("Recalibrate") { dialog, which ->
-                    surfaceView.setGazeCalibratingMode()
-                    surfaceView.resetCalibrationPointCount()
-                }
-                .setNegativeButton("Continue") {dialog, which ->
-                    surfaceView.setGazeEstimatingMode()
-                }
-
-            val dialog: AlertDialog = builder.create()
-            dialog.show()
+        showAlertDialog(
+            "Please look at the object and tap on it as it spawns on the screen.",
+            "Gaze Tracking Calibration"
+        ) {
+            surfaceView.setCalibrationPoint()
         }
+
+//        if (!surfaceView.isEstimationMode()){
+//            surfaceView.pointCords = model.calibScreenPointList.value?.removeFirst()
+//            setGazeCalibrationMode()
+//
+//            showAlertDialog(
+//                "Please look at the object and tap on it as it spawns on the screen.",
+//                "Gaze Tracking Calibration"
+//            ) { surfaceView.setCalibrationPoint() }
+//        } else {
+//            val builder: AlertDialog.Builder = AlertDialog.Builder(context)
+//            builder
+//                .setMessage("Looks like tracker was already calibrated. Do you want to calibrate again?")
+//                .setTitle("Gaze Tracking Calibration")
+//                .setPositiveButton("Recalibrate") { dialog, which ->
+////                    model.calibScreenPointList.value = model.getScreenGridPoints()
+//                    surfaceView.pointCords = model.calibScreenPointList.value?.removeFirst()
+//                    setGazeCalibrationMode()
+//                    surfaceView.setCalibrationPoint()
+//                }
+//                .setNegativeButton("Continue") {dialog, which ->
+//                    setGazeEstimationMode()
+//                }
+//
+//            val dialog: AlertDialog = builder.create()
+//            dialog.show()
+//        }
     }
 
     override fun onResume() {
@@ -229,6 +249,55 @@ class CalibrateFragment: Fragment() {
         super.onDestroy()
 
 //        visageWrapper.onDestroy()
+    }
+
+    fun observeViewModel(){
+        viewModel.calibScreenPointList.value = viewModel.getScreenGridPoints()
+        viewModel.calibScreenPointList.observe(viewLifecycleOwner) {
+            viewModel.calibrationCount.value = it.size
+        }
+
+        viewModel.calibrationCount.value = viewModel.calibScreenPointList.value!!.size
+        viewModel.calibrationCount.observe(viewLifecycleOwner) { count ->
+            val c = count + 1
+            binding.calibrationCounter.text = c.toString()
+        }
+
+        surfaceView.calibPointClickListener = {
+            if (viewModel.calibrationCount.value == 0) {
+                visageWrapper.FinalizeOnlineGazeCalibration()
+//                surfaceView.showCalibrateCompeteDialog()
+                setGazeEstimationMode()
+
+                val builder: AlertDialog.Builder = AlertDialog.Builder(context)
+                builder
+                    .setMessage("Calibration is completed and Gaze Tracking configured.")
+                    .setTitle("Calibration Finished")
+                    .setPositiveButton("Finish") { dialog, which ->
+                        preferences.isCalibrated = true
+                        preferences.isGazeReadingMode = true
+                        findNavController().popBackStack()
+                    }
+
+                val dialog: AlertDialog = builder.create()
+                dialog.show()
+            } else {
+                surfaceView.pointCords = viewModel.calibScreenPointList.value?.removeFirstOrNull()
+                viewModel.calibrationCount.value = viewModel.calibScreenPointList.value?.size
+            }
+        }
+    }
+
+    private fun setGazeCalibrationMode(){
+        surfaceView.calibrationFinished = false
+        surfaceView.setGazeCalibratingMode()
+        binding.calibrationCounter.visibility = VISIBLE
+    }
+
+    private fun setGazeEstimationMode(){
+        surfaceView.calibrationFinished = true
+        surfaceView.setGazeEstimatingMode()
+        binding.calibrationCounter.visibility = INVISIBLE
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -552,13 +621,15 @@ class CalibrateFragment: Fragment() {
         }
     }
 
-    private fun showAlertDialog(message: String, title: String, callback: () -> Unit){
+    private fun showAlertDialog(message: String, title: String, callback: (() -> Unit)?){
         val builder: AlertDialog.Builder = AlertDialog.Builder(context)
         builder
             .setMessage(message)
             .setTitle(title)
             .setPositiveButton("Continue") { dialog, which ->
-                callback()
+                if (callback != null) {
+                    callback()
+                }
                 dialog.dismiss()
             }
 

@@ -10,6 +10,7 @@ import com.dsd.kosjenka.domain.repository.UserProfileRepository
 import com.dsd.kosjenka.domain.response_objects.LoginResponseObject
 import com.dsd.kosjenka.utils.SharedPreferences
 import com.dsd.kosjenka.utils.UiStates
+import com.dsd.kosjenka.utils.error.InvalidTokenExcepion
 import com.dsd.kosjenka.utils.error.NoInternetException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -40,6 +41,7 @@ class UserProfilesViewModel @Inject constructor(
             _eventFlow.emit(
                 when (exception) {
                     is NoInternetException -> UiStates.NO_INTERNET_CONNECTION
+                    is InvalidTokenExcepion -> UiStates.INVALID_TOKEN
                     else -> {
                         Timber.e("Exception: ${exception.localizedMessage}")
                         UiStates.UNKNOWN_ERROR
@@ -51,10 +53,7 @@ class UserProfilesViewModel @Inject constructor(
 
     fun getUsers() {
         viewModelScope.launch(handler) {
-            repository.getUserProfiles(
-                sharedPreferences.accessToken
-            ).collect{
-
+            repository.getUserProfiles().collect{
                 if (it != null){
                     it.items.sortWith { left, right ->
                         if (left.id_user > right.id_user) {
@@ -72,7 +71,7 @@ class UserProfilesViewModel @Inject constructor(
     fun addUser(usernaeme: String){
         viewModelScope.launch(handler) {
             repository.addUserProfile(
-                sharedPreferences.accessToken,
+//                sharedPreferences.accessToken,
                 UserProfile(0,0,usernaeme, 1.0)
             ).collect {
                 if (it != null) {
@@ -86,7 +85,7 @@ class UserProfilesViewModel @Inject constructor(
         viewModelScope.launch(handler) {
             profile.username = usernaeme
             repository.editUserProfile(
-                sharedPreferences.accessToken,
+//                sharedPreferences.accessToken,
                 profile
             ).collect {
                 if (it != null) {
@@ -99,7 +98,7 @@ class UserProfilesViewModel @Inject constructor(
     fun deleteUser(profile: UserProfile){
         viewModelScope.launch(handler) {
             repository.deleteUserProfile(
-                sharedPreferences.accessToken,
+//                sharedPreferences.accessToken,
                 profile
             ).collect {
                 if (it != null) {

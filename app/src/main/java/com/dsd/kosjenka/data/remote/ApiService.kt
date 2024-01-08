@@ -77,27 +77,33 @@ interface ApiService {
 
     @GET("/users")
     suspend fun getUsers(
-        @Header("Authorization") token: String,
+//        @Header("Authorization") token: String,
         @Query("page") page: Int,
         @Query("size") size: Int,
     ): Response<GetUsersResponseObject>
 
     @POST("/users")
     suspend fun addUser(
-        @Header("Authorization") token: String,
+//        @Header("Authorization") token: String,
         @Body createUserObj: CreateUserRequestObject,
     ): Response<UserProfile>
 
     @PATCH("/users/{user_id}")
     suspend fun editUser(
-        @Header("Authorization") token: String,
+//        @Header("Authorization") token: String,
         @Path("user_id") userId: Int,
         @Body createUserObj: CreateUserRequestObject,
     ): Response<UserProfile>
 
     @DELETE("/users/{user_id}")
     suspend fun deleteUser(
-        @Header("Authorization") token: String,
+//        @Header("Authorization") token: String,
         @Path("user_id") userId: Int,
     ): Response<DeleteUserResponseObject>
+
+    @POST("/refresh")
+    suspend fun refreshToken(
+        @Body refreshToken: String,
+    ): Response<LoginResponseObject>
+
 }
