@@ -1,8 +1,9 @@
-package com.dsd.kosjenka.utils
+package com.dsd.kosjenka.data.remote
 
+import android.util.Log
 import com.dsd.kosjenka.BuildConfig
-import com.dsd.kosjenka.data.remote.ApiService
 import com.dsd.kosjenka.domain.response_objects.LoginResponseObject
+import com.dsd.kosjenka.utils.TokenManager
 import kotlinx.coroutines.runBlocking
 import okhttp3.Authenticator
 import okhttp3.OkHttpClient
@@ -19,6 +20,7 @@ import javax.inject.Singleton
 class AuthAuthenticator @Inject constructor(
     private val tokenManager: TokenManager
 ): Authenticator {
+    private val TAG: String = "TokenManager"
     override fun authenticate(route: Route?, response: Response): Request? {
         val refreshToken = runBlocking {
             tokenManager.refreshToken
@@ -29,6 +31,7 @@ class AuthAuthenticator @Inject constructor(
             if (!newToken.isSuccessful || newToken.body() == null) { //Couldn't refresh the token, so restart the login process
                 tokenManager.deleteToken()
             }
+            Log.d(TAG, "newToken is Successful: " + newToken.isSuccessful.toString())
 
             newToken.body()?.let {
                 tokenManager.accessToken = it.access_token

@@ -32,7 +32,7 @@ class ErrorManager @Inject constructor(private val gson: Gson) {
                     else -> UnknownException()
                 }
             } ?: throw when (errorCode) {
-                403 -> InvalidTokenExcepion()
+                401 -> InvalidTokenExcepion()
                 else -> UnknownException()
             }
         } ?: throw UnknownErrorException()

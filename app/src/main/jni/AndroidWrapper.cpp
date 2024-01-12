@@ -354,7 +354,8 @@ void Java_com_dsd_kosjenka_presentation_home_VisageWrapper_TrackerInit(JNIEnv *e
  * @param orientation - orientation of the frame derived from camera and screen orientation
  * @param flip - 1 if frame is mirrored, 0 if not
  */
-int Java_com_dsd_kosjenka_presentation_home_VisageWrapper_SetParameters(JNIEnv *env, jobject obj,
+int
+Java_com_dsd_kosjenka_presentation_home_VisageWrapper_SetParameters(JNIEnv *env, jclass obj,
                                                                          jint width, jint height,
                                                                          jint orientation = 0,
                                                                          jint flip = 0) {
@@ -452,6 +453,7 @@ Java_com_dsd_kosjenka_presentation_home_VisageWrapper_GetScreenSpaceGazeData(JNI
 
         jvalue args[5];
 
+//        LOGI("isTracking %d", isTracking);
         for (int i = 0; i < MAX_FACES; i++) {
             if (trackingStatusBuffer[i] == TRACK_STAT_OFF){
                 continue;
@@ -464,10 +466,9 @@ Java_com_dsd_kosjenka_presentation_home_VisageWrapper_GetScreenSpaceGazeData(JNI
             args[3].i = data.inState;
             args[4].f = data.quality;
         }
+        pthread_mutex_unlock(&displayRes_mutex);
 
         jobject gazeObject = env->NewObjectA(cls, constructor, args);
-
-        pthread_mutex_unlock(&displayRes_mutex);
 
         return gazeObject;
     }
@@ -554,7 +555,7 @@ void Java_com_dsd_kosjenka_presentation_home_VisageWrapper_TrackLoop(JNIEnv *env
     return;
 }
 
-bool Java_com_dsd_kosjenka_presentation_home_VisageWrapper_DisplayTrackingStatus(JNIEnv *env,
+jboolean Java_com_dsd_kosjenka_presentation_home_VisageWrapper_DisplayTrackingStatus(JNIEnv *env,
                                                                                   jobject instance,
                                                                                   jint width,
                                                                                   jint height) {
@@ -682,7 +683,7 @@ void Java_com_dsd_kosjenka_presentation_home_VisageWrapper_TrackerStop(JNIEnv *e
 * @param frame byte array with image data
 */
 void Java_com_dsd_kosjenka_presentation_home_VisageWrapper_WriteFrameStream(JNIEnv *env,
-                                                                             jobject obj,
+                                                                            jclass obj,
                                                                              jobject frameChannel0,
                                                                              jobject frameChannel1,
                                                                              jobject frameChannel2,
@@ -827,7 +828,7 @@ Java_com_dsd_kosjenka_presentation_home_VisageWrapper_ResumeTracker(JNIEnv *env,
 * @param height image height
 */
 void Java_com_dsd_kosjenka_presentation_home_VisageWrapper_WriteFrameImage(JNIEnv *env,
-                                                                            jobject obj,
+                                                                           jclass obj,
                                                                             jbyteArray frame,
                                                                             jint width,
                                                                             jint height) {
@@ -936,7 +937,7 @@ void Java_com_dsd_kosjenka_presentation_home_VisageWrapper_ResetTextures(JNIEnv 
 }
 
 jboolean Java_com_dsd_kosjenka_presentation_home_VisageWrapper_ShowInstruction(JNIEnv *env,
-                                                                                jobject instance) {
+                                                                               jclass instance) {
     jboolean rtn_value = FALSE;
 
     pthread_mutex_lock(&displayRes_mutex);

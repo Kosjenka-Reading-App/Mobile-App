@@ -1,4 +1,4 @@
-package com.dsd.kosjenka.presentation.home.camera
+package com.dsd.kosjenka.presentation.home.calibrate
 
 import android.Manifest
 import android.app.AlertDialog
@@ -45,6 +45,8 @@ import com.dsd.kosjenka.R
 import com.dsd.kosjenka.databinding.FragmentCalibrateBinding
 import com.dsd.kosjenka.presentation.MainActivity
 import com.dsd.kosjenka.presentation.home.VisageWrapper
+import com.dsd.kosjenka.presentation.home.camera.Camera2Fragment
+import com.dsd.kosjenka.utils.Common
 import com.dsd.kosjenka.utils.SharedPreferences
 import com.google.android.gms.common.util.concurrent.HandlerExecutor
 import dagger.hilt.android.AndroidEntryPoint
@@ -183,7 +185,7 @@ class CalibrateFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        visageWrapper.initGaze()
+        visageWrapper.InitOnlineGazeCalibration()
         surfaceView = visageWrapper.calibrateView as GazeCalibrationView
 
         observeViewModel()
@@ -249,6 +251,7 @@ class CalibrateFragment: Fragment() {
         super.onDestroy()
 
 //        visageWrapper.onDestroy()
+
     }
 
     fun observeViewModel(){
@@ -266,7 +269,7 @@ class CalibrateFragment: Fragment() {
         surfaceView.calibPointClickListener = {
             if (viewModel.calibrationCount.value == 0) {
                 visageWrapper.FinalizeOnlineGazeCalibration()
-//                surfaceView.showCalibrateCompeteDialog()
+//                visageWrapper.ResumeTracker()
                 setGazeEstimationMode()
 
                 val builder: AlertDialog.Builder = AlertDialog.Builder(context)
