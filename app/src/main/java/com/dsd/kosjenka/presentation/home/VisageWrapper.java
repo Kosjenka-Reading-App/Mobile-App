@@ -9,7 +9,7 @@ import android.os.Process;
 import android.util.Log;
 import android.view.View;
 
-import com.dsd.kosjenka.presentation.home.camera.GazeCalibrationView;
+import com.dsd.kosjenka.presentation.home.calibrate.GazeCalibrationView;
 import com.dsd.kosjenka.presentation.home.camera.TrackerView;
 
 import java.nio.ByteBuffer;
@@ -112,10 +112,11 @@ public class VisageWrapper {
     }
 
     public void onDestroy() {
-        TrackerStop();
+        //TrackerStop();
         if (visageWorkerThread == null)
             return;
 
+        visageWorkerHandler.sendMessage(visageWorkerHandler.obtainMessage(VisageWorkerThread.MSG_RELEASE));
         stopVisageWorker();
     }
 
@@ -151,17 +152,17 @@ public class VisageWrapper {
     }
 
     public void switchToCameraScreen() {
-        PauseTracker();
+//        PauseTracker();
         trackScreen = TrackScreen.CAMERA;
     }
 
     public void switchToCalibrateScreen() {
-        PauseTracker();
+//        PauseTracker();
         trackScreen = TrackScreen.CALIBRATION;
     }
 
     public void switchToExerciseScreen() {
-        PauseTracker();
+//        PauseTracker();
         trackScreen = TrackScreen.EXERCISE;
     }
 
@@ -244,7 +245,7 @@ public class VisageWrapper {
 
     public static native void SetParameters(int width, int height, int orientation, int flip);
 
-    public static native void SetParameters(int width, int height);
+    //public static native void SetParameters(int width, int height);
 
     public native void TrackerStop();
 

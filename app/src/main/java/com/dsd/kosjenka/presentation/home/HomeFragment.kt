@@ -107,6 +107,7 @@ class HomeFragment : Fragment(), CategoryFilterListener {
                     }
 
                     UiStates.INVALID_TOKEN -> {
+                        Common.showToast(binding.root.context, getString(R.string.token_error))
                         tokenManager.deleteToken()
                         preferences.isLoggedIn = false
                         findNavController().navigate(

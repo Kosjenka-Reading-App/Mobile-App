@@ -1,12 +1,9 @@
-package com.dsd.kosjenka.presentation.home.camera
+package com.dsd.kosjenka.presentation.home.calibrate
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.dsd.kosjenka.utils.SharedPreferences
-import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.stream.IntStream
 import java.util.stream.Stream
-import javax.inject.Inject
 
 class CalibrateViewModel: ViewModel() {
 

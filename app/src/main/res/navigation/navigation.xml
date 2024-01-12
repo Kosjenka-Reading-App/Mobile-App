@@ -142,7 +142,7 @@
         tools:layout="@layout/fragment_camera" />
     <fragment
         android:id="@+id/calibrateFragment"
-        android:name="com.dsd.kosjenka.presentation.home.camera.CalibrateFragment"
+        android:name="com.dsd.kosjenka.presentation.home.calibrate.CalibrateFragment"
         android:label="fragment_calibrate"
         tools:layout="@layout/fragment_calibrate" />
 

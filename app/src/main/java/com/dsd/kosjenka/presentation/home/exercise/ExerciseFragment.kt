@@ -47,15 +47,14 @@ import com.dsd.kosjenka.databinding.FragmentExerciseBinding
 import com.dsd.kosjenka.domain.models.Completion
 import com.dsd.kosjenka.domain.models.Exercise
 import com.dsd.kosjenka.presentation.MainActivity
-import com.dsd.kosjenka.presentation.home.HomeFragmentDirections
-import com.dsd.kosjenka.presentation.home.camera.GazeCalibrationView
+import com.dsd.kosjenka.presentation.home.calibrate.GazeCalibrationView
 import com.dsd.kosjenka.presentation.home.VisageWrapper
-import com.dsd.kosjenka.presentation.home.camera.CalibrateFragment
+import com.dsd.kosjenka.presentation.home.calibrate.CalibrateFragment
 import com.dsd.kosjenka.presentation.home.camera.Camera2Fragment
+import com.dsd.kosjenka.utils.Common
 import com.dsd.kosjenka.utils.SharedPreferences
 import com.dsd.kosjenka.utils.TokenManager
 import com.dsd.kosjenka.utils.UiStates
-import com.google.android.datatransport.runtime.Destination
 import com.google.android.gms.common.util.concurrent.HandlerExecutor
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -158,6 +157,7 @@ class ExerciseFragment : Fragment(), HighlightCallback {
                 preferences.isGazeReadingMode = false
                 gazeSurfaceView.visibility = View.INVISIBLE
                 binding.enableDisableGaze.setImageResource(R.drawable.center_focus_weak)
+                Common.showToast(binding.root.context, "Gaze tracking OFF")
             } else {
                 if (!preferences.isCalibrated) {
                     startCalibrate()
@@ -167,6 +167,7 @@ class ExerciseFragment : Fragment(), HighlightCallback {
                     gazeSurfaceView.visibility = View.VISIBLE
                     binding.enableDisableGaze.setImageResource(R.drawable.center_focus_strong)
                     promptRecalibrate()
+                    Common.showToast(binding.root.context, "Gaze tracking ON")
                 }
             }
         }
@@ -740,6 +741,7 @@ class ExerciseFragment : Fragment(), HighlightCallback {
                             }
 
                             UiStates.INVALID_TOKEN -> {
+                                Common.showToast(binding.root.context, getString(R.string.token_error))
                                 tokenManager.deleteToken()
                                 preferences.isLoggedIn = false
                                 findNavController().navigate(
