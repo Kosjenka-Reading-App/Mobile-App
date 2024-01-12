@@ -3,7 +3,7 @@ package com.dsd.kosjenka.di
 import com.dsd.kosjenka.BuildConfig
 import com.dsd.kosjenka.data.remote.ApiService
 import com.dsd.kosjenka.data.remote.AuthInterceptor
-import com.dsd.kosjenka.utils.AuthAuthenticator
+import com.dsd.kosjenka.data.remote.AuthAuthenticator
 import com.dsd.kosjenka.utils.SharedPreferences
 import com.dsd.kosjenka.utils.TokenManager
 import com.google.gson.Gson

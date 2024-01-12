@@ -1,20 +1,22 @@
-package com.dsd.kosjenka.presentation.home.camera
+package com.dsd.kosjenka.presentation.home.calibrate
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.content.Context
 import android.graphics.PixelFormat
+import android.graphics.Point
 import android.opengl.GLES20
 import android.opengl.GLSurfaceView
 import android.opengl.Matrix
 import android.util.Log
 import android.view.MotionEvent
+import android.view.WindowManager
 import com.dsd.kosjenka.presentation.home.VisageWrapper
 import com.dsd.kosjenka.presentation.home.VisageWrapper.ScreenSpaceGazeData
 import com.dsd.kosjenka.utils.GLTriangle
 import java.util.Random
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
+import kotlin.properties.Delegates
 
 
 @SuppressLint("ViewConstructor")
@@ -121,21 +123,6 @@ class GazeCalibrationView(context: Context, wrapper: VisageWrapper) : GLSurfaceV
         return floatArrayOf(x, y, z).toList()
     }
 
-    fun showCalibrateCompeteDialog(){
-//        dialogHandle?.showDialog("Calibration is completed and Gaze Tracking configured.",
-//            "Calibration Finished", setGazeEstimatingMode)
-        val builder: AlertDialog.Builder = AlertDialog.Builder(context)
-        builder
-            .setMessage("Calibration is completed and Gaze Tracking configured.")
-            .setTitle("Calibration Finished")
-            .setPositiveButton("Continue") { dialog, which ->
-                dialog.dismiss()
-            }
-
-        val dialog: AlertDialog = builder.create()
-        dialog.show()
-    }
-
     val setGazeCalibratingMode = {
         queueEvent {
             renderer.currentGazeMode = GazeTrackerMode.Calibration
@@ -178,7 +165,7 @@ class GazeCalibrationView(context: Context, wrapper: VisageWrapper) : GLSurfaceV
 
         private val TAG = "CalibrateRenderer"
 
-        private var screenRatio = width/ height.toFloat()
+        private var screenRatio by Delegates.notNull<Float>() //= width/ height.toFloat()
 
         @Volatile
         var translateBy: List<Float> = listOf(0f,0f,0f)
@@ -194,7 +181,13 @@ class GazeCalibrationView(context: Context, wrapper: VisageWrapper) : GLSurfaceV
             // Set the background frame color
             GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f)
 
+            screenRatio = width.toFloat() / height.toFloat()
             mTriangle = GLTriangle()
+
+            val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+            val display = wm.defaultDisplay
+            val size = Point()
+            display.getSize(size)
         }
 
         private val translateMatrix = FloatArray(16)
@@ -204,14 +197,17 @@ class GazeCalibrationView(context: Context, wrapper: VisageWrapper) : GLSurfaceV
             GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
 
             Matrix.setIdentityM(translateMatrix, 0)
+
+            val gazeData: ScreenSpaceGazeData? = visageWrapper.GetScreenSpaceGazeData()
+            gazeData?.let {
+                Log.d(TAG, "Tracking state: ${gazeData.inState}, Quality: ${gazeData.quality}")
+            }
             if (currentGazeMode == GazeTrackerMode.Calibration){
                 Matrix.translateM(translateMatrix, 0, translateBy[0],translateBy[1],translateBy[2])
             } else if (currentGazeMode == GazeTrackerMode.Estimation) {
-                val gazeData: ScreenSpaceGazeData? = visageWrapper.GetScreenSpaceGazeData()
                 gazeData?.let {
                     val glx = (it.x * 2 - 1) * screenRatio
                     val gly = -(it.y * 2 - 1)
-//                    Log.d(TAG, "${glx},${gly},${gazeData.inState},${gazeData.quality}")
                     Matrix.translateM(translateMatrix, 0, glx, gly, 0f)
                 }
             }
@@ -234,6 +230,7 @@ class GazeCalibrationView(context: Context, wrapper: VisageWrapper) : GLSurfaceV
             // this projection matrix is applied to object coordinates
             // in the onDrawFrame() method
             Matrix.frustumM(projectionMatrix, 0, -screenRatio, screenRatio, -1f, 1f, 3f, 7f)
+            visageWrapper.ResetTextures()
         }
 
         fun isShapeTapped(normalizedX: Float, normalizedY: Float):Boolean {

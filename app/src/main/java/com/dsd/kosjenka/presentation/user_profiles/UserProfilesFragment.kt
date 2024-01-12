@@ -34,10 +34,10 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class UserProfilesFragment : Fragment(),
-    AdapterModule.UserProfilesAdapter.ProfileItemClickListener {
+    UserProfilesAdapter.ProfileItemClickListener {
 
     private lateinit var profilesList: MutableList<UserProfile>
-    private lateinit var userProfilesAdapter: AdapterModule.UserProfilesAdapter
+    private lateinit var userProfilesAdapter: UserProfilesAdapter
     private lateinit var binding: FragmentUserProfilesBinding
     private val viewModel by viewModels<UserProfilesViewModel>()
 
@@ -87,7 +87,7 @@ class UserProfilesFragment : Fragment(),
 
 
     private fun setupRecycler() {
-        userProfilesAdapter = AdapterModule.UserProfilesAdapter(this)
+        userProfilesAdapter = UserProfilesAdapter(this)
 
         binding.recyclerViewUserProfiles.apply {
             setHasFixedSize(true)
@@ -106,6 +106,7 @@ class UserProfilesFragment : Fragment(),
                     }
 
                     UiStates.INVALID_TOKEN -> {
+                        Common.showToast(binding.root.context, getString(R.string.token_error))
                         tokenManager.deleteToken()
                         sharedPreferences.isLoggedIn = false
                         executeLogoutAction()
